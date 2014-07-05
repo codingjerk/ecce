@@ -22,29 +22,29 @@ std::string Bitboard::show(const Type bitboard) {
     std::string result;
     result.reserve(64+8);
 
-    for (Numspeed y = 8-1; y >= 0; --y) {
-        for (UNumspeed x = 0; x < 8; ++x) {
+    for (Numspeed y = Coord::componentHighter; y >= Numspeed(Coord::componentLower); --y) {
+        for (UNumspeed x = Coord::componentLower; x <= Coord::componentHighter; ++x) {
             result += '0' + bool(bitboard & fromCoord(Coord::create(x, y)));
         }
 
-        if (y != 0) result += '\n';
+        if (y != Coord::componentLower) result += '\n';
     }
 
     return result;
 }
 
 void Bitboard::initTables() {
-    for (UNumspeed y = 0; y < 8; ++y)
-    for (UNumspeed x = 0; x < 8; ++x) {
+    for (UNumspeed y = Coord::componentLower; y <= Coord::componentHighter; ++y)
+    for (UNumspeed x = Coord::componentLower; x <= Coord::componentHighter; ++x) {
         auto coord = Coord::create(x, y);
         Type bitboard = makeUNum64(1) << (y * makeUNum64(8) + x);
         coordToBitboardTable[coord] = bitboard;
     }
 
-    for (UNumspeed yFrom = 0; yFrom < 8; ++yFrom) 
-    for (UNumspeed xFrom = 0; xFrom < 8; ++xFrom) 
-    for (UNumspeed yTo = 0; yTo < 8; ++yTo) 
-    for (UNumspeed xTo = 0; xTo < 8; ++xTo) {
+    for (UNumspeed yFrom = Coord::componentLower; yFrom <= Coord::componentHighter; ++yFrom) 
+    for (UNumspeed xFrom = Coord::componentLower; xFrom <= Coord::componentHighter; ++xFrom) 
+    for (UNumspeed yTo = Coord::componentLower; yTo <= Coord::componentHighter; ++yTo) 
+    for (UNumspeed xTo = Coord::componentLower; xTo <= Coord::componentHighter; ++xTo) {
         auto from = Coord::create(xFrom, yFrom);
         auto to = Coord::create(xTo, yTo);
         Type bitboard = coordToBitboardTable[from] ^ coordToBitboardTable[to];

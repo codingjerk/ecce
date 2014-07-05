@@ -4,8 +4,8 @@
 using namespace Coord;
 
 Type Coord::create(const UNumspeed x, const UNumspeed y) {
-    ASSERT(0 <= x && x <= 7);
-    ASSERT(0 <= y && y <= 7);
+    ASSERT(componentLower <= x && x <= componentHighter);
+    ASSERT(componentLower <= y && y <= componentHighter);
 
     return (x << usedBitsByComponent) | y;
 }
