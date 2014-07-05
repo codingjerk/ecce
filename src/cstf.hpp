@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <mutex>
 
-#include "platform.hpp"
+#include "core.hpp"
 
 std::mutex outMutex;
 

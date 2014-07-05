@@ -8,7 +8,8 @@ CCOFLAGS=-O3
 
 LDFLAGS=-pthread
 
-SRC=moves.cpp
+SRC=moves.cpp\
+	coords.cpp
 
 OBJ=$(SRC:.cpp=.o)
 

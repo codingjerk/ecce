@@ -1,7 +1,7 @@
 #ifndef MOVES_HPP
 #define MOVES_HPP
 
-#include "platform.hpp"
+#include "core.hpp"
 
 namespace Move {
     using Type = UNumspeed;
