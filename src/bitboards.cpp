@@ -27,7 +27,7 @@ std::string Bitboard::show(const Type bitboard) {
             result += '0' + bool(bitboard & fromCoord(Coord::create(x, y)));
         }
 
-        result += '\n';
+        if (y != 0) result += '\n';
     }
 
     return result;
