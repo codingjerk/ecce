@@ -72,6 +72,7 @@ std::string firsts(std::string);
     cout << "    Passed " << passedCounter << "/" << checkCounter << ".\n"; \
     if (failedCounter == 0) {cout << "    All tests passed.\n";} \
     else {cout << "    Failed " << failedCounter << " tests.\n";} \
+    return failedCounter; \
 }
 
 // --- Runtime asserts (debug mode) ---
