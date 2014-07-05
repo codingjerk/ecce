@@ -10,8 +10,6 @@
 
 namespace Bitboard {
     using Type = UNum64;
-    using LineType = UNumspeed;
-    using BitType = UNumspeed;
 
     Type fromCoord(const Coord::Type);
     Type fromMove(const Move::Type);
