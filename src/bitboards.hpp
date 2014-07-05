@@ -11,12 +11,10 @@
 namespace Bitboard {
     using Type = UNum64;
 
+    void initTables();
+
     Type fromCoord(const Coord::Type);
     Type fromMove(const Move::Type);
-
-    bool getBit(const Type, const UNumspeed, const UNumspeed);
-
-    void initTables();
 
     std::string show(const Type);
 }
