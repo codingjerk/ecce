@@ -3,12 +3,12 @@ LD=clang++
 
 CCFLAGS=$(CCSTDFLAGS) $(CCWFLAGS) $(CCOFLAGS)
 CCSTDFLAGS=-std=c++11
-CCWFLAGS=
+CCWFLAGS=-Wextra
 CCOFLAGS=-O3
 
 LDFLAGS=-pthread
 
-SRC=
+SRC=moves.cpp
 
 OBJ=$(SRC:.cpp=.o)
 
