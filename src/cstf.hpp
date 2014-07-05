@@ -25,6 +25,8 @@ std::string firsts(std::string old) {
     }
 }
 
+// --- TDD tests ---
+
 #define SECTION(name) { \
     outMutex.lock(); \
     if (!firstSection) std::cout << "\n"; else firstSection = false;\
@@ -77,5 +79,16 @@ std::string firsts(std::string old) {
     if (failedCounter == 0) {cout << "    All tests passed.\n";} \
     else {cout << "    Failed " << failedCounter << " tests.\n";} \
 }
+
+// --- Runtime asserts (debug mode) ---
+#define DEBUGMODE
+
+#ifdef DEBUGMODE
+    #define ASSERT(expr) {\
+        cout << "Assert was failed (" << #expr << ")\n";\
+    }
+#else
+    #define ASSERT(expr) {}
+#endif
 
 #endif /* CSTF_HPP */

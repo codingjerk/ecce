@@ -1,7 +1,7 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
-// For x86-64 arch long long is more effective type
+// --- Arch-depended types ---
 using Numspeed = signed long long;
 using UNumspeed = unsigned long long;
 
