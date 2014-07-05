@@ -7,23 +7,17 @@
 
 #include "core.hpp"
 
-std::mutex outMutex;
+extern std::mutex outMutex;
 
-UNummax checkCounter = 0;
-UNummax failedCounter = 0;
-UNummax passedCounter = 0;
+extern UNummax checkCounter;
+extern UNummax failedCounter;
+extern UNummax passedCounter;
 
-bool firstSection = true;
+extern bool firstSection;
 
-UNummax maxTestInfoSize = 35;
+extern UNummax maxTestInfoSize;
 
-std::string firsts(std::string old) {
-    if (old.size() <= maxTestInfoSize) {
-        return old;
-    } else {
-        return old.substr(0,maxTestInfoSize) + "...";
-    }
-}
+std::string firsts(std::string);
 
 // --- TDD tests ---
 
@@ -85,7 +79,7 @@ std::string firsts(std::string old) {
 
 #ifdef DEBUGMODE
     #define ASSERT(expr) {\
-        cout << "Assert was failed (" << #expr << ")\n";\
+        std::cout << "!!! Assert was failed (" << #expr << ")\n";\
     }
 #else
     #define ASSERT(expr) {}
