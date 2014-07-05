@@ -4,6 +4,7 @@
 #include <string>
 
 #include "core.hpp"
+
 #include "coords.hpp"
 
 namespace Move {
