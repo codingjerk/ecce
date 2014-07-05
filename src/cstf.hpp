@@ -15,11 +15,13 @@ UNummax passedCounter = 0;
 
 bool firstSection = true;
 
+UNummax maxTestInfoSize = 35;
+
 std::string firsts(std::string old) {
-    if (old.size() <= 35) {
+    if (old.size() <= maxTestInfoSize) {
         return old;
     } else {
-        return old.substr(0,35) + "...";
+        return old.substr(0,maxTestInfoSize) + "...";
     }
 }
 
