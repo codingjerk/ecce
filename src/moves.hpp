@@ -3,4 +3,11 @@
 
 #include "platform.hpp"
 
+namespace Move {
+    using Type = UNumspeed;
+
+    // Type create(Coord from, Coord to);
+    // std::string show();
+}
+
 #endif /* MOVES_HPP */
