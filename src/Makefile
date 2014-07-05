@@ -10,7 +10,8 @@ LDFLAGS=-pthread
 
 SRC=cstf.cpp\
 	moves.cpp\
-	coords.cpp
+	coords.cpp\
+	bitboards.cpp
 
 OBJ=$(SRC:.cpp=.o)
 

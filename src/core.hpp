@@ -2,6 +2,9 @@
 #define CORE_HPP
 
 // --- Arch-depended types ---
+using Num64 = signed long long;
+using UNum64 = unsigned long long;
+
 using Numspeed = signed long long;
 using UNumspeed = unsigned long long;
 
@@ -10,6 +13,9 @@ using UNumsize = unsigned char;
 
 using Nummax = signed long long;
 using UNummax = unsigned long long;
+
+#define makeNum64(num) num##ll
+#define makeUNum64(num) num##ull
 
 #define makeNumspeed(num) num##ll
 #define makeUNumspeed(num) num##ull
