@@ -3,7 +3,8 @@
 
 int main(int, char**) {
     SECTION(Framework);
-    CHECK(2 == 2);
+    CHECK(true);
+    EXCEPTION(throw 1);
 
     RESULTS;
 
