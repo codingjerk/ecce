@@ -79,7 +79,7 @@ std::string firsts(std::string);
 
 #ifdef DEBUGMODE
     #define ASSERT(expr) {\
-        if (!expr) std::cout << "!!! Assert was failed (" << #expr << ")\n";\
+        if (!(expr)) std::cout << "!!! Assert was failed (" << #expr << ")\n";\
     }
 #else
     #define ASSERT(expr) {}
