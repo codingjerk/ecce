@@ -70,8 +70,7 @@ std::string firsts(std::string old) {
 
 #define RESULTS { \
     using namespace std; \
-    if (!firstSection) cout << "\n"; else firstSection = false;\
-    cout << "---Test results---\n"; \
+    SECTION(Test results); \
     cout << "    Passed " << passedCounter << "/" << checkCounter << ".\n"; \
     if (failedCounter == 0) {cout << "    All tests passed.\n";} \
     else {cout << "    Failed " << failedCounter << " tests.\n";} \
