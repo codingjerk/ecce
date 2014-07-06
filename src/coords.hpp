@@ -21,7 +21,7 @@ namespace Coord {
     const UNumspeed usedBitsByComponent = makeUNumspeed(3);
     const UNumspeed componentMask = (makeUNumspeed(1) << usedBitsByComponent) - makeUNumspeed(1);
 
-    const UNumspeed usedBits = usedBitsByComponent * 2;
+    const UNumspeed usedBits = usedBitsByComponent * makeUNumspeed(2);
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
 }
 

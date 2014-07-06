@@ -13,13 +13,13 @@ const Color Black = makeUNumspeed(0);
 const Color White = makeUNumspeed(8);
 
 using Dignity = UNumspeed;
-const Dignity rangedMask = 4;
-const Dignity Pawn = 1; 
-const Dignity Knight = 2; 
-const Dignity King = 3; 
+const Dignity rangedMask = makeUNumspeed(4);
+const Dignity Pawn   = makeUNumspeed(1); 
+const Dignity Knight = makeUNumspeed(2); 
+const Dignity King   = makeUNumspeed(3); 
 const Dignity Bishop = rangedMask /*4*/; 
-const Dignity Rook = rangedMask + 1 /*5*/; 
-const Dignity Queen = rangedMask + 2 /*6*/;
+const Dignity Rook   = rangedMask + makeUNumspeed(1) /*5*/; 
+const Dignity Queen  = rangedMask + makeUNumspeed(2) /*6*/;
 
 namespace Piece {
     using Type = UNumspeed;
