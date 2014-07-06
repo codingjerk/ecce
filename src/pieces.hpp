@@ -6,12 +6,9 @@
 #include "core.hpp"
 
 #include "coords.hpp"
+#include "colors.hpp"
 
-// Not in namespace to use White or Pawn without qualifitiers
-using Color = UNumspeed;
-const Color Black = makeUNumspeed(0);
-const Color White = makeUNumspeed(8);
-
+//@TODO(Uses): Move to own file
 using Dignity = UNumspeed;
 const Dignity rangedMask = makeUNumspeed(4);
 const Dignity Pawn   = makeUNumspeed(1); 
@@ -26,7 +23,7 @@ namespace Piece {
 
     void initTables();
 
-    Type create(const Color, const Dignity);
+    Type create(const Color::Type, const Dignity);
     Type fromChar(const char);
     Type fromString(const std::string);
 

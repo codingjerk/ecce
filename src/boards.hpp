@@ -13,8 +13,7 @@ namespace Board {
     struct Type {
         Bitboard::Type bitboards[makeUNumspeed(1) << Piece::usedBits] = {makeUNum64(0)};
         
-        // @TODO(USES): Move to own file to use Color::Type
-        Color turn = Black;
+        Color::Type turn = Black;
 
         // @TODO(IMPORTANT): Castle flags
 
@@ -27,7 +26,7 @@ namespace Board {
     };
 
     void setPiece(Type&, const Piece::Type, const Coord::Type);
-    void setTurn(Type&, const Color);
+    void setTurn(Type&, const Color::Type);
     void setEnpassant(Type&, const Coord::Type*);
 
     const Piece::Type *getPiece(const Type&, const Coord::Type);

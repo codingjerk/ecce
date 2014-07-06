@@ -9,7 +9,7 @@ using namespace Piece;
 Type charToPieceTable[makeUNumspeed(1) << (sizeof(char) * CHAR_BIT)];
 char pieceToCharTable[makeUNumspeed(1) << Piece::usedBits];
 
-Type Piece::create(const Color color, const Dignity dignity) {
+Type Piece::create(const Color::Type color, const Dignity dignity) {
     ASSERT(color == Black || color == White);
     ASSERT(dignityLower <= dignity && dignity <= dignityHighter);
 
@@ -60,7 +60,7 @@ void Piece::initTables() {
     charToPieceTable['r'] = create(Black, Rook);
     charToPieceTable['q'] = create(Black, Queen);
     charToPieceTable['k'] = create(Black, King);
-    
+
     charToPieceTable['P'] = create(White, Pawn);
     charToPieceTable['N'] = create(White, Knight);
     charToPieceTable['B'] = create(White, Bishop);

@@ -12,6 +12,7 @@ SRC=cstf.cpp\
 	moves.cpp\
 	coords.cpp\
 	bitboards.cpp\
+	colors.cpp\
 	pieces.cpp\
 	boards.cpp
 

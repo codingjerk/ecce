@@ -35,8 +35,7 @@ void setPositionFromFen(Type &board, const std::string fen) {
 void setTurnFromFen(Type &board, const std::string fen) {
     ASSERT(fen == "w" || fen == "b");
 
-    //@TODO(FAST, USES): Use Color::fromChar
-    const auto color = fen == "w"? White: Black;
+    const auto color = Color::fromString(fen);
 
     setTurn(board, color);
 }
@@ -96,7 +95,7 @@ void Board::setPiece(Type &board, const Piece::Type piece, const Coord::Type coo
     board.bitboards[piece] |= Bitboard::fromCoord(coord);
 }
 
-void Board::setTurn(Type& board, const Color color) {
+void Board::setTurn(Type& board, const Color::Type color) {
     board.turn = color;
 }
 
@@ -134,7 +133,7 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
 const Piece::Type *Board::getPiece(const Type &board, const Coord::Type coord) {
     //@TODO(USES): Write macroses forColors(color) and forDignities(dignity)
-    for (Color color = Black; color <= White; color += White) {
+    for (Color::Type color = Black; color <= White; color += White) {
         for (Dignity dignity = Pawn; dignity <= Queen; ++dignity) {
             auto piece = new Piece::Type();
             *piece = Piece::create(color, dignity);
@@ -151,8 +150,7 @@ std::string Board::toFen(const Type &board) {
     std::stringstream resultStream;
 
     resultStream << getFenPosition(board) << " ";
-    //@TODO(USES): Use Color::show(color)
-    resultStream << ((board.turn == White)? "w ": "b ");
+    resultStream << Color::show(board.turn) << " ";
     //@TODO(IMPORTANT)
     resultStream << "KQkq ";
     //@TODO(USES): Use Enpassant::show(enpassant)
@@ -166,7 +164,7 @@ std::string Board::toFen(const Type &board) {
 std::string Board::show(const Type &board) {
     std::string result;
 
-    for (Color color = Black; color <= White; color += White) {
+    for (Color::Type color = Black; color <= White; color += White) {
         for (Dignity dignity = Pawn; dignity <= Queen; ++dignity) {
             auto piece = Piece::create(color, dignity);
             result += Bitboard::show(board.bitboards[piece]) + "\n";
