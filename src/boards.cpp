@@ -133,13 +133,12 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
 const Piece::Type *Board::getPiece(const Type &board, const Coord::Type coord) {
     //@TODO(USES): Write macroses forColors(color) and forDignities(dignity)
-    for (Color::Type color = Black; color <= White; color += White) {
-        for (Dignity dignity = Pawn; dignity <= Queen; ++dignity) {
-            auto piece = new Piece::Type();
-            *piece = Piece::create(color, dignity);
-            if (board.bitboards[*piece] & Bitboard::fromCoord(coord)) {
-                return piece;
-            }
+    forColors(color) 
+    forDignities(dignity) {
+        auto piece = new Piece::Type();
+        *piece = Piece::create(color, dignity);
+        if (board.bitboards[*piece] & Bitboard::fromCoord(coord)) {
+            return piece;
         }
     }
 
@@ -164,11 +163,10 @@ std::string Board::toFen(const Type &board) {
 std::string Board::show(const Type &board) {
     std::string result;
 
-    for (Color::Type color = Black; color <= White; color += White) {
-        for (Dignity dignity = Pawn; dignity <= Queen; ++dignity) {
-            auto piece = Piece::create(color, dignity);
-            result += Bitboard::show(board.bitboards[piece]) + "\n";
-        }
+    forColors(color) 
+    forDignities(dignity) {
+        auto piece = Piece::create(color, dignity);
+        result += Bitboard::show(board.bitboards[piece]) + "\n";
     }
 
     return result;

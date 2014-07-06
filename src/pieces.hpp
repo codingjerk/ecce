@@ -18,6 +18,8 @@ const Dignity Bishop = rangedMask /*4*/;
 const Dignity Rook   = rangedMask + makeUNumspeed(1) /*5*/; 
 const Dignity Queen  = rangedMask + makeUNumspeed(2) /*6*/;
 
+#define forDignities(var) for (Dignity dignity = Pawn; dignity <= Queen; ++dignity)
+
 namespace Piece {
     using Type = UNumspeed;
 
