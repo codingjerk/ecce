@@ -93,5 +93,9 @@ int main(int, char**) {
     total = buffer[0];
     CHECK(total == 9);
 
+    Generator::forPawns<Black>(buffer, board);
+    total = buffer[0];
+    CHECK(total == 11);
+
     RESULTS;
 }
