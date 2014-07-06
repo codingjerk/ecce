@@ -32,34 +32,8 @@ void setPositionFromFen(Type &board, const std::string fen) {
     }
 }
 
-void setTurnFromFen(Type &board, const std::string fen) {
-    ASSERT(fen == "w" || fen == "b");
-
-    const auto color = Color::fromString(fen);
-
-    setTurn(board, color);
-}
-
 void setCastleFromFen(Type &board, const std::string fen) {
     //@TODO(IMPORTANT)
-}
-
-void setEnpassantFromFen(Type &board, const std::string fen) {
-    if (fen == "-") {
-        setEnpassant(board, nullptr);
-    } else {
-        auto enpassant = new Coord::Type();
-        *enpassant = Coord::fromString(fen); 
-        setEnpassant(board, enpassant);
-    }
-}
-
-void setHalfmoveClockFromFen(Type &board, const UNumspeed value) {
-    board.halfmoveClock = value;
-}
-
-void setFullmoveNumberFromFen(Type &board, const UNumspeed value) {
-    board.fullmoveNumber = value;
 }
 
 std::string getFenPosition(const Type &board) {
@@ -95,14 +69,6 @@ void Board::setPiece(Type &board, const Piece::Type piece, const Coord::Type coo
     board.bitboards[piece] |= Bitboard::fromCoord(coord);
 }
 
-void Board::setTurn(Type& board, const Color::Type color) {
-    board.turn = color;
-}
-
-void Board::setEnpassant(Type& board, const Coord::Type *enpassant) {
-    board.enpassant = enpassant;
-}
-
 void Board::setFromFen(Type &board, const std::string fen) {
     std::stringstream fenStream(fen);
 
@@ -110,9 +76,9 @@ void Board::setFromFen(Type &board, const std::string fen) {
     fenStream >> positionPart;
     setPositionFromFen(board, positionPart);
 
-    std::string colorPart;
-    fenStream >> colorPart;
-    setTurnFromFen(board, colorPart);
+    std::string turnPart;
+    fenStream >> turnPart;
+    board.turn = Color::fromString(turnPart);
 
     std::string castlePart;
     fenStream >> castlePart;
@@ -120,19 +86,18 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
     std::string enapassantPart;
     fenStream >> enapassantPart;
-    setEnpassantFromFen(board, enapassantPart);
+    board.enpassant = Enpassant::fromString(enapassantPart);
 
     UNumspeed halfmoveClockPart;
     fenStream >> halfmoveClockPart;
-    setHalfmoveClockFromFen(board, halfmoveClockPart);
+    board.halfmoveClock = halfmoveClockPart;
 
     UNumspeed fullmoveNumberPart;
     fenStream >> fullmoveNumberPart;
-    setFullmoveNumberFromFen(board, fullmoveNumberPart);
+    board.fullmoveNumber = fullmoveNumberPart;
 }
 
 const Piece::Type *Board::getPiece(const Type &board, const Coord::Type coord) {
-    //@TODO(USES): Write macroses forColors(color) and forDignities(dignity)
     forColors(color) 
     forDignities(dignity) {
         auto piece = new Piece::Type();
@@ -152,8 +117,7 @@ std::string Board::toFen(const Type &board) {
     resultStream << Color::show(board.turn) << " ";
     //@TODO(IMPORTANT)
     resultStream << "KQkq ";
-    //@TODO(USES): Use Enpassant::show(enpassant)
-    resultStream << ((board.enpassant == nullptr)? "- ": (Coord::show(*board.enpassant) + " "));
+    resultStream << Enpassant::show(board.enpassant) << " ";
     resultStream << board.halfmoveClock << " ";
     resultStream << board.fullmoveNumber;
 

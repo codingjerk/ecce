@@ -14,6 +14,7 @@ SRC=cstf.cpp\
 	bitboards.cpp\
 	colors.cpp\
 	pieces.cpp\
+	enpassants.cpp\
 	boards.cpp
 
 OBJ=$(SRC:.cpp=.o)
