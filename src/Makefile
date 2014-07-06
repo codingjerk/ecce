@@ -11,7 +11,8 @@ LDFLAGS=-pthread
 SRC=cstf.cpp\
 	moves.cpp\
 	coords.cpp\
-	bitboards.cpp
+	bitboards.cpp\
+	pieces.cpp
 
 OBJ=$(SRC:.cpp=.o)
 

@@ -16,7 +16,7 @@ namespace Coord {
 
     const UNumspeed componentLower   = makeNumspeed(0);
     const UNumspeed componentHighter = makeNumspeed(7);
-    
+
     // One number from 0 to 7 eats 3 bits
     const UNumspeed usedBitsByComponent = makeUNumspeed(3);
     const UNumspeed componentMask = (makeUNumspeed(1) << usedBitsByComponent) - makeUNumspeed(1);
