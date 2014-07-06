@@ -4,6 +4,7 @@
 #include "moves.hpp"
 #include "bitboards.hpp"
 #include "pieces.hpp"
+#include "boards.hpp"
 
 int main(int, char**) {
     SECTION(Framework);
@@ -22,13 +23,17 @@ int main(int, char**) {
 
     SECTION(Bitboards);
     Bitboard::initTables();
-    CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n00000000");
-    CHECK(Bitboard::show(Bitboard::fromMove(Move::fromString("a1b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n10000000");
+    CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n00000000\n");
+    CHECK(Bitboard::show(Bitboard::fromMove(Move::fromString("a1b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n10000000\n");
 
     SECTION(Pieces);
     Piece::initTables();
     CHECK(Piece::fromString("Q") == Piece::create(White, Queen));
     CHECK(Piece::show(Piece::fromString("p")) == "p");
+
+    SECTION(Boards);
+    Board::Type board; 
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     RESULTS;
 }

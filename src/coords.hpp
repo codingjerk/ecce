@@ -9,6 +9,7 @@ namespace Coord {
     using Type = UNumspeed; 
 
     Type create(const UNumspeed, const UNumspeed);
+    Type fromRaw(const UNumspeed, const UNumspeed);
     Type fromChars(const char, const char);
     Type fromString(const std::string);
 
@@ -23,6 +24,9 @@ namespace Coord {
 
     const UNumspeed usedBits = usedBitsByComponent * makeUNumspeed(2);
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
+
+    #define forRawXCoords(var) for (UNumspeed var = makeUNumspeed(0); var <= makeUNumspeed(56); var += 8)
+    #define forRawYCoords(var) for (Numspeed var = Numspeed(Coord::componentHighter); var >= Numspeed(Coord::componentLower); --var)
 }
 
 #endif /* COORDS_HPP */

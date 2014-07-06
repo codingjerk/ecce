@@ -7,7 +7,14 @@ Type Coord::create(const UNumspeed x, const UNumspeed y) {
     ASSERT(componentLower <= x && x <= componentHighter);
     ASSERT(componentLower <= y && y <= componentHighter);
 
-    return (x << usedBitsByComponent) | y;
+    return fromRaw(x << usedBitsByComponent, y);
+}
+
+Type Coord::fromRaw(const UNumspeed rawX, const UNumspeed rawY) {
+    ASSERT((0 <= rawX) && (rawX <= 56) && (rawX % 8 == 0));
+    ASSERT(componentLower <= rawY && rawY <= componentHighter);
+
+    return rawX | rawY;
 }
 
 Type Coord::fromChars(const char x, const char y) {

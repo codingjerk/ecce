@@ -12,7 +12,8 @@ SRC=cstf.cpp\
 	moves.cpp\
 	coords.cpp\
 	bitboards.cpp\
-	pieces.cpp
+	pieces.cpp\
+	boards.cpp
 
 OBJ=$(SRC:.cpp=.o)
 
