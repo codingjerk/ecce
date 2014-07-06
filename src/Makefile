@@ -17,7 +17,8 @@ SRC=cstf.cpp\
 	pieces.cpp\
 	enpassants.cpp\
 	castles.cpp\
-	boards.cpp
+	boards.cpp\
+	generator.cpp
 
 OBJ=$(SRC:.cpp=.o)
 
