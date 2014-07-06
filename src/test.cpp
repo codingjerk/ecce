@@ -75,5 +75,23 @@ int main(int, char**) {
     total = buffer[0];
     CHECK(total == 4);
 
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Generator::forPawns(buffer, board);
+    total = buffer[0];
+    CHECK(total == 16);
+
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/2B1P3/N2P1N2/PPPBQPPP/R3K2R w KQkq - 0 1");
+    CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/2B1P3/N2P1N2/PPPBQPPP/R3K2R w KQkq - 0 1");
+    Generator::forPawns(buffer, board);
+    total = buffer[0];
+    CHECK(total == 9);
+
+    Board::setFromFen(board, "rn2k2r/pp2p3/2p2pb1/3p1n1p/2B1P1b1/Nq1P1NP1/PPPBQP1P/R3K2R w KQkq - 0 1");
+    CHECK(Board::toFen(board) == "rn2k2r/pp2p3/2p2pb1/3p1n1p/2B1P1b1/Nq1P1NP1/PPPBQP1P/R3K2R w KQkq - 0 1");
+    Generator::forPawns(buffer, board);
+    total = buffer[0];
+    CHECK(total == 9);
+
     RESULTS;
 }
