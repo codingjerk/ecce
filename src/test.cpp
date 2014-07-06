@@ -60,14 +60,20 @@ int main(int, char**) {
     SECTION(Generator);
     Generator::initTables();
     Generator::MoveBuffer buffer;
-    Generator::forKnights(buffer, board);
 
-    const auto total = buffer[0]; 
+    Generator::forKnights(buffer, board);
+    auto total = buffer[0]; 
     CHECK(total == 4);
-    std::cout << "Moves (" << total << "):\n";
-    for (int i = 1; i <= total; ++i) {
-        std::cout << Move::show(buffer[i]) << "\n";
-    }
+
+    Generator::forKings<White>(buffer, board);
+    total = buffer[0];
+    CHECK(total == 1);
+
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/2B1P3/N2P1N2/PPPBQPPP/R3K2R w KQkq - 0 1");
+    CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/2B1P3/N2P1N2/PPPBQPPP/R3K2R w KQkq - 0 1");
+    Generator::forKings(buffer, board);
+    total = buffer[0];
+    CHECK(total == 4);
 
     RESULTS;
 }

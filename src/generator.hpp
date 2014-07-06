@@ -8,7 +8,8 @@
 #include "boards.hpp"
 
 namespace Generator {
-    using MoveBuffer = Move::Type [256];
+    const UNumspeed BUFFER_SIZE = 1024;
+    using MoveBuffer = Move::Type[BUFFER_SIZE];
 
     void initTables();
 
@@ -16,6 +17,11 @@ namespace Generator {
 
     template <Color::Type COLOR>
     void forKnights(MoveBuffer&, const Board::Type&);
+
+    void forKings(MoveBuffer&, const Board::Type&);
+
+    template <Color::Type COLOR>
+    void forKings(MoveBuffer&, const Board::Type&);
 }
 
 #endif /* GENERATOR_HPP */
