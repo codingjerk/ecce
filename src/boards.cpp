@@ -119,14 +119,6 @@ std::string Board::toFen(const Type &board) {
     return resultStream.str();
 }
 
-std::string Board::show(const Type &board) {
-    std::string result;
-
-    forColors(color) 
-    forDignities(dignity) {
-        auto piece = Piece::create(color, dignity);
-        result += Bitboard::show(board.bitboards[piece]) + "\n";
-    }
-
-    return result;
+std::string Board::show(const Type&) {
+    return "@TODO(IMPORTANT): Write Board::show() function";
 }

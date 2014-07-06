@@ -15,6 +15,8 @@ namespace Color {
     Type fromChar(const char);
     Type fromString(const std::string);
 
+    void invert(Type&);
+    
     std::string show(const Type);
 
     const UNumspeed usedBits = makeUNumspeed(1);
