@@ -134,12 +134,36 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
     }
 }
 
+void Generator::forPawns(MoveBuffer &buffer, const Board::Type &board) {
+    if (board.turn == White) {
+        forPawns<White>(buffer, board);
+    } else {
+        forPawns<Black>(buffer, board);
+    }
+}
+
+template <Color::Type COLOR> 
+void Generator::forPawns(MoveBuffer &buffer, const Board::Type &board);
+
+template <> 
+void Generator::forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
+    
+}
+
+template <> 
+void Generator::forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
+    
+}
+
 // Explicit template instantiations
 template void Generator::forKnights<White>(MoveBuffer&, const Board::Type&);
 template void Generator::forKnights<Black>(MoveBuffer&, const Board::Type&);
 
 template void Generator::forKings<White>(MoveBuffer&, const Board::Type&);
 template void Generator::forKings<Black>(MoveBuffer&, const Board::Type&);
+
+template void Generator::forPawns<White>(MoveBuffer&, const Board::Type&);
+template void Generator::forPawns<Black>(MoveBuffer&, const Board::Type&);
 
 void Generator::initTables() {
     //@TODO(low level): Refactoring?
