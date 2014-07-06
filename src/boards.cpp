@@ -32,10 +32,6 @@ void setPositionFromFen(Type &board, const std::string fen) {
     }
 }
 
-void setCastleFromFen(Type &board, const std::string fen) {
-    //@TODO(IMPORTANT)
-}
-
 std::string getFenPosition(const Type &board) {
     std::string result;
     result.reserve(64+8);
@@ -82,7 +78,7 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
     std::string castlePart;
     fenStream >> castlePart;
-    setCastleFromFen(board, castlePart);
+    board.castle = Castle::fromString(castlePart);
 
     std::string enapassantPart;
     fenStream >> enapassantPart;
@@ -115,8 +111,7 @@ std::string Board::toFen(const Type &board) {
 
     resultStream << getFenPosition(board) << " ";
     resultStream << Color::show(board.turn) << " ";
-    //@TODO(IMPORTANT)
-    resultStream << "KQkq ";
+    resultStream << Castle::show(board.castle) << " ";
     resultStream << Enpassant::show(board.enpassant) << " ";
     resultStream << board.halfmoveClock << " ";
     resultStream << board.fullmoveNumber;

@@ -40,6 +40,14 @@ int main(int, char**) {
     CHECK(Piece::fromString("Q") == Piece::create(White, Queen));
     CHECK(Piece::show(Piece::fromString("p")) == "p");
 
+    SECTION(Enpassants);
+    CHECK(Enpassant::fromString("-") == Enpassant::null);
+    CHECK(Enpassant::fromString("f4") == Coord::fromString("f4"));
+
+    SECTION(Castles);
+    CHECK(Castle::fromString("-") == Castle::null);
+    CHECK(Castle::fromString("KQ") == (Castle::whiteKing | Castle::whiteQueen));
+
     SECTION(Boards);
     Board::Type board; 
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
