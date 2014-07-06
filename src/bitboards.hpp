@@ -15,6 +15,12 @@ namespace Bitboard {
 
     Type fromCoord(const Coord::Type);
     Type fromMove(const Move::Type);
+    Type fromIndex(const UNumspeed);
+
+    UNumspeed bitScan(Type);
+
+    const Type null = makeUNum64(0);
+    const Type full = ~(makeUNum64(0));
 
     std::string show(const Type);
 }

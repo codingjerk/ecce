@@ -5,6 +5,7 @@
 #include "bitboards.hpp"
 #include "pieces.hpp"
 #include "boards.hpp"
+#include "generator.hpp"
 
 int main(int, char**) {
     SECTION(Framework);
@@ -55,6 +56,18 @@ int main(int, char**) {
 
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
+
+    SECTION(Generator);
+    Generator::initTables();
+    Generator::MoveBuffer buffer;
+    Generator::forKnights(buffer, board);
+
+    const auto total = buffer[0]; 
+    CHECK(total == 4);
+    std::cout << "Moves (" << total << "):\n";
+    for (int i = 1; i <= total; ++i) {
+        std::cout << Move::show(buffer[i]) << "\n";
+    }
 
     RESULTS;
 }

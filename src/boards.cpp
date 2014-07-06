@@ -9,7 +9,7 @@ using namespace Board;
 void setPositionFromFen(Type &board, const std::string fen) {
     // Cleaning bitboards
     for (auto& bitboard: board.bitboards) {
-        bitboard = makeUNum64(0);
+        bitboard = Bitboard::null;
     }
 
     UNumspeed cursor = makeUNumspeed(0);
@@ -40,9 +40,9 @@ std::string getFenPosition(const Type &board) {
         UNumspeed skipped = makeUNumspeed(0);
         forRawXCoords(x) {
             const auto coord = Coord::fromRaw(x, y);
-            auto piece = getPiece(board, coord);
+            const auto piece = getPiece(board, coord);
 
-            if (piece == nullptr) {
+            if (piece == Piece::null) {
                 ++skipped;
             } else {
                 if (skipped != 0) {
@@ -50,7 +50,7 @@ std::string getFenPosition(const Type &board) {
                     skipped = makeUNumspeed(0);
                 }
 
-                result += Piece::show(*piece);
+                result += Piece::show(piece);
             }
         }
 
@@ -63,6 +63,7 @@ std::string getFenPosition(const Type &board) {
 
 void Board::setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {
     board.bitboards[piece] |= Bitboard::fromCoord(coord);
+    board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
 }
 
 void Board::setFromFen(Type &board, const std::string fen) {
@@ -93,17 +94,16 @@ void Board::setFromFen(Type &board, const std::string fen) {
     board.fullmoveNumber = fullmoveNumberPart;
 }
 
-const Piece::Type *Board::getPiece(const Type &board, const Coord::Type coord) {
+Piece::Type Board::getPiece(const Type &board, const Coord::Type coord) {
     forColors(color) 
     forDignities(dignity) {
-        auto piece = new Piece::Type();
-        *piece = Piece::create(color, dignity);
-        if (board.bitboards[*piece] & Bitboard::fromCoord(coord)) {
+        auto piece = Piece::create(color, dignity);
+        if (board.bitboards[piece] & Bitboard::fromCoord(coord)) {
             return piece;
         }
     }
 
-    return nullptr;
+    return Piece::null;
 }
 
 std::string Board::toFen(const Type &board) {

@@ -27,6 +27,8 @@ namespace Coord {
 
     #define forRawXCoords(var) for (UNumspeed var = makeUNumspeed(0); var <= makeUNumspeed(56); var += 8)
     #define forRawYCoords(var) for (Numspeed var = Numspeed(Coord::componentHighter); var >= Numspeed(Coord::componentLower); --var)
+
+    #define forCoord(var) for (UNumspeed var = Coord::componentLower; var <= Coord::componentHighter; ++var)
 }
 
 #endif /* COORDS_HPP */

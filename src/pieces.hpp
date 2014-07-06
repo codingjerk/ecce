@@ -17,6 +17,8 @@ namespace Piece {
     Type fromChar(const char);
     Type fromString(const std::string);
 
+    const Type null = makeUNumspeed(0);
+
     std::string show(const Type);
 
     const UNumspeed usedBits = Dignity::usedBits + Color::usedBits;

@@ -29,4 +29,7 @@ using UNummax = unsigned long long;
 #define makeNummax(num) num##ll
 #define makeUNummax(num) num##ull
 
+// --- Usefull macroses ---
+#define SHOW(var) std::cout << #var << " = " << var << "\n";
+
 #endif /* CORE_HPP */

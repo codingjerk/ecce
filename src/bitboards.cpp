@@ -12,6 +12,12 @@ Type Bitboard::fromCoord(const Coord::Type coord) {
     return coordToBitboardTable[coord];
 }
 
+Type Bitboard::fromIndex(const UNumspeed index) {
+    ASSERT(index < 64);
+
+    return 1ull << index;
+}
+
 Type Bitboard::fromMove(const Move::Type move) {
     ASSERT((move & Move::typeMask) == move);
 
@@ -31,6 +37,23 @@ std::string Bitboard::show(const Type bitboard) {
     }
 
     return result;
+}
+
+// BitScan function from https://chessprogramming.wikispaces.com/BitScan
+// @Author: Gerd Isenberg
+union {
+    double d;
+    struct {
+        unsigned int _1       : 32;
+        unsigned int _2       : 20;
+        unsigned int exponent : 11;
+        unsigned int _3       : 1;
+    };
+} bitScanStuct;
+
+UNumspeed Bitboard::bitScan(Type bitboard) {
+   bitScanStuct.d = (double)(bitboard & -bitboard);
+   return bitScanStuct.exponent - 1023;
 }
 
 void Bitboard::initTables() {
