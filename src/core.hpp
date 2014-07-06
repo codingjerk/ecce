@@ -1,6 +1,9 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
+// --- Main definitions ---
+#define DEBUGMODE
+
 // --- Arch-depended types ---
 using Num64 = signed long long;
 using UNum64 = unsigned long long;

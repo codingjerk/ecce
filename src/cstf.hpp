@@ -76,14 +76,12 @@ std::string firsts(std::string);
 }
 
 // --- Runtime asserts (debug mode) ---
-#define DEBUGMODE
-
 #ifdef DEBUGMODE
     #define ASSERT(expr) {\
         if (!(expr)) std::cout << "!!! Assert was failed (" << #expr << ")\n";\
     }
 #else
-    #define ASSERT(expr) {}
+    #define ASSERT(expr)
 #endif
 
 #endif /* CSTF_HPP */
