@@ -46,6 +46,7 @@ void Piece::initTables() {
     pieceToCharTable[create(Black, Rook)]   = 'r';
     pieceToCharTable[create(Black, Queen)]  = 'q';
     pieceToCharTable[create(Black, King)]   = 'k';
+
     pieceToCharTable[create(White, Pawn)]   = 'P';
     pieceToCharTable[create(White, Knight)] = 'N';
     pieceToCharTable[create(White, Bishop)] = 'B';
@@ -59,6 +60,7 @@ void Piece::initTables() {
     charToPieceTable['r'] = create(Black, Rook);
     charToPieceTable['q'] = create(Black, Queen);
     charToPieceTable['k'] = create(Black, King);
+    
     charToPieceTable['P'] = create(White, Pawn);
     charToPieceTable['N'] = create(White, Knight);
     charToPieceTable['B'] = create(White, Bishop);

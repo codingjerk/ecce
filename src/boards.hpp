@@ -30,10 +30,12 @@ namespace Board {
     void setTurn(Type&, const Color);
     void setEnpassant(Type&, const Coord::Type*);
 
-    void setFromFen(Type&, const std::string);
-    std::string toFen(const Type);
+    const Piece::Type *getPiece(const Type&, const Coord::Type);
 
-    std::string show(const Type);
+    void setFromFen(Type&, const std::string);
+    std::string toFen(const Type&);
+
+    std::string show(const Type&);
 }
 
 #endif /* BOARDS_HPP */
