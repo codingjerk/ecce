@@ -5,44 +5,21 @@
 
 #include "core.hpp"
 
-#include "coords.hpp"
 #include "colors.hpp"
-
-//@TODO(Uses): Move to own file
-using Dignity = UNumspeed;
-const Dignity rangedMask = makeUNumspeed(4);
-const Dignity Pawn   = makeUNumspeed(1); 
-const Dignity Knight = makeUNumspeed(2); 
-const Dignity King   = makeUNumspeed(3); 
-const Dignity Bishop = rangedMask /*4*/; 
-const Dignity Rook   = rangedMask + makeUNumspeed(1) /*5*/; 
-const Dignity Queen  = rangedMask + makeUNumspeed(2) /*6*/;
-
-#define forDignities(var) for (Dignity dignity = Pawn; dignity <= Queen; ++dignity)
+#include "dignities.hpp"
 
 namespace Piece {
     using Type = UNumspeed;
 
     void initTables();
 
-    Type create(const Color::Type, const Dignity);
+    Type create(const Color::Type, const Dignity::Type);
     Type fromChar(const char);
     Type fromString(const std::string);
 
     std::string show(const Type);
 
-    const UNumspeed dignityLower   = makeNumspeed(1);
-    const UNumspeed dignityHighter = makeNumspeed(6);
-
-    // From 1 (pawn) to 6 (queen) - 3 bits total
-    const UNumspeed usedBitsByDignity = makeUNumspeed(3);
-    const UNumspeed dignityMask = (makeUNumspeed(1) << usedBitsByDignity) - makeUNumspeed(1);
-    
-    // 0 (black) or 8 (white) - 1 bit (at same position as 8)
-    const UNumspeed usedBitsByColor = makeUNumspeed(1);
-    const UNumspeed colorMask = makeUNumspeed(8);
-
-    const UNumspeed usedBits = usedBitsByDignity + usedBitsByColor;
+    const UNumspeed usedBits = Dignity::usedBits + Color::usedBits;
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
 }
 

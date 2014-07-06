@@ -13,6 +13,7 @@ SRC=cstf.cpp\
 	coords.cpp\
 	bitboards.cpp\
 	colors.cpp\
+	dignities.cpp\
 	pieces.cpp\
 	enpassants.cpp\
 	castles.cpp\

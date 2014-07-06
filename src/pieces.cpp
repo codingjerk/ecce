@@ -9,9 +9,9 @@ using namespace Piece;
 Type charToPieceTable[makeUNumspeed(1) << (sizeof(char) * CHAR_BIT)];
 char pieceToCharTable[makeUNumspeed(1) << Piece::usedBits];
 
-Type Piece::create(const Color::Type color, const Dignity dignity) {
+Type Piece::create(const Color::Type color, const Dignity::Type dignity) {
     ASSERT(color == Black || color == White);
-    ASSERT(dignityLower <= dignity && dignity <= dignityHighter);
+    ASSERT(Dignity::lower <= dignity && dignity <= Dignity::highter);
 
     return color | dignity;
 }
