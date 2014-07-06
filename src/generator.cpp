@@ -46,6 +46,7 @@ template<> void forKing<White>(MoveBuffer &buffer, const Board::Type &board, con
 
     addLegals(buffer, from, legalSquares);
 
+    //@TODO(FAST, USES): Refactoring
     if (board.castle | Castle::whiteKing) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
@@ -69,6 +70,7 @@ template<> void forKing<Black>(MoveBuffer &buffer, const Board::Type &board, con
 
     addLegals(buffer, from, legalSquares);
 
+    //@TODO(FAST, USES): Refactoring
     if (board.castle | Castle::blackKing) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 

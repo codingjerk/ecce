@@ -14,14 +14,13 @@ namespace Generator {
     void initTables();
 
     void forKnights(MoveBuffer&, const Board::Type&);
-
-    template <Color::Type COLOR>
-    void forKnights(MoveBuffer&, const Board::Type&);
+    template <Color::Type COLOR> void forKnights(MoveBuffer&, const Board::Type&);
 
     void forKings(MoveBuffer&, const Board::Type&);
+    template <Color::Type COLOR> void forKings(MoveBuffer&, const Board::Type&);
 
-    template <Color::Type COLOR>
-    void forKings(MoveBuffer&, const Board::Type&);
+    void forPawns(MoveBuffer&, const Board::Type&);
+    template <Color::Type COLOR> void forPawns(MoveBuffer&, const Board::Type&);
 }
 
 #endif /* GENERATOR_HPP */
