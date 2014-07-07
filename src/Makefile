@@ -25,11 +25,11 @@ SRC=cstf.cpp\
 
 MAINSRC=ecce.cpp $(SRC)
 MAINOBJ=$(MAINSRC:.cpp=.o)
-PROFMAINOBJ=$(MAINSRC:.cpp=.p)
+PROFMAINOBJ=$(MAINSRC:.cpp=.a)
 
 TESTSRC=test.cpp $(SRC)
 TESTOBJ=$(TESTSRC:.cpp=.o)
-PROFTESTOBJ=$(TESTSRC:.cpp=.p)
+PROFTESTOBJ=$(TESTSRC:.cpp=.a)
 
 MAINEXE=ecce
 TESTEXE=test
@@ -66,7 +66,7 @@ runprofiletest: profiletest
 
 clean:
 	@rm *.o 2> /dev/null && echo "Ecce was cleaned" || echo "Nothing to clean" > /dev/null
-	@rm *.p 2> /dev/null && echo "Profile was cleaned" || echo "Nothing to clean" > /dev/null
+	@rm *.a 2> /dev/null && echo "Profile was cleaned" || echo "Nothing to clean" > /dev/null
 
 .cpp.o:
 	@echo "[CC] $(@:.o=)"
@@ -80,8 +80,8 @@ $(TESTEXE): $(TESTOBJ)
 	@echo "[LD] $@"
 	@$(LD) $(LDFLAGS) $(TESTOBJ) -o $@
 
-.cpp.p:
-	@echo "[CCP] $(@:.p=)"
+.cpp.a:
+	@echo "[CCP] $(@:.a=)"
 	@$(CC) $(CCFLAGS) $(CCPFLAGS) -c $< -o $@
 
 $(PROFMAINEXE): $(PROFMAINOBJ)
