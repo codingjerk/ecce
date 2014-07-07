@@ -24,6 +24,12 @@ int main(int, char**) {
     CHECK(Move::show(0) == "a1a1");
     CHECK(Move::show(Move::fromString("a8h1")) == "a8h1");
 
+    CHECK(Move::isPromotion(Move::create(1,2)) == false);
+    CHECK(Move::isCapture(Move::create(1,2)) == false);
+
+    CHECK(Move::isPromotion(Move::promotion(1,2, Piece::create(Black, Knight), Move::captureFlag)) == true);
+    CHECK(Move::isCapture(Move::promotion(1,2, Piece::create(Black, Knight), Move::captureFlag)) == true);
+
     SECTION(Bitboards);
     Bitboard::initTables();
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n00000000\n");
