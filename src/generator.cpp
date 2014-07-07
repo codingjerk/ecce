@@ -107,13 +107,13 @@ template <Color::Type COLOR>
 void Generator::forKnights(MoveBuffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
 
-    auto bitboard = board.bitboards[Piece::create(COLOR, Knight)];
-    while(bitboard != 0) {
-        const auto bitIndex = Bitboard::bitScan(bitboard);
+    auto knights = board.bitboards[Piece::create(COLOR, Knight)];
+    while(knights != 0) {
+        const auto bitIndex = Bitboard::bitScan(knights);
 
         forKnight<COLOR>(buffer, board, Coord::Type(bitIndex));
 
-        bitboard ^= Bitboard::fromIndex(bitIndex);
+        knights ^= Bitboard::fromIndex(bitIndex);
     }
 }
 
@@ -139,7 +139,10 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
     }
 }
 
-#include <iostream>
+template <Color::Type COLOR> 
+void Generator::forPawns(MoveBuffer &buffer, const Board::Type &board) {
+    // None, it's a fully special template for every color
+}
 
 template <> 
 void Generator::forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
@@ -159,8 +162,7 @@ void Generator::forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
         legals ^= Bitboard::fromIndex(bitIndex);
     }
 
-    const auto startpawns = pawns & pawnStartLine[White];
-    auto twosteps = startpawns;
+    auto twosteps = pawns & pawnStartLine[White];
     twosteps &= onestep >> 1ull;
     twosteps = (twosteps << 2ull) & legalSquares; 
     while(twosteps != 0) {
