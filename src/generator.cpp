@@ -1,3 +1,8 @@
+//@TODO(GLOBAL): split all functions to capture/silent versions
+//@TODO(GLOBAL): add flag capture to capture moves
+//@TODO(GLOBAL): add generation functions for bishop, rook and queen
+//@TODO(GLOBAL): add function forBoard(const Board::Type&)
+
 #include "generator.hpp"
 
 #include "bitboards.hpp"
@@ -143,7 +148,8 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
 namespace Generator {
 template <> 
 void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
-    //@TODO: Refactoring using tables?
+    //@TODO(low): Refactoring using tables?
+    //@TODO(IMPORTANT): Enpassant and promotions
     buffer[0] = 0;
     const Bitboard::Type legalSquares = ~(board.bitboards[White] | board.bitboards[Black]);
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
@@ -201,6 +207,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
 template <> 
 void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     //@TODO: Refactoring using tables?
+    //@TODO(IMPORTANT): Enpassant and promotions
     buffer[0] = 0;
     const Bitboard::Type legalSquares = ~(board.bitboards[Black] | board.bitboards[White]);
     const auto pawns = board.bitboards[Piece::create(Black, Pawn)];
