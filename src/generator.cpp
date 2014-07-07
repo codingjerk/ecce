@@ -139,13 +139,10 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
     }
 }
 
-template <Color::Type COLOR> 
-void Generator::forPawns(MoveBuffer &buffer, const Board::Type &board) {
-    // None, it's a fully special template for every color
-}
-
+// Temporary solution, because gcc is stupid dick
+namespace Generator {
 template <> 
-void Generator::forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
+void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     //@TODO: Refactoring using tables?
     buffer[0] = 0;
     const Bitboard::Type legalSquares = ~(board.bitboards[White] | board.bitboards[Black]);
@@ -202,7 +199,7 @@ void Generator::forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
 }
 
 template <> 
-void Generator::forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
+void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     //@TODO: Refactoring using tables?
     buffer[0] = 0;
     const Bitboard::Type legalSquares = ~(board.bitboards[Black] | board.bitboards[White]);
@@ -257,6 +254,7 @@ void Generator::forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
 
         rightCaptures ^= Bitboard::fromIndex(bitIndex);
     }
+}
 }
 
 void Generator::forPawns(MoveBuffer &buffer, const Board::Type &board) {
