@@ -27,6 +27,9 @@ namespace Generator {
 
     void forRooks(MoveBuffer&, const Board::Type&);
     template <Color::Type COLOR> void forRooks(MoveBuffer&, const Board::Type&);
+
+    void forQueens(MoveBuffer&, const Board::Type&);
+    template <Color::Type COLOR> void forQueens(MoveBuffer&, const Board::Type&);
 }
 
 #endif /* GENERATOR_HPP */

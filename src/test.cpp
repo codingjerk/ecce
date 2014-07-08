@@ -120,18 +120,24 @@ int main(int, char**) {
     Generator::forRooks(buffer, board);
     total = buffer[0];
     CHECK(total == 8);
-    for (int i = 1; i <= total; ++i) {
-        std::cout << Move::show(buffer[i]) << "\n";
-    }
 
     Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
     CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
     Generator::forRooks(buffer, board);
     total = buffer[0];
     CHECK(total == 3);
-    for (int i = 1; i <= total; ++i) {
-        std::cout << Move::show(buffer[i]) << "\n";
-    }
+
+    Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 w - - 0 1");
+    CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 w - - 0 1");
+    Generator::forQueens(buffer, board);
+    total = buffer[0];
+    CHECK(total == 7);
+
+    Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
+    CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
+    Generator::forQueens(buffer, board);
+    total = buffer[0];
+    CHECK(total == 13);
 
     RESULTS;
 }

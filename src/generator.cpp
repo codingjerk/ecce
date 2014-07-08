@@ -212,13 +212,21 @@ void forBishop(MoveBuffer &buffer, const Board::Type &board, const Coord::Type f
     addLegals(buffer, from, bishopData[magicIndex] & (~board.bitboards[COLOR]));
 }
 
-
 template <Color::Type COLOR>
 void forRook(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = rookOffsets[from] + UNumspeed(((nonEmpty & rookMasks[from]) * rookMagics[from]) >> (rookMaskShifts[from]));
 
     addLegals(buffer, from, rookData[magicIndex] & (~board.bitboards[COLOR]));
+}
+
+template <Color::Type COLOR>
+void forQueen(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
+    Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
+    const UNumspeed rookMagicIndex = rookOffsets[from] + UNumspeed(((nonEmpty & rookMasks[from]) * rookMagics[from]) >> (rookMaskShifts[from]));
+    const UNumspeed bishopMagicIndex = bishopOffsets[from] + UNumspeed(((nonEmpty & bishopMasks[from]) * bishopMagics[from]) >> (bishopMaskShifts[from]));
+
+    addLegals(buffer, from, (rookData[rookMagicIndex] | bishopData[bishopMagicIndex]) & (~board.bitboards[COLOR]));
 }
 
 void Generator::forKnights(MoveBuffer &buffer, const Board::Type &board) {
@@ -305,6 +313,28 @@ void Generator::forRooks(MoveBuffer &buffer, const Board::Type &board) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
         forRook<COLOR>(buffer, board, Coord::Type(bitIndex));
+
+        bitboard ^= Bitboard::fromIndex(bitIndex);
+    }
+}
+
+void Generator::forQueens(MoveBuffer &buffer, const Board::Type &board) {
+    if (board.turn == White) {
+        forQueens<White>(buffer, board);
+    } else {
+        forQueens<Black>(buffer, board);
+    }
+}
+
+template <Color::Type COLOR> 
+void Generator::forQueens(MoveBuffer &buffer, const Board::Type &board) {
+    buffer[0] = 0;
+
+    auto bitboard = board.bitboards[Piece::create(COLOR, Queen)];
+    while(bitboard != 0) {
+        const auto bitIndex = Bitboard::bitScan(bitboard);
+
+        forQueen<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
