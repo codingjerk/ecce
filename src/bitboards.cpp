@@ -49,18 +49,32 @@ std::string Bitboard::show(const Type bitboard) {
 // @Author: Gerd Isenberg
 // 7.931 total
 union {
-    double d;
-    struct {
-        unsigned int _1       : 32;
-        unsigned int _2       : 20;
-        unsigned int exponent : 11;
-        unsigned int _3       : 1;
-    };
+  double d;
+  struct {
+      unsigned int _1       : 32;
+      unsigned int _2       : 20;
+      unsigned int exponent : 11;
+      unsigned int _3       : 1;
+  };
 } bitScanStuct;
 
 UNumspeed Bitboard::bitScan(Type bitboard) {
-   bitScanStuct.d = (double)(bitboard & -bitboard);
-   return bitScanStuct.exponent - 1023;
+    bitScanStuct.d = (double)(bitboard & -bitboard);
+    return bitScanStuct.exponent - 1023;
+}
+
+// Temporary version, need to use more fast
+UNumspeed Bitboard::enabledCount(Type bitboard) {
+    UNumspeed result = 0;
+
+    while (bitboard != Bitboard::null) {
+        auto const bit = bitScan(bitboard);
+        bitboard ^= fromIndex(bit);
+
+        ++result;
+    }
+
+    return result;
 }
 
 /*
