@@ -146,7 +146,6 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
 
 // Temporary solution, because gcc is stupid dick
 namespace Generator {
-// Time: 20.386
 template <> 
 void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     //@TODO(low): Refactoring using tables?
@@ -156,9 +155,10 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
     const auto onestep = (pawns << makeUNum64(8)) & legalSquares;
 
+    UNumspeed bitIndex;
     auto legals = onestep;
     while(legals != 0) {
-        const auto bitIndex = Bitboard::bitScan(legals);
+        bitIndex = Bitboard::bitScan(legals);
         
         ++buffer[0];
         buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 8ull), Coord::Type(bitIndex));
@@ -170,7 +170,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     twosteps &= onestep >> 8ull;
     twosteps = (twosteps << 16ull) & legalSquares; 
     while(twosteps != 0) {
-        const auto bitIndex = Bitboard::bitScan(twosteps);
+        bitIndex = Bitboard::bitScan(twosteps);
         
         ++buffer[0];
         buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 16ull), Coord::Type(bitIndex));
@@ -183,7 +183,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     leftCaptures >>= 1ull;
     leftCaptures &= board.bitboards[Black];
     while(leftCaptures != 0) {
-        const auto bitIndex = Bitboard::bitScan(leftCaptures);
+        bitIndex = Bitboard::bitScan(leftCaptures);
         
         ++buffer[0];
         buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull - 8ull), Coord::Type(bitIndex));
@@ -196,7 +196,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     rightCaptures <<= 1ull;
     rightCaptures &= board.bitboards[Black];
     while(rightCaptures != 0) {
-        const auto bitIndex = Bitboard::bitScan(rightCaptures);
+        bitIndex = Bitboard::bitScan(rightCaptures);
         
         ++buffer[0];
         buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull + 8ull), Coord::Type(bitIndex));
@@ -286,14 +286,14 @@ void Generator::initTables() {
     forCoord(y) {
         const auto from = Coord::create(x, y);
         auto toBits = Bitboard::null;
-        if ((x+2ull <= 7ull) && (y+1ull <= 7ull)) toBits |= Bitboard::fromCoord(Coord::create(x+2, y+1));
-        if ((x+2ull <= 7ull) && (y-1ull) <= 7ull) toBits |= Bitboard::fromCoord(Coord::create(x+2, y-1));
-        if ((x+1ull <= 7ull) && (y+2ull) <= 7ull) toBits |= Bitboard::fromCoord(Coord::create(x+1, y+2));
-        if ((x+1ull <= 7ull) && (y-2ull) <= 7ull) toBits |= Bitboard::fromCoord(Coord::create(x+1, y-2));
-        if ((x-1ull <= 7ull) && (y+2ull) <= 7ull) toBits |= Bitboard::fromCoord(Coord::create(x-1, y+2));
-        if ((x-1ull <= 7ull) && (y-2ull) <= 7ull) toBits |= Bitboard::fromCoord(Coord::create(x-1, y-2));
-        if ((x-2ull <= 7ull) && (y+1ull) <= 7ull) toBits |= Bitboard::fromCoord(Coord::create(x-2, y+1));
-        if ((x-2ull <= 7ull) && (y-1ull) <= 7ull) toBits |= Bitboard::fromCoord(Coord::create(x-2, y-1));
+        for (Numspeed xDelta = -2; xDelta <= 2; ++xDelta)
+        for (Numspeed yDelta = -2; yDelta <= 2; ++yDelta) {
+            if (xDelta == 0 || yDelta == 0 || std::abs(xDelta) == std::abs(yDelta)) continue;
+
+            if ((x + xDelta <= 7ull) && (y + yDelta <= 7ull)) {
+                toBits |= Bitboard::fromCoord(Coord::create(x + xDelta, y + yDelta));
+            }
+        }
 
         knightMoveTable[from] = toBits;
     }

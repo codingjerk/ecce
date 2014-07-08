@@ -62,7 +62,7 @@ int main(int, char**) {
 
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
-    
+
     SECTION(Generator);
     Generator::initTables();
     Generator::MoveBuffer buffer;
@@ -102,10 +102,6 @@ int main(int, char**) {
     Generator::forPawns<Black>(buffer, board);
     total = buffer[0];
     CHECK(total == 11);
-
-    /*for (int i = 0; i <= 100000000; ++i) {
-        Generator::forPawns<White>(buffer, board);
-    }*/
 
     RESULTS;
 }
