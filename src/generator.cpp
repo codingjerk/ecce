@@ -12,7 +12,7 @@
 using namespace Generator;
 
 void addLegals(MoveBuffer &buffer, const Coord::Type from, Bitboard::Type legals) {
-    while(legals != 0) {
+    while(legals != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(legals);
         
         ++buffer[0];
@@ -89,7 +89,7 @@ void forQueen(MoveBuffer &buffer, const Board::Type &board, const Coord::Type fr
 template <Color::Type COLOR>
 void Generator::forKnights(MoveBuffer &buffer, const Board::Type &board) {
     auto knights = board.bitboards[Piece::create(COLOR, Knight)];
-    while(knights != 0) {
+    while(knights != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(knights);
 
         forKnight<COLOR>(buffer, board, Coord::Type(bitIndex));
@@ -101,7 +101,7 @@ void Generator::forKnights(MoveBuffer &buffer, const Board::Type &board) {
 template <Color::Type COLOR>
 void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, King)];
-    while(bitboard != 0) {
+    while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
         forKing<COLOR>(buffer, board, Coord::Type(bitIndex));
@@ -113,7 +113,7 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
 template <Color::Type COLOR> 
 void Generator::forBishops(MoveBuffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Bishop)];
-    while(bitboard != 0) {
+    while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
         forBishop<COLOR>(buffer, board, Coord::Type(bitIndex));
@@ -125,7 +125,7 @@ void Generator::forBishops(MoveBuffer &buffer, const Board::Type &board) {
 template <Color::Type COLOR> 
 void Generator::forRooks(MoveBuffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Rook)];
-    while(bitboard != 0) {
+    while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
         forRook<COLOR>(buffer, board, Coord::Type(bitIndex));
@@ -137,7 +137,7 @@ void Generator::forRooks(MoveBuffer &buffer, const Board::Type &board) {
 template <Color::Type COLOR> 
 void Generator::forQueens(MoveBuffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Queen)];
-    while(bitboard != 0) {
+    while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
         forQueen<COLOR>(buffer, board, Coord::Type(bitIndex));
@@ -158,7 +158,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
 
     UNumspeed bitIndex;
     auto legals = onestep;
-    while(legals != 0) {
+    while(legals != Bitboard::null) {
         bitIndex = Bitboard::bitScan(legals);
         
         ++buffer[0];
@@ -170,7 +170,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     auto twosteps = pawns & Tables::pawnStartLine[White];
     twosteps &= onestep >> 8ull;
     twosteps = (twosteps << 16ull) & legalSquares; 
-    while(twosteps != 0) {
+    while(twosteps != Bitboard::null) {
         bitIndex = Bitboard::bitScan(twosteps);
         
         ++buffer[0];
@@ -183,7 +183,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     leftCaptures <<= 8ull;
     leftCaptures >>= 1ull;
     leftCaptures &= board.bitboards[Black];
-    while(leftCaptures != 0) {
+    while(leftCaptures != Bitboard::null) {
         bitIndex = Bitboard::bitScan(leftCaptures);
         
         ++buffer[0];
@@ -196,7 +196,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     rightCaptures <<= 8ull;
     rightCaptures <<= 1ull;
     rightCaptures &= board.bitboards[Black];
-    while(rightCaptures != 0) {
+    while(rightCaptures != Bitboard::null) {
         bitIndex = Bitboard::bitScan(rightCaptures);
         
         ++buffer[0];
@@ -215,7 +215,7 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     const auto onestep = (pawns >> makeUNum64(8)) & legalSquares;
 
     auto legals = onestep;
-    while(legals != 0) {
+    while(legals != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(legals);
 
         ++buffer[0];
@@ -228,7 +228,7 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     auto twosteps = startpawns;
     twosteps &= onestep << 8ull;
     twosteps = (twosteps >> 16ull) & legalSquares; 
-    while(twosteps != 0) {
+    while(twosteps != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(twosteps);
         
         ++buffer[0];
@@ -241,7 +241,7 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     leftCaptures >>= 8ull;
     leftCaptures >>= 1ull;
     leftCaptures &= board.bitboards[White];
-    while(leftCaptures != 0) {
+    while(leftCaptures != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(leftCaptures);
         
         ++buffer[0];
@@ -254,7 +254,7 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     rightCaptures >>= 8ull;
     rightCaptures <<= 1ull;
     rightCaptures &= board.bitboards[White];
-    while(rightCaptures != 0) {
+    while(rightCaptures != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(rightCaptures);
         
         ++buffer[0];
