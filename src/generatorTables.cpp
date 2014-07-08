@@ -9,7 +9,6 @@ Bitboard::Type Tables::rookMasks[makeUNumspeed(1) << Coord::usedBits];
 
 Bitboard::Type Tables::pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
 
-//@TODO(FAST, USES): Refactor to arrays
 Bitboard::Type Tables::castleNeeded[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Dignity::usedBits];
 Coord::Type Tables::castleTarget[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Dignity::usedBits];
 

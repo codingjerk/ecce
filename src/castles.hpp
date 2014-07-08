@@ -4,6 +4,8 @@
 #include <string>
 
 #include "core.hpp"
+#include "colors.hpp"
+#include "dignities.hpp"
 
 namespace Castle {
     using Type = UNumspeed;
@@ -20,6 +22,9 @@ namespace Castle {
 
     const UNumspeed usedBits = 4;
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
+
+    template <Color::Type COLOR, Dignity::Type DIGNITY>
+    Type is(Type);
 
     const Type null = 0;
 }

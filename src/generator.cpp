@@ -1,5 +1,3 @@
-//@TODO(GLOBAL): split all functions to capture/silent versions
-//@TODO(GLOBAL): add flag capture to capture moves
 //@TODO(TRY): Try use precalculated move buffers for knights, kings and pawns
             // knightMovingIndex = ... magic ...
             // additionalBuffer = knightMoves[from][knightMovingIndex];
@@ -32,52 +30,24 @@ void forKnight(MoveBuffer &buffer, const Board::Type &board, const Coord::Type f
 }
 
 template <Color::Type COLOR>
-void forKing(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from);
-
-template<> void forKing<White>(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
+void forKing(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
     const Bitboard::Type legalSquares = (~board.bitboards[White]) & Tables::kingMasks[from];
 
     addLegals(buffer, from, legalSquares);
 
-    //@TODO(FAST, USES): Refactoring
-    if (board.castle & Castle::whiteKing) {
-        const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
+    const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (Tables::castleNeeded[White][King] & legal) {
+    if (Castle::is<COLOR, King>(board.castle)) {
+        if (Tables::castleNeeded[COLOR][King] & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[White][King]);
+            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[COLOR][King]);
         }
     }
-    if (board.castle & Castle::whiteQueen) {
-        const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (Tables::castleNeeded[White][Queen] & legal) {
+    if (Castle::is<COLOR, Queen>(board.castle)) {
+        if (Tables::castleNeeded[COLOR][Queen] & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[White][Queen]);
-        }
-    }
-}
-
-template<> void forKing<Black>(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
-    const Bitboard::Type legalSquares = (~board.bitboards[Black]) & Tables::kingMasks[from];
-
-    addLegals(buffer, from, legalSquares);
-
-    //@TODO(FAST, USES): Refactoring
-    if (board.castle & Castle::blackKing) {
-        const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
-
-        if (Tables::castleNeeded[Black][King] & legal) {
-            ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[Black][King]);
-        }
-    }
-    if (board.castle & Castle::blackQueen) {
-        const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
-
-        if (Tables::castleNeeded[Black][Queen] & legal) {
-            ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[Black][Queen]);
+            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[COLOR][Queen]);
         }
     }
 }
