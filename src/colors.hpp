@@ -16,6 +16,7 @@ namespace Color {
     Type fromString(const std::string);
 
     void invert(Type&);
+    Type inv(Type);
     
     std::string show(const Type);
 

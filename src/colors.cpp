@@ -25,6 +25,10 @@ void Color::invert(Type& color) {
     color ^= White;
 }
 
+Type Color::inv(Type color) {
+    return color ^ White;
+}
+
 std::string Color::show(const Type color) {
     std::string result;
     result.reserve(1);
