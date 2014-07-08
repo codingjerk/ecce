@@ -281,10 +281,10 @@ template void Generator::forKings<White>(MoveBuffer&, const Board::Type&);
 template void Generator::forKings<Black>(MoveBuffer&, const Board::Type&);
 
 void Generator::initTables() {
-    //@TODO(low level): Refactoring?
     forCoord(x)
     forCoord(y) {
         const auto from = Coord::create(x, y);
+
         auto toBits = Bitboard::null;
         for (Numspeed xDelta = -2; xDelta <= 2; ++xDelta)
         for (Numspeed yDelta = -2; yDelta <= 2; ++yDelta) {
@@ -302,18 +302,20 @@ void Generator::initTables() {
     forCoord(y) {
         const auto from = Coord::create(x, y);
         auto toBits = Bitboard::null;
-        if (x+1 <= 7 && y+1 <= 7) toBits |= Bitboard::fromCoord(Coord::create(x+1, y+1));
-        if (x+1 <= 7 && y+0 <= 7) toBits |= Bitboard::fromCoord(Coord::create(x+1, y+0));
-        if (x+1 <= 7 && y-1 <= 7) toBits |= Bitboard::fromCoord(Coord::create(x+1, y-1));
-        if (x+0 <= 7 && y+1 <= 7) toBits |= Bitboard::fromCoord(Coord::create(x+0, y+1));
-        if (x+0 <= 7 && y-1 <= 7) toBits |= Bitboard::fromCoord(Coord::create(x+0, y-1));
-        if (x-1 <= 7 && y+1 <= 7) toBits |= Bitboard::fromCoord(Coord::create(x-1, y+1));
-        if (x-1 <= 7 && y+0 <= 7) toBits |= Bitboard::fromCoord(Coord::create(x-1, y+0));
-        if (x-1 <= 7 && y-1 <= 7) toBits |= Bitboard::fromCoord(Coord::create(x-1, y-1));
+
+        for (Numspeed xDelta = -1; xDelta <= 1; ++xDelta)
+        for (Numspeed yDelta = -1; yDelta <= 1; ++yDelta) {
+            if (xDelta == 0 && yDelta == 0) continue;
+
+            if ((x + xDelta <= 7ull) && (y + yDelta <= 7ull)) {
+                toBits |= Bitboard::fromCoord(Coord::create(x + xDelta, y + yDelta));
+            }
+        }
 
         kingMoveTable[from] = toBits;
     }
 
+    //@TODO: Hardcode this definitions
     whiteKingCastleNeeded = Bitboard::fromCoord(Coord::fromString("f1"))
                           | Bitboard::fromCoord(Coord::fromString("g1"));
     whiteKingCastleTarged = Coord::fromString("g1");
