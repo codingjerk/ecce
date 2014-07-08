@@ -1,12 +1,9 @@
 //@TODO(GLOBAL): split all functions to capture/silent versions
 //@TODO(GLOBAL): add flag capture to capture moves
-//@TODO(GLOBAL): add generation functions for bishop, rook and queen
-//@TODO(GLOBAL): add function forBoard(const Board::Type&)
 //@TODO(TRY): Try use precalculated move buffers for knights, kings and pawns
             // knightMovingIndex = ... magic ...
             // additionalBuffer = knightMoves[from][knightMovingIndex];
             // Buffer::add(buffer, additionalBuffer)
-//@TODO: Global: move all tables to own file
 
 #include "generator.hpp"
 
@@ -15,22 +12,6 @@
 #include "magics.hpp"
 
 using namespace Generator;
-
-// @TODO: Move to bitboard.cpp, hpp
-Bitboard::Type pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
-
-//@TODO(FAST, USES): Refactor to arrays
-Bitboard::Type whiteKingCastleNeeded;
-Coord::Type whiteKingCastleTarged;
-
-Bitboard::Type whiteQueenCastleNeeded;
-Coord::Type whiteQueenCastleTarged;
-
-Bitboard::Type blackKingCastleNeeded;
-Coord::Type blackKingCastleTarged;
-
-Bitboard::Type blackQueenCastleNeeded;
-Coord::Type blackQueenCastleTarged;
 
 void addLegals(MoveBuffer &buffer, const Coord::Type from, Bitboard::Type legals) {
     while(legals != 0) {
@@ -62,17 +43,17 @@ template<> void forKing<White>(MoveBuffer &buffer, const Board::Type &board, con
     if (board.castle & Castle::whiteKing) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (whiteKingCastleNeeded & legal) {
+        if (Tables::whiteKingCastleNeeded & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, whiteKingCastleTarged);
+            buffer[buffer[0]] = Move::create(from, Tables::whiteKingCastleTarget);
         }
     }
     if (board.castle & Castle::whiteQueen) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (whiteQueenCastleNeeded & legal) {
+        if (Tables::whiteQueenCastleNeeded & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, whiteQueenCastleTarged);
+            buffer[buffer[0]] = Move::create(from, Tables::whiteQueenCastleTarget);
         }
     }
 }
@@ -86,17 +67,17 @@ template<> void forKing<Black>(MoveBuffer &buffer, const Board::Type &board, con
     if (board.castle & Castle::blackKing) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (blackKingCastleNeeded & legal) {
+        if (Tables::blackKingCastleNeeded & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, blackKingCastleTarged);
+            buffer[buffer[0]] = Move::create(from, Tables::blackKingCastleTarget);
         }
     }
     if (board.castle & Castle::blackQueen) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (blackQueenCastleNeeded & legal) {
+        if (Tables::blackQueenCastleNeeded & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, whiteQueenCastleTarged);
+            buffer[buffer[0]] = Move::create(from, Tables::blackQueenCastleTarget);
         }
     }
 }
@@ -257,7 +238,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
         legals ^= Bitboard::fromIndex(bitIndex);
     }
 
-    auto twosteps = pawns & pawnStartLine[White];
+    auto twosteps = pawns & Tables::pawnStartLine[White];
     twosteps &= onestep >> 8ull;
     twosteps = (twosteps << 16ull) & legalSquares; 
     while(twosteps != 0) {
@@ -314,7 +295,7 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
         legals ^= Bitboard::fromIndex(bitIndex);
     }
 
-    const auto startpawns = pawns & pawnStartLine[Black];
+    const auto startpawns = pawns & Tables::pawnStartLine[Black];
     auto twosteps = startpawns;
     twosteps &= onestep << 8ull;
     twosteps = (twosteps >> 16ull) & legalSquares; 
@@ -393,41 +374,4 @@ template void Generator::forKings<Black>(MoveBuffer&, const Board::Type&);
 void Generator::initTables() {
     Tables::initTables();
     Magic::initTables();
-
-    //@TODO: Hardcode this definitions
-    whiteKingCastleNeeded = Bitboard::fromCoord(Coord::fromString("f1"))
-                          | Bitboard::fromCoord(Coord::fromString("g1"));
-    whiteKingCastleTarged = Coord::fromString("g1");
-
-    whiteQueenCastleNeeded = Bitboard::fromCoord(Coord::fromString("d1"))
-                           | Bitboard::fromCoord(Coord::fromString("c1"))
-                           | Bitboard::fromCoord(Coord::fromString("b1"));
-    whiteQueenCastleTarged = Coord::fromString("c1");
-
-    blackKingCastleNeeded = Bitboard::fromCoord(Coord::fromString("f8"))
-                          | Bitboard::fromCoord(Coord::fromString("g8"));
-    blackKingCastleTarged = Coord::fromString("g8");
-
-    blackQueenCastleNeeded = Bitboard::fromCoord(Coord::fromString("d8"))
-                           | Bitboard::fromCoord(Coord::fromString("c8"))
-                           | Bitboard::fromCoord(Coord::fromString("b8"));
-    blackQueenCastleTarged = Coord::fromString("c8");
-
-    pawnStartLine[White] = Bitboard::fromCoord(Coord::fromString("a2"))
-                         | Bitboard::fromCoord(Coord::fromString("b2"))
-                         | Bitboard::fromCoord(Coord::fromString("c2"))
-                         | Bitboard::fromCoord(Coord::fromString("d2"))
-                         | Bitboard::fromCoord(Coord::fromString("e2"))
-                         | Bitboard::fromCoord(Coord::fromString("f2"))
-                         | Bitboard::fromCoord(Coord::fromString("g2"))
-                         | Bitboard::fromCoord(Coord::fromString("h2"));
-
-    pawnStartLine[Black] = Bitboard::fromCoord(Coord::fromString("a7"))
-                         | Bitboard::fromCoord(Coord::fromString("b7"))
-                         | Bitboard::fromCoord(Coord::fromString("c7"))
-                         | Bitboard::fromCoord(Coord::fromString("d7"))
-                         | Bitboard::fromCoord(Coord::fromString("e7"))
-                         | Bitboard::fromCoord(Coord::fromString("f7"))
-                         | Bitboard::fromCoord(Coord::fromString("g7"))
-                         | Bitboard::fromCoord(Coord::fromString("h7"));
 }

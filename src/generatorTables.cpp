@@ -7,6 +7,22 @@ Bitboard::Type Tables::kingMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::bishopMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::rookMasks[makeUNumspeed(1) << Coord::usedBits];
 
+// @TODO: Move to bitboard.cpp, hpp
+Bitboard::Type Tables::pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
+
+//@TODO(FAST, USES): Refactor to arrays
+Bitboard::Type Tables::whiteKingCastleNeeded;
+Coord::Type Tables::whiteKingCastleTarget;
+
+Bitboard::Type Tables::whiteQueenCastleNeeded;
+Coord::Type Tables::whiteQueenCastleTarget;
+
+Bitboard::Type Tables::blackKingCastleNeeded;
+Coord::Type Tables::blackKingCastleTarget;
+
+Bitboard::Type Tables::blackQueenCastleNeeded;
+Coord::Type Tables::blackQueenCastleTarget;
+
 void Tables::initTables() {
     forCoord(x)
     forCoord(y) {
@@ -82,4 +98,40 @@ void Tables::initTables() {
 
         rookMasks[from] = toBits;
     }
+
+    whiteKingCastleNeeded = Bitboard::fromCoord(Coord::fromString("f1"))
+                          | Bitboard::fromCoord(Coord::fromString("g1"));
+    whiteKingCastleTarget = Coord::fromString("g1");
+
+    whiteQueenCastleNeeded = Bitboard::fromCoord(Coord::fromString("d1"))
+                           | Bitboard::fromCoord(Coord::fromString("c1"))
+                           | Bitboard::fromCoord(Coord::fromString("b1"));
+    whiteQueenCastleTarget = Coord::fromString("c1");
+
+    blackKingCastleNeeded = Bitboard::fromCoord(Coord::fromString("f8"))
+                          | Bitboard::fromCoord(Coord::fromString("g8"));
+    blackKingCastleTarget = Coord::fromString("g8");
+
+    blackQueenCastleNeeded = Bitboard::fromCoord(Coord::fromString("d8"))
+                           | Bitboard::fromCoord(Coord::fromString("c8"))
+                           | Bitboard::fromCoord(Coord::fromString("b8"));
+    blackQueenCastleTarget = Coord::fromString("c8");
+
+    pawnStartLine[White] = Bitboard::fromCoord(Coord::fromString("a2"))
+                         | Bitboard::fromCoord(Coord::fromString("b2"))
+                         | Bitboard::fromCoord(Coord::fromString("c2"))
+                         | Bitboard::fromCoord(Coord::fromString("d2"))
+                         | Bitboard::fromCoord(Coord::fromString("e2"))
+                         | Bitboard::fromCoord(Coord::fromString("f2"))
+                         | Bitboard::fromCoord(Coord::fromString("g2"))
+                         | Bitboard::fromCoord(Coord::fromString("h2"));
+
+    pawnStartLine[Black] = Bitboard::fromCoord(Coord::fromString("a7"))
+                         | Bitboard::fromCoord(Coord::fromString("b7"))
+                         | Bitboard::fromCoord(Coord::fromString("c7"))
+                         | Bitboard::fromCoord(Coord::fromString("d7"))
+                         | Bitboard::fromCoord(Coord::fromString("e7"))
+                         | Bitboard::fromCoord(Coord::fromString("f7"))
+                         | Bitboard::fromCoord(Coord::fromString("g7"))
+                         | Bitboard::fromCoord(Coord::fromString("h7"));
 }
