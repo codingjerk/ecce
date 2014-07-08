@@ -16,8 +16,8 @@ int main(int, char**) {
     CHECK(Coord::fromString("a1") == 0);
     CHECK(Coord::show(0ull) == "a1");
     CHECK(Coord::show(Coord::fromString("h8")) == "h8");
-    CHECK(Coord::show(Coord::fromRaw(56,7)) == "h8");
-    CHECK(Coord::show(Coord::fromRaw(8,0)) == "b1");
+    CHECK(Coord::show(Coord::fromRaw(7,56)) == "h8");
+    CHECK(Coord::show(Coord::fromRaw(1,0)) == "b1");
 
     SECTION(Moves);
     CHECK(Move::fromString("a1a1") == 0);
@@ -62,7 +62,7 @@ int main(int, char**) {
 
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
-
+    
     SECTION(Generator);
     Generator::initTables();
     Generator::MoveBuffer buffer;
@@ -102,6 +102,10 @@ int main(int, char**) {
     Generator::forPawns<Black>(buffer, board);
     total = buffer[0];
     CHECK(total == 11);
+
+    /*for (int i = 0; i <= 100000000; ++i) {
+        Generator::forPawns<White>(buffer, board);
+    }*/
 
     RESULTS;
 }

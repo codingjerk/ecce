@@ -146,6 +146,7 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
 
 // Temporary solution, because gcc is stupid dick
 namespace Generator {
+// Time: 20.386
 template <> 
 void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     //@TODO(low): Refactoring using tables?
@@ -153,52 +154,52 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
     const Bitboard::Type legalSquares = ~(board.bitboards[White] | board.bitboards[Black]);
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
-    const auto onestep = (pawns << makeUNum64(1)) & legalSquares;
+    const auto onestep = (pawns << makeUNum64(8)) & legalSquares;
 
     auto legals = onestep;
     while(legals != 0) {
         const auto bitIndex = Bitboard::bitScan(legals);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 8ull), Coord::Type(bitIndex));
 
         legals ^= Bitboard::fromIndex(bitIndex);
     }
 
     auto twosteps = pawns & pawnStartLine[White];
-    twosteps &= onestep >> 1ull;
-    twosteps = (twosteps << 2ull) & legalSquares; 
+    twosteps &= onestep >> 8ull;
+    twosteps = (twosteps << 16ull) & legalSquares; 
     while(twosteps != 0) {
         const auto bitIndex = Bitboard::bitScan(twosteps);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 2ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 16ull), Coord::Type(bitIndex));
 
         twosteps ^= Bitboard::fromIndex(bitIndex);
     }
 
     auto leftCaptures = pawns & ~leftLine;
-    leftCaptures <<= 1ull;
-    leftCaptures >>= 8ull;
+    leftCaptures <<= 8ull;
+    leftCaptures >>= 1ull;
     leftCaptures &= board.bitboards[Black];
     while(leftCaptures != 0) {
         const auto bitIndex = Bitboard::bitScan(leftCaptures);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 8ull - 1ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull - 8ull), Coord::Type(bitIndex));
 
         leftCaptures ^= Bitboard::fromIndex(bitIndex);
     }
 
     auto rightCaptures = pawns & ~rightLine;
-    rightCaptures <<= 1ull;
     rightCaptures <<= 8ull;
+    rightCaptures <<= 1ull;
     rightCaptures &= board.bitboards[Black];
     while(rightCaptures != 0) {
         const auto bitIndex = Bitboard::bitScan(rightCaptures);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 8ull + 1ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull + 8ull), Coord::Type(bitIndex));
 
         rightCaptures ^= Bitboard::fromIndex(bitIndex);
     }
@@ -211,53 +212,53 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
     const Bitboard::Type legalSquares = ~(board.bitboards[Black] | board.bitboards[White]);
     const auto pawns = board.bitboards[Piece::create(Black, Pawn)];
-    const auto onestep = (pawns >> makeUNum64(1)) & legalSquares;
+    const auto onestep = (pawns >> makeUNum64(8)) & legalSquares;
 
     auto legals = onestep;
     while(legals != 0) {
         const auto bitIndex = Bitboard::bitScan(legals);
 
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 8ull), Coord::Type(bitIndex));
 
         legals ^= Bitboard::fromIndex(bitIndex);
     }
 
     const auto startpawns = pawns & pawnStartLine[Black];
     auto twosteps = startpawns;
-    twosteps &= onestep << 1ull;
-    twosteps = (twosteps >> 2ull) & legalSquares; 
+    twosteps &= onestep << 8ull;
+    twosteps = (twosteps >> 16ull) & legalSquares; 
     while(twosteps != 0) {
         const auto bitIndex = Bitboard::bitScan(twosteps);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 2ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 16ull), Coord::Type(bitIndex));
 
         twosteps ^= Bitboard::fromIndex(bitIndex);
     }
 
     auto leftCaptures = pawns & ~leftLine;
-    leftCaptures >>= 1ull;
     leftCaptures >>= 8ull;
+    leftCaptures >>= 1ull;
     leftCaptures &= board.bitboards[White];
     while(leftCaptures != 0) {
         const auto bitIndex = Bitboard::bitScan(leftCaptures);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 8ull + 1ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull + 8ull), Coord::Type(bitIndex));
 
         leftCaptures ^= Bitboard::fromIndex(bitIndex);
     }
 
     auto rightCaptures = pawns & ~rightLine;
-    rightCaptures >>= 1ull;
-    rightCaptures <<= 8ull;
+    rightCaptures >>= 8ull;
+    rightCaptures <<= 1ull;
     rightCaptures &= board.bitboards[White];
     while(rightCaptures != 0) {
         const auto bitIndex = Bitboard::bitScan(rightCaptures);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 8ull - 1ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull - 8ull), Coord::Type(bitIndex));
 
         rightCaptures ^= Bitboard::fromIndex(bitIndex);
     }

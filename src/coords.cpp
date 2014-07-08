@@ -7,12 +7,12 @@ Type Coord::create(const UNumspeed x, const UNumspeed y) {
     ASSERT(componentLower <= x && x <= componentHighter);
     ASSERT(componentLower <= y && y <= componentHighter);
 
-    return fromRaw(x << usedBitsByComponent, y);
+    return fromRaw(x, y << usedBitsByComponent);
 }
 
 Type Coord::fromRaw(const UNumspeed rawX, const UNumspeed rawY) {
-    ASSERT((0 <= rawX) && (rawX <= 56) && (rawX % 8 == 0));
-    ASSERT(componentLower <= rawY && rawY <= componentHighter);
+    ASSERT(componentLower <= rawX && rawX <= componentHighter);
+    ASSERT((0 <= rawY) && (rawY <= 56) && (rawY % 8 == 0));
 
     return rawX | rawY;
 }
@@ -33,8 +33,8 @@ Type Coord::fromString(const std::string str) {
 std::string Coord::show(const Type coord) {
     std::string result("  ");
 
-    result[0] = (coord >> usedBitsByComponent) + 'a';
-    result[1] = (coord & componentMask) + '1';
+    result[0] = (coord & componentMask) + 'a';
+    result[1] = (coord >> usedBitsByComponent) + '1';
 
     return result; 
 }

@@ -25,9 +25,9 @@ namespace Coord {
     const UNumspeed usedBits = usedBitsByComponent * makeUNumspeed(2);
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
 
-    #define forRawXCoords(var) for (UNumspeed var = makeUNumspeed(0); var <= makeUNumspeed(56); var += 8)
-    #define forRawYCoords(var) for (Numspeed var = Numspeed(Coord::componentHighter); var >= Numspeed(Coord::componentLower); --var)
-
+    #define forRawXCoords(var) for (UNumspeed var = Coord::componentLower; var <= Coord::componentHighter; ++var)
+    #define forRawYCoords(var) for (Numspeed var = makeNumspeed(56); var >= makeNumspeed(0); var -= 8)
+    
     #define forCoord(var) for (UNumspeed var = Coord::componentLower; var <= Coord::componentHighter; ++var)
 }
 
