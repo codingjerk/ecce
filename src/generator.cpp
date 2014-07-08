@@ -86,15 +86,6 @@ void forQueen(MoveBuffer &buffer, const Board::Type &board, const Coord::Type fr
     addLegals(buffer, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~board.bitboards[COLOR]));
 }
 
-void Generator::forKnights(MoveBuffer &buffer, const Board::Type &board) {
-    if (board.turn == White) {
-        forKnights<White>(buffer, board);
-    } else {
-        forKnights<Black>(buffer, board);
-    }
-}
-
-//@TODO(IMPORTANT): Make it fully templates, based on Color and Dignity
 template <Color::Type COLOR>
 void Generator::forKnights(MoveBuffer &buffer, const Board::Type &board) {
     auto knights = board.bitboards[Piece::create(COLOR, Knight)];
@@ -104,14 +95,6 @@ void Generator::forKnights(MoveBuffer &buffer, const Board::Type &board) {
         forKnight<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         knights ^= Bitboard::fromIndex(bitIndex);
-    }
-}
-
-void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
-    if (board.turn == White) {
-        forKings<White>(buffer, board);
-    } else {
-        forKings<Black>(buffer, board);
     }
 }
 
@@ -127,14 +110,6 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
     }
 }
 
-void Generator::forBishops(MoveBuffer &buffer, const Board::Type &board) {
-    if (board.turn == White) {
-        forBishops<White>(buffer, board);
-    } else {
-        forBishops<Black>(buffer, board);
-    }
-}
-
 template <Color::Type COLOR> 
 void Generator::forBishops(MoveBuffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Bishop)];
@@ -147,14 +122,6 @@ void Generator::forBishops(MoveBuffer &buffer, const Board::Type &board) {
     }
 }
 
-void Generator::forRooks(MoveBuffer &buffer, const Board::Type &board) {
-    if (board.turn == White) {
-        forRooks<White>(buffer, board);
-    } else {
-        forRooks<Black>(buffer, board);
-    }
-}
-
 template <Color::Type COLOR> 
 void Generator::forRooks(MoveBuffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Rook)];
@@ -164,14 +131,6 @@ void Generator::forRooks(MoveBuffer &buffer, const Board::Type &board) {
         forRook<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
-    }
-}
-
-void Generator::forQueens(MoveBuffer &buffer, const Board::Type &board) {
-    if (board.turn == White) {
-        forQueens<White>(buffer, board);
-    } else {
-        forQueens<Black>(buffer, board);
     }
 }
 
@@ -306,14 +265,6 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
 }
 }
 
-void Generator::forPawns(MoveBuffer &buffer, const Board::Type &board) {
-    if (board.turn == White) {
-        forPawns<White>(buffer, board);
-    } else {
-        forPawns<Black>(buffer, board);
-    }
-}
-
 template <Color::Type COLOR> 
 void Generator::forBoard(MoveBuffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
@@ -340,6 +291,15 @@ template void Generator::forKnights<Black>(MoveBuffer&, const Board::Type&);
 
 template void Generator::forKings<White>(MoveBuffer&, const Board::Type&);
 template void Generator::forKings<Black>(MoveBuffer&, const Board::Type&);
+
+template void Generator::forBishops<White>(MoveBuffer&, const Board::Type&);
+template void Generator::forBishops<Black>(MoveBuffer&, const Board::Type&);
+
+template void Generator::forRooks<White>(MoveBuffer&, const Board::Type&);
+template void Generator::forRooks<Black>(MoveBuffer&, const Board::Type&);
+
+template void Generator::forQueens<White>(MoveBuffer&, const Board::Type&);
+template void Generator::forQueens<Black>(MoveBuffer&, const Board::Type&);
 
 void Generator::initTables() {
     Tables::initTables();
