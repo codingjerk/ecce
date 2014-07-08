@@ -3,6 +3,11 @@
 
 using namespace Bitboard;
 
+Type Bitboard::upLine;
+Type Bitboard::downLine;
+Type Bitboard::leftLine;
+Type Bitboard::rightLine;
+
 Type coordToBitboardTable[makeUNumspeed(1) << Coord::usedBits];
 Type moveToBitboardTable[makeUNumspeed(1) << Move::usedBits];
 
@@ -94,4 +99,41 @@ void Bitboard::initTables() {
 
         moveToBitboardTable[move] = bitboard;
     }
+
+    leftLine = Bitboard::fromCoord(Coord::fromString("a1"))
+             | Bitboard::fromCoord(Coord::fromString("a2"))
+             | Bitboard::fromCoord(Coord::fromString("a3"))
+             | Bitboard::fromCoord(Coord::fromString("a4"))
+             | Bitboard::fromCoord(Coord::fromString("a5"))
+             | Bitboard::fromCoord(Coord::fromString("a6"))
+             | Bitboard::fromCoord(Coord::fromString("a7"))
+             | Bitboard::fromCoord(Coord::fromString("a8"));
+
+    rightLine = Bitboard::fromCoord(Coord::fromString("h1"))
+              | Bitboard::fromCoord(Coord::fromString("h2"))
+              | Bitboard::fromCoord(Coord::fromString("h3"))
+              | Bitboard::fromCoord(Coord::fromString("h4"))
+              | Bitboard::fromCoord(Coord::fromString("h5"))
+              | Bitboard::fromCoord(Coord::fromString("h6"))
+              | Bitboard::fromCoord(Coord::fromString("h7"))
+              | Bitboard::fromCoord(Coord::fromString("h8"));
+
+    upLine = Bitboard::fromCoord(Coord::fromString("a8"))
+           | Bitboard::fromCoord(Coord::fromString("b8"))
+           | Bitboard::fromCoord(Coord::fromString("c8"))
+           | Bitboard::fromCoord(Coord::fromString("d8"))
+           | Bitboard::fromCoord(Coord::fromString("e8"))
+           | Bitboard::fromCoord(Coord::fromString("f8"))
+           | Bitboard::fromCoord(Coord::fromString("g8"))
+           | Bitboard::fromCoord(Coord::fromString("h8"));
+
+
+    downLine = Bitboard::fromCoord(Coord::fromString("a1"))
+             | Bitboard::fromCoord(Coord::fromString("b1"))
+             | Bitboard::fromCoord(Coord::fromString("c1"))
+             | Bitboard::fromCoord(Coord::fromString("d1"))
+             | Bitboard::fromCoord(Coord::fromString("e1"))
+             | Bitboard::fromCoord(Coord::fromString("f1"))
+             | Bitboard::fromCoord(Coord::fromString("g1"))
+             | Bitboard::fromCoord(Coord::fromString("h1"));
 }

@@ -67,77 +67,116 @@ int main(int, char**) {
     Generator::initTables();
     Generator::MoveBuffer buffer;
 
+    buffer[0] = 0;
     Generator::forKnights(buffer, board);
     auto total = buffer[0]; 
     CHECK(total == 4);
 
+    buffer[0] = 0;
     Generator::forKings<White>(buffer, board);
     total = buffer[0];
     CHECK(total == 1);
 
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/2B1P3/N2P1N2/PPPBQPPP/R3K2R w KQkq - 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/2B1P3/N2P1N2/PPPBQPPP/R3K2R w KQkq - 0 1");
+    buffer[0] = 0;
     Generator::forKings(buffer, board);
     total = buffer[0];
     CHECK(total == 4);
 
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    buffer[0] = 0;
     Generator::forPawns(buffer, board);
     total = buffer[0];
     CHECK(total == 16);
 
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/2B1P3/N2P1N2/PPPBQPPP/R3K2R w KQkq - 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/2B1P3/N2P1N2/PPPBQPPP/R3K2R w KQkq - 0 1");
+    buffer[0] = 0;
     Generator::forPawns(buffer, board);
     total = buffer[0];
     CHECK(total == 9);
 
     Board::setFromFen(board, "rn2k2r/pp2p3/2p2pb1/3p1n1p/2B1P1b1/Nq1P1NP1/PPPBQP1P/R3K2R w KQkq - 0 1");
     CHECK(Board::toFen(board) == "rn2k2r/pp2p3/2p2pb1/3p1n1p/2B1P1b1/Nq1P1NP1/PPPBQP1P/R3K2R w KQkq - 0 1");
+    buffer[0] = 0;
     Generator::forPawns(buffer, board);
     total = buffer[0];
     CHECK(total == 9);
 
+    buffer[0] = 0;
     Generator::forPawns<Black>(buffer, board);
     total = buffer[0];
     CHECK(total == 11);
 
     Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 w - - 0 1");
     CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 w - - 0 1");
+    buffer[0] = 0;
     Generator::forBishops(buffer, board);
     total = buffer[0];
     CHECK(total == 10);
 
     Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
     CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
+    buffer[0] = 0;
     Generator::forBishops(buffer, board);
     total = buffer[0];
     CHECK(total == 6);
 
     Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 w - - 0 1");
     CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 w - - 0 1");
+    buffer[0] = 0;
     Generator::forRooks(buffer, board);
     total = buffer[0];
     CHECK(total == 8);
 
     Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
     CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
+    buffer[0] = 0;
     Generator::forRooks(buffer, board);
     total = buffer[0];
     CHECK(total == 3);
 
     Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 w - - 0 1");
     CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 w - - 0 1");
+    buffer[0] = 0;
     Generator::forQueens(buffer, board);
     total = buffer[0];
     CHECK(total == 7);
 
     Board::setFromFen(board, "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
     CHECK(Board::toFen(board) == "r1bq2rk/pp3pbp/2p1p1pQ/7P/3P4/2PB1N2/PP3PPR/2KR4 b - - 0 1");
+    buffer[0] = 0;
     Generator::forQueens(buffer, board);
     total = buffer[0];
     CHECK(total == 13);
+
+    // Perft (with unlegals) at depth 1 tests
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Generator::forBoard(buffer, board);
+    total = buffer[0];
+    CHECK(total == 20);
+
+    Board::setFromFen(board, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+    Generator::forBoard(buffer, board);
+    total = buffer[0];
+    CHECK(total == 48);
+
+    Board::setFromFen(board, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1");
+    Generator::forBoard(buffer, board);
+    total = buffer[0];
+    CHECK(total == 16);
+
+    Board::setFromFen(board, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
+    Generator::forBoard(buffer, board);
+    total = buffer[0];
+    CHECK(total == 38);
+
+    Board::setFromFen(board, "rnbqkb1r/pp1p1ppp/2p5/4P3/2B5/8/PPP1NnPP/RNBQK2R w KQkq - 0 6");
+    Generator::forBoard(buffer, board);
+    total = buffer[0];
+    CHECK(total == 42);
 
     RESULTS;
 }
