@@ -2,6 +2,11 @@
 //@TODO(GLOBAL): add flag capture to capture moves
 //@TODO(GLOBAL): add generation functions for bishop, rook and queen
 //@TODO(GLOBAL): add function forBoard(const Board::Type&)
+//@TODO(TRY): Try use precalculated move buffers for knights, kings and pawns
+            // knightMovingIndex = ... magic ...
+            // additionalBuffer = knightMoves[from][knightMovingIndex];
+            // Buffer::add(buffer, additionalBuffer)
+//@TODO: Global: move all tables to own file
 
 #include "generator.hpp"
 
@@ -9,13 +14,18 @@
 
 using namespace Generator;
 
-Move::Type knightMoveTable[makeUNumspeed(1) << Coord::usedBits];
-Move::Type kingMoveTable[makeUNumspeed(1) << Coord::usedBits];
+Bitboard::Type knightMoveTable[makeUNumspeed(1) << Coord::usedBits];
+Bitboard::Type kingMoveTable[makeUNumspeed(1) << Coord::usedBits];
+Bitboard::Type bishopMoveTable[makeUNumspeed(1) << Coord::usedBits];
 
 Bitboard::Type pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
 
 Bitboard::Type leftLine;
 Bitboard::Type rightLine;
+
+// Magics @TODO: Move to own file
+UNum64 bishopMagics[makeUNumspeed(1) << Coord::usedBits];
+UNum64 bishopShifts[makeUNumspeed(1) << Coord::usedBits];
 
 //@TODO(FAST, USES): Refactor to arrays
 Bitboard::Type whiteKingCastleNeeded;
@@ -99,6 +109,17 @@ template<> void forKing<Black>(MoveBuffer &buffer, const Board::Type &board, con
     }
 }
 
+template <Color::Type COLOR>
+void forBishop(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
+    const auto moves = bishopMoveTable[from];
+    const auto empty = ~(board.bitboards[White] | board.bitboards[Black]);
+    const auto withMask = moves & empty;
+
+    const auto legals = (withMask * bishopMagics[from]) >> bishopShifts[from];
+
+    addLegals(buffer, from, legals);
+}
+
 void Generator::forKnights(MoveBuffer &buffer, const Board::Type &board) {
     if (board.turn == White) {
         forKnights<White>(buffer, board);
@@ -139,6 +160,28 @@ void Generator::forKings(MoveBuffer &buffer, const Board::Type &board) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
         forKing<COLOR>(buffer, board, Coord::Type(bitIndex));
+
+        bitboard ^= Bitboard::fromIndex(bitIndex);
+    }
+}
+
+void Generator::forBishops(MoveBuffer &buffer, const Board::Type &board) {
+    if (board.turn == White) {
+        forBishops<White>(buffer, board);
+    } else {
+        forBishops<Black>(buffer, board);
+    }
+}
+
+template <Color::Type COLOR> 
+void Generator::forBishops(MoveBuffer &buffer, const Board::Type &board) {
+    buffer[0] = 0;
+
+    auto bitboard = board.bitboards[Piece::create(COLOR, Bishop)];
+    while(bitboard != 0) {
+        const auto bitIndex = Bitboard::bitScan(bitboard);
+
+        forBishop<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
@@ -280,6 +323,8 @@ template void Generator::forKnights<Black>(MoveBuffer&, const Board::Type&);
 template void Generator::forKings<White>(MoveBuffer&, const Board::Type&);
 template void Generator::forKings<Black>(MoveBuffer&, const Board::Type&);
 
+#include <iostream>
+
 void Generator::initTables() {
     forCoord(x)
     forCoord(y) {
@@ -313,6 +358,28 @@ void Generator::initTables() {
         }
 
         kingMoveTable[from] = toBits;
+    }
+
+    forCoord(x)
+    forCoord(y) {
+        const auto from = Coord::create(x, y);
+        auto toBits = Bitboard::null;
+
+        for (Numspeed xDirection = -1; xDirection <= 1; xDirection += 2)
+        for (Numspeed yDirection = -1; yDirection <= 1; yDirection += 2) {
+            for (Numspeed delta = 1; delta <= 7ull; ++delta) {
+                if (UNumspeed(x + delta*xDirection) <= 7ull && UNumspeed(y + delta*yDirection) <= 7ull) {
+                    auto to = Coord::create(x + delta*xDirection, y + delta*yDirection);
+                    std::cout << "to: " << Coord::show(to) << "\n";
+                    toBits |= Bitboard::fromCoord(to);
+                }
+            }
+        }
+
+        std::cout << Coord::show(from) << "\n";
+        std::cout << Bitboard::show(toBits) << "\n";
+
+        bishopMoveTable[from] = toBits;
     }
 
     //@TODO: Hardcode this definitions

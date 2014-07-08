@@ -21,6 +21,9 @@ namespace Generator {
 
     void forPawns(MoveBuffer&, const Board::Type&);
     template <Color::Type COLOR> void forPawns(MoveBuffer&, const Board::Type&);
+
+    void forBishops(MoveBuffer&, const Board::Type&);
+    template <Color::Type COLOR> void forBishops(MoveBuffer&, const Board::Type&);
 }
 
 #endif /* GENERATOR_HPP */
