@@ -14,17 +14,8 @@ namespace Tables {
 
     extern Bitboard::Type pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
 
-    extern Bitboard::Type whiteKingCastleNeeded;
-    extern Coord::Type whiteKingCastleTarget;
-    
-    extern Bitboard::Type whiteQueenCastleNeeded;
-    extern Coord::Type whiteQueenCastleTarget;
-    
-    extern Bitboard::Type blackKingCastleNeeded;
-    extern Coord::Type blackKingCastleTarget;
-    
-    extern Bitboard::Type blackQueenCastleNeeded;
-    extern Coord::Type blackQueenCastleTarget;
+    extern Bitboard::Type castleNeeded[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Dignity::usedBits];
+    extern Coord::Type castleTarget[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Dignity::usedBits];
 }
 
 #endif /* GENERATORTABLES_HPP */

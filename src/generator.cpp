@@ -43,17 +43,17 @@ template<> void forKing<White>(MoveBuffer &buffer, const Board::Type &board, con
     if (board.castle & Castle::whiteKing) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (Tables::whiteKingCastleNeeded & legal) {
+        if (Tables::castleNeeded[White][King] & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Tables::whiteKingCastleTarget);
+            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[White][King]);
         }
     }
     if (board.castle & Castle::whiteQueen) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (Tables::whiteQueenCastleNeeded & legal) {
+        if (Tables::castleNeeded[White][Queen] & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Tables::whiteQueenCastleTarget);
+            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[White][Queen]);
         }
     }
 }
@@ -67,17 +67,17 @@ template<> void forKing<Black>(MoveBuffer &buffer, const Board::Type &board, con
     if (board.castle & Castle::blackKing) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (Tables::blackKingCastleNeeded & legal) {
+        if (Tables::castleNeeded[Black][King] & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Tables::blackKingCastleTarget);
+            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[Black][King]);
         }
     }
     if (board.castle & Castle::blackQueen) {
         const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
-        if (Tables::blackQueenCastleNeeded & legal) {
+        if (Tables::castleNeeded[Black][Queen] & legal) {
             ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Tables::blackQueenCastleTarget);
+            buffer[buffer[0]] = Move::create(from, Tables::castleTarget[Black][Queen]);
         }
     }
 }
