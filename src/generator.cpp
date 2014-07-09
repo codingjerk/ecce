@@ -11,12 +11,13 @@
 
 using namespace Generator;
 
-void addLegals(MoveBuffer &buffer, const Coord::Type from, Bitboard::Type legals) {
+void addLegals(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
     while(legals != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(legals);
-        
+        const auto to = Coord::Type(bitIndex);
+
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(from, Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(from, to, board.squares[to]);
 
         legals ^= Bitboard::fromIndex(bitIndex);
     }
@@ -26,14 +27,14 @@ template <Color::Type COLOR>
 void forKnight(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
     const Bitboard::Type legalSquares = (~board.bitboards[COLOR]) & Tables::knightMasks[from];
 
-    addLegals(buffer, from, legalSquares);
+    addLegals(buffer, board, from, legalSquares);
 }
 
 template <Color::Type COLOR>
 void forKing(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
     const Bitboard::Type legalSquares = (~board.bitboards[COLOR]) & Tables::kingMasks[from];
 
-    addLegals(buffer, from, legalSquares);
+    addLegals(buffer, board, from, legalSquares);
 
     const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
@@ -59,7 +60,7 @@ void forBishop(MoveBuffer &buffer, const Board::Type &board, const Coord::Type f
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) * Magic::bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegals(buffer, from, Magic::bishopData[magicIndex] & (~board.bitboards[COLOR]));
+    addLegals(buffer, board, from, Magic::bishopData[magicIndex] & (~board.bitboards[COLOR]));
 }
 
 template <Color::Type COLOR>
@@ -69,7 +70,7 @@ void forRook(MoveBuffer &buffer, const Board::Type &board, const Coord::Type fro
         + UNumspeed(((nonEmpty & Tables::rookMasks[from]) * Magic::rookMagics[from]) 
             >> (Magic::rookMaskShifts[from]));
 
-    addLegals(buffer, from, Magic::rookData[magicIndex] & (~board.bitboards[COLOR]));
+    addLegals(buffer, board, from, Magic::rookData[magicIndex] & (~board.bitboards[COLOR]));
 }
 
 template <Color::Type COLOR>
@@ -83,7 +84,7 @@ void forQueen(MoveBuffer &buffer, const Board::Type &board, const Coord::Type fr
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) *Magic:: bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegals(buffer, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~board.bitboards[COLOR]));
+    addLegals(buffer, board, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~board.bitboards[COLOR]));
 }
 
 template <Color::Type COLOR>
@@ -185,9 +186,10 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     leftCaptures &= board.bitboards[Black];
     while(leftCaptures != Bitboard::null) {
         bitIndex = Bitboard::bitScan(leftCaptures);
+        const auto to = Coord::Type(bitIndex);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull - 8ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull - 8ull), to, board.squares[to]);
 
         leftCaptures ^= Bitboard::fromIndex(bitIndex);
     }
@@ -198,9 +200,10 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     rightCaptures &= board.bitboards[Black];
     while(rightCaptures != Bitboard::null) {
         bitIndex = Bitboard::bitScan(rightCaptures);
+        const auto to = Coord::Type(bitIndex);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull + 8ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull - 8ull), to, board.squares[to]);
 
         rightCaptures ^= Bitboard::fromIndex(bitIndex);
     }
@@ -243,9 +246,10 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     leftCaptures &= board.bitboards[White];
     while(leftCaptures != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(leftCaptures);
-        
+        const auto to = Coord::Type(bitIndex);
+
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull + 8ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull + 8ull), to, board.squares[to]);
 
         leftCaptures ^= Bitboard::fromIndex(bitIndex);
     }
@@ -256,9 +260,10 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     rightCaptures &= board.bitboards[White];
     while(rightCaptures != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(rightCaptures);
+        const auto to = Coord::Type(bitIndex);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull - 8ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull + 8ull), to, board.squares[to]);
 
         rightCaptures ^= Bitboard::fromIndex(bitIndex);
     }
@@ -269,12 +274,12 @@ template <Color::Type COLOR>
 void Generator::forBoard(MoveBuffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
 
-    forQueens<COLOR>(buffer, board);
-    forRooks<COLOR>(buffer, board);
-    forBishops<COLOR>(buffer, board);
-    forKings<COLOR>(buffer, board);
-    forKnights<COLOR>(buffer, board);
     forPawns<COLOR>(buffer, board);
+    forKnights<COLOR>(buffer, board);
+    forBishops<COLOR>(buffer, board);
+    forRooks<COLOR>(buffer, board);
+    forKings<COLOR>(buffer, board);
+    forQueens<COLOR>(buffer, board);
 }
 
 void Generator::forBoard(MoveBuffer &buffer, const Board::Type &board) {
