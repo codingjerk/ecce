@@ -1,9 +1,6 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
-// --- Main definitions ---
-#define DEBUGMODE
-
 // --- Arch-depended types ---
 using Boolspeed = unsigned long long;
 
@@ -33,6 +30,11 @@ using UNummax = unsigned long long;
 
 #define makeNummax(num) num##ll
 #define makeUNummax(num) num##ull
+
+// --- Main definitions ---
+#define DEBUGMODE
+
+const UNumspeed MAX_DEPTH = makeUNumspeed(100);
 
 // --- Usefull macroses ---
 #define SHOW(var) std::cout << #var << " = " << var << "\n";
