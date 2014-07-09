@@ -6,6 +6,34 @@
 
 using namespace Board;
 
+void Board::setCastle(Type& board, const Castle::Type castle) {
+    board.info[board.depth].castle = castle;
+}
+
+void Board::setEnpassant(Type& board, const Enpassant::Type enpassant) {
+    board.info[board.depth].enpassant = enpassant;
+}
+
+void setCastleAll(Type& board, const Castle::Type castle) {
+    for (UNumspeed depth = 0; depth <= MAX_DEPTH; ++depth) {
+        board.info[depth].castle = castle;
+    }
+}
+
+void setEnpassantAll(Type& board, const Enpassant::Type enpassant) {
+    for (UNumspeed depth = 0; depth <= MAX_DEPTH; ++depth) {
+        board.info[depth].enpassant = enpassant;
+    }
+}
+
+Castle::Type Board::castle(const Type& board) {
+    return board.info[board.depth].castle;
+}
+
+Enpassant::Type Board::enpassant(const Type& board) {
+    return board.info[board.depth].enpassant;
+}
+
 void setPositionFromFen(Type &board, const std::string fen) {
     for (auto& bitboard: board.bitboards) {
         bitboard = Bitboard::null;
@@ -92,11 +120,11 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
     std::string castlePart;
     fenStream >> castlePart;
-    board.castle = Castle::fromString(castlePart);
+    setCastleAll(board, Castle::fromString(castlePart));
 
     std::string enapassantPart;
     fenStream >> enapassantPart;
-    board.enpassant = Enpassant::fromString(enapassantPart);
+    setEnpassantAll(board, Enpassant::fromString(enapassantPart));
 
     UNumspeed halfmoveClockPart;
     fenStream >> halfmoveClockPart;
@@ -112,8 +140,8 @@ std::string Board::toFen(const Type &board) {
 
     resultStream << getFenPosition(board) << " ";
     resultStream << Color::show(board.turn) << " ";
-    resultStream << Castle::show(board.castle) << " ";
-    resultStream << Enpassant::show(board.enpassant) << " ";
+    resultStream << Castle::show(Board::castle(board)) << " ";
+    resultStream << Enpassant::show(Board::enpassant(board)) << " ";
     resultStream << board.halfmoveClock << " ";
     resultStream << board.fullmoveNumber;
 
