@@ -39,14 +39,14 @@ void forKing(MoveBuffer &buffer, const Board::Type &board, const Coord::Type fro
     const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
 
     if (Castle::is<COLOR, King>(board.castle)) {
-        if (Tables::castleNeeded[COLOR][King] & legal) {
+        if (Tables::castleNeeded[COLOR][King] & legal == Tables::castleNeeded[COLOR][King]) {
             ++buffer[0];
             buffer[buffer[0]] = Move::create(from, Tables::castleTarget[COLOR][King]);
         }
     }
 
     if (Castle::is<COLOR, Queen>(board.castle)) {
-        if (Tables::castleNeeded[COLOR][Queen] & legal) {
+        if (Tables::castleNeeded[COLOR][Queen] & legal == Tables::castleNeeded[COLOR][Queen]) {
             ++buffer[0];
             buffer[buffer[0]] = Move::create(from, Tables::castleTarget[COLOR][Queen]);
         }
