@@ -17,7 +17,7 @@ void setPositionFromFen(Type &board, const std::string fen) {
     forRawYCoords(y) {
         forRawXCoords(x) {
             if (fen[cursor] <= '8') {
-                x += UNumspeed(fen[cursor] - '1') * makeUNumspeed(8);
+                x += UNumspeed(fen[cursor] - '1');
             } else {
                 const auto piece = Piece::fromChar(fen[cursor]);
                 const auto coord = Coord::fromRaw(x, y);

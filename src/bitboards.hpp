@@ -19,8 +19,15 @@ namespace Bitboard {
 
     UNumspeed bitScan(Type);
 
+    UNumspeed enabledCount(Type);
+
     const Type null = makeUNum64(0);
     const Type full = ~(makeUNum64(0));
+
+    extern Type upLine;
+    extern Type downLine;
+    extern Type leftLine;
+    extern Type rightLine;
 
     std::string show(const Type);
 }
