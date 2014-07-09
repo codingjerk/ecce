@@ -28,8 +28,8 @@ int main(int, char**) {
     CHECK(Move::isPromotion(Move::create(1,2)) == false);
     CHECK(Move::isCapture(Move::create(1,2)) == false);
 
-    CHECK(Move::isPromotion(Move::promotion(1,2, Piece::create(Black, Knight), Move::captureFlag)) == true);
-    CHECK(Move::isCapture(Move::promotion(1,2, Piece::create(Black, Knight), Move::captureFlag)) == true);
+    CHECK(Move::isPromotion(Move::promotion(1,2, Piece::create(Black, Knight), Piece::create(White, Pawn))));
+    CHECK(Move::isCapture(Move::promotion(1,2, Piece::create(Black, Knight), Piece::create(White, Pawn))));
 
     SECTION(Bitboards);
     Bitboard::initTables();

@@ -5,6 +5,8 @@
 #define DEBUGMODE
 
 // --- Arch-depended types ---
+using Boolspeed = unsigned long long;
+
 using Num64 = signed long long;
 using UNum64 = unsigned long long;
 
@@ -16,6 +18,9 @@ using UNumsize = unsigned char;
 
 using Nummax = signed long long;
 using UNummax = unsigned long long;
+
+// --- Additional macroses to making values
+#define makeBoolspeed(num) num##ll
 
 #define makeNum64(num) num##ll
 #define makeUNum64(num) num##ull

@@ -11,21 +11,20 @@
 namespace Move {
     using Type = UNumspeed;
 
-    Type create(const Coord::Type, const Coord::Type, const UNumspeed flags = 0);
-    Type promotion(const Coord::Type, const Coord::Type, const Piece::Type, const UNumspeed flags = 0);
+    Type create(const Coord::Type, const Coord::Type, const Piece::Type captured = Piece::null);
+    Type promotion(const Coord::Type, const Coord::Type, const Piece::Type, const Piece::Type = Piece::null);
     Type fromString(const std::string);
 
-    bool isPromotion(const Type);
-    bool isCapture(const Type);
+    Boolspeed isPromotion(const Type);
+    Boolspeed isCapture(const Type);
 
     std::string show(const Type);
 
     const UNumspeed coordsBits = Coord::usedBits * makeUNumspeed(2);
     const UNumspeed coordsMask = (makeUNumspeed(1) << coordsBits) - makeUNumspeed(1);
 
-    const UNumspeed captureBits = makeUNumspeed(1);
-    const UNumspeed captureFlag = makeUNumspeed(1) << (Coord::usedBits * makeUNumspeed(2));
-    const UNumspeed captureMask = captureFlag;
+    const UNumspeed captureBits = Piece::usedBits;
+    const UNumspeed captureMask = Piece::typeMask << coordsBits;
 
     const UNumspeed promotionBits = Piece::usedBits;
     const UNumspeed promotionMask = Piece::typeMask << (coordsBits + captureBits);
