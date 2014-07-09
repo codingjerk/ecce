@@ -40,5 +40,5 @@ Type Move::fromString(const std::string str) {
 }
 
 std::string Move::show(const Type move) {
-    return Coord::show(move >> Coord::usedBits) + Coord::show(move & Coord::typeMask);
+    return Coord::show((move >> Coord::usedBits) & Coord::typeMask) + Coord::show(move & Coord::typeMask);
 }
