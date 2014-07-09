@@ -32,7 +32,7 @@ void forKnight(MoveBuffer &buffer, const Board::Type &board, const Coord::Type f
 
 template <Color::Type COLOR>
 void forKing(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from) {
-    const Bitboard::Type legalSquares = (~board.bitboards[White]) & Tables::kingMasks[from];
+    const Bitboard::Type legalSquares = (~board.bitboards[COLOR]) & Tables::kingMasks[from];
 
     addLegals(buffer, board, from, legalSquares);
 
