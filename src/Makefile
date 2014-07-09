@@ -23,7 +23,8 @@ SRC=cstf.cpp\
 	boards.cpp\
 	generator.cpp\
 	magics.cpp\
-	generatorTables.cpp
+	generatorTables.cpp\
+	mover.cpp
 
 MAINSRC=ecce.cpp $(SRC)
 MAINOBJ=$(MAINSRC:.cpp=.o)
