@@ -7,9 +7,15 @@
 #include "boards.hpp"
 #include "generator.hpp"
 #include "mover.hpp"
+#include "checker.hpp"
 
-const UNumspeed MAX_DEPTH = 1024;
 UNum64 perft_nodes(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
+    if (board.turn == White) {
+        if (Checker::isCheck<Black>(board)) return 0;
+    } else {
+        if (Checker::isCheck<White>(board)) return 0;
+    }
+
     if (depth == 0) return 1;
     UNum64 result = 0;
 
@@ -223,9 +229,12 @@ int main(int, char**) {
         CHECK(Board::toFen(board) == Board::toFen(boardMain));
     }
 
+    // Fail d2d3
+    //Board::setFromFen(board, "");
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    //Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b KQkq - 0 1");
     Generator::MoveBuffer *moves = new Generator::MoveBuffer[MAX_DEPTH];
-    for (int depth = 4; depth <= 4; ++depth) {
+    for (int depth = 5; depth <= 5; ++depth) {
         const auto pr = perft(moves, board, depth);
         std::cout << "Perft at depth " << depth << " = " << pr << "\n";
     }
