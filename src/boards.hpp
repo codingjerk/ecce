@@ -26,8 +26,8 @@ namespace Board {
         UNumspeed halfmoveClock = makeUNumspeed(0);
         UNumspeed fullmoveNumber = makeUNumspeed(1);
 
-        UNumspeed depth = 0;
-        Info info[MAX_DEPTH];
+        UNumspeed depth = MAX_DEPTH;
+        Info info[MAX_DEPTH+1];
     };
 
     void castle(Type&, const Castle::Type);
