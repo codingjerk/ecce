@@ -46,7 +46,11 @@ Boolspeed Checker::isCheck(const Board::Type &board) {
         attacks |= Magic::rookData[magicIndex] & (~board.bitboards[OPP]);
     }
 
-    //@TODO: Pawns checks
+    const auto kingBitboard = board.bitboards[Piece::create(WHO, King)];
+    const auto kingPos = Bitboard::bitScan(kingBitboard);
+
+    bitboard = Tables::pawnCaptureMasks[WHO][kingPos];
+    if (bitboard & board.bitboards[Piece::create(OPP, Pawn)]) return makeBoolspeed(1);
 
     return (board.bitboards[Piece::create(WHO, King)] & attacks);
 }
