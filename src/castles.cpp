@@ -6,7 +6,7 @@
 
 using namespace Castle;
 
-Type Castle::create(const bool wk, const bool wq, const bool bk, const bool bq) {
+Type Castle::create(const Boolspeed wk, const Boolspeed wq, const Boolspeed bk, const Boolspeed bq) {
     return (wk? whiteKing:  null)
          | (wq? whiteQueen: null)
          | (bk? blackKing:  null)

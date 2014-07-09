@@ -10,7 +10,7 @@
 namespace Castle {
     using Type = UNumspeed;
 
-    Type create(const bool, const bool, const bool, const bool);
+    Type create(const Boolspeed, const Boolspeed, const Boolspeed, const Boolspeed);
     Type fromString(const std::string);
 
     std::string show(const Type);
