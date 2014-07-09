@@ -32,24 +32,27 @@ Type Castle::fromString(const std::string str) {
     return result;
 }
 
+// Temporary solution
+namespace Castle {
 template <>
-Type Castle::is<White, King>(Type castle) {
+Type is<White, King>(Type castle) {
     return castle & whiteKing;
 }
 
 template <>
-Type Castle::is<Black, King>(Type castle) {
+Type is<Black, King>(Type castle) {
     return castle & blackKing;
 }
 
 template <>
-Type Castle::is<White, Queen>(Type castle) {
+Type is<White, Queen>(Type castle) {
     return castle & whiteQueen;
 }
 
 template <>
-Type Castle::is<Black, Queen>(Type castle) {
+Type is<Black, Queen>(Type castle) {
     return castle & blackQueen;
+}
 }
 
 std::string Castle::show(const Type castle) {

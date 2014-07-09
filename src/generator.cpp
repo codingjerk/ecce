@@ -301,6 +301,9 @@ template void Generator::forRooks<Black>(MoveBuffer&, const Board::Type&);
 template void Generator::forQueens<White>(MoveBuffer&, const Board::Type&);
 template void Generator::forQueens<Black>(MoveBuffer&, const Board::Type&);
 
+template void Generator::forBoard<White>(MoveBuffer&, const Board::Type&);
+template void Generator::forBoard<Black>(MoveBuffer&, const Board::Type&);
+
 void Generator::initTables() {
     Tables::initTables();
     Magic::initTables();
