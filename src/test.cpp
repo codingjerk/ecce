@@ -8,10 +8,43 @@
 #include "generator.hpp"
 #include "mover.hpp"
 
+const UNumspeed MAX_DEPTH = 1024;
+UNum64 perft_nodes(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
+    if (depth == 0) return 1;
+    UNum64 result = 0;
+
+    Generator::forBoard(buffer[depth], board);
+    UNumspeed total = buffer[depth][0];
+    for (UNumspeed i = 1; i <= total; ++i) {
+        Move::make(buffer[depth][i], board);
+        result += perft_nodes(buffer, board, depth - 1);
+        Move::unmake(buffer[depth][i], board);
+    }
+
+    return result;
+}
+
+UNum64 perft(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
+    if (depth == 0) return 1;
+    UNum64 result = 0;
+
+    Generator::forBoard(buffer[depth], board);
+    UNumspeed total = buffer[depth][0];
+    for (UNumspeed i = 1; i <= total; ++i) {
+        Move::make(buffer[depth][i], board);
+        const auto nodes = perft_nodes(buffer, board, depth - 1);;
+        std::cout << "Move: " << Move::show(buffer[depth][i]) << " = " << nodes << "\n";
+        result += nodes;
+        Move::unmake(buffer[depth][i], board);
+    }
+
+    return result;
+}
+
 int main(int, char**) {
     SECTION(Framework);
     CHECK(true);
-    EXCEPTION(throw 1);
+    //EXCEPTION(throw 1);
 
     SECTION(Coords);
     CHECK(Coord::fromString("a1") == 0);
@@ -179,9 +212,23 @@ int main(int, char**) {
     total = buffer[0];
     CHECK(total == 42);
 
+    Board::setFromFen(board, "2br2k1/2q3rn/p2NppQ1/2p1P3/Pp5R/4P3/1P3PPP/3R2K1 w - - 0 1");
+    const auto boardMain = board;
+    buffer[0] = 0;
+    Generator::forBoard(buffer, board);
+    total = buffer[0];
+    for (int i = 1; i <= total; ++i) {
+        Move::make(buffer[i], board);
+        Move::unmake(buffer[i], board);
+        CHECK(Board::toFen(board) == Board::toFen(boardMain));
+    }
+
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    auto data = Move::make(Move::fromString("e2e4"), board);
-    std::cout << Board::toFen(board) << "\n";
+    Generator::MoveBuffer *moves = new Generator::MoveBuffer[MAX_DEPTH];
+    for (int depth = 4; depth <= 4; ++depth) {
+        const auto pr = perft(moves, board, depth);
+        std::cout << "Perft at depth " << depth << " = " << pr << "\n";
+    }
 
     RESULTS;
 }
