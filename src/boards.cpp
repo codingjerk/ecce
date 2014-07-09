@@ -6,11 +6,19 @@
 
 using namespace Board;
 
-void Board::setCastle(Type& board, const Castle::Type castle) {
+void Board::castle(Type& board, const Castle::Type castle) {
     board.info[board.depth].castle = castle;
 }
 
-void Board::setEnpassant(Type& board, const Enpassant::Type enpassant) {
+void Board::enpassant(Type& board, const Enpassant::Type enpassant) {
+    board.info[board.depth-1].enpassant = enpassant;
+}
+
+void Board::nextCastle(Type& board, const Castle::Type castle) {
+    board.info[board.depth-1].castle = castle;
+}
+
+void Board::nextEnpassant(Type& board, const Enpassant::Type enpassant) {
     board.info[board.depth].enpassant = enpassant;
 }
 
