@@ -11,7 +11,7 @@ void Board::castle(Type& board, const Castle::Type castle) {
 }
 
 void Board::enpassant(Type& board, const Enpassant::Type enpassant) {
-    board.info[board.depth-1].enpassant = enpassant;
+    board.info[board.depth].enpassant = enpassant;
 }
 
 void Board::nextCastle(Type& board, const Castle::Type castle) {
@@ -19,7 +19,7 @@ void Board::nextCastle(Type& board, const Castle::Type castle) {
 }
 
 void Board::nextEnpassant(Type& board, const Enpassant::Type enpassant) {
-    board.info[board.depth].enpassant = enpassant;
+    board.info[board.depth-1].enpassant = enpassant;
 }
 
 void setCastleAll(Type& board, const Castle::Type castle) {
