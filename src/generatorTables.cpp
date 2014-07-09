@@ -6,6 +6,7 @@ Bitboard::Type Tables::knightMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::kingMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::bishopMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::rookMasks[makeUNumspeed(1) << Coord::usedBits];
+Bitboard::Type Tables::pawnCaptureMasks[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Coord::usedBits];
 
 Bitboard::Type Tables::pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
 
@@ -86,6 +87,36 @@ void Tables::initTables() {
         toBits &= ~Bitboard::fromCoord(from);
 
         rookMasks[from] = toBits;
+    }
+
+    forCoord(x)
+    for(UNumspeed y = 1; y <= 6; ++y) {
+        const auto from = Coord::create(x, y);
+        auto whiteToBits = Bitboard::null;
+        auto blackToBits = Bitboard::null;
+
+        // Left capture
+        if (x - 1 <= 7) {
+            const auto whiteTo = Coord::create(x-1, y+1);
+            whiteToBits |= Bitboard::fromCoord(whiteTo);
+
+            const auto blackTo = Coord::create(x-1, y-1);
+            blackToBits |= Bitboard::fromCoord(blackTo);
+        }
+
+        // Right capture
+        if (x + 1 <= 7) {
+            const auto whiteTo = Coord::create(x+1, y+1);
+            whiteToBits |= Bitboard::fromCoord(whiteTo);
+
+            const auto blackTo = Coord::create(x+1, y-1);
+            blackToBits |= Bitboard::fromCoord(blackTo);
+        }
+
+        whiteToBits &= ~Bitboard::fromCoord(from);
+
+        pawnCaptureMasks[White][from] = whiteToBits;
+        pawnCaptureMasks[Black][from] = blackToBits;
     }
 
     pawnStartLine[White] = Bitboard::fromCoord(Coord::fromString("a2"))
