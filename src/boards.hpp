@@ -14,6 +14,7 @@
 namespace Board {
     struct Type {
         Bitboard::Type bitboards[makeUNumspeed(1) << Piece::usedBits] = {Bitboard::null};
+        Piece::Type squares[makeUNumspeed(1) << Coord::usedBits] = {Piece::null};
         
         Color::Type turn = Black;
         Castle::Type castle = Castle::null;
@@ -24,8 +25,7 @@ namespace Board {
     };
 
     void setPiece(Type&, const Piece::Type, const Coord::Type);
-
-    Piece::Type getPiece(const Type&, const Coord::Type);
+    void removePiece(Type&, const Coord::Type);
 
     void setFromFen(Type&, const std::string);
     std::string toFen(const Type&);

@@ -6,6 +6,7 @@
 #include "pieces.hpp"
 #include "boards.hpp"
 #include "generator.hpp"
+#include "mover.hpp"
 
 int main(int, char**) {
     SECTION(Framework);
@@ -177,6 +178,10 @@ int main(int, char**) {
     Generator::forBoard(buffer, board);
     total = buffer[0];
     CHECK(total == 42);
+
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    auto data = Move::make(Move::fromString("e2e4"), board);
+    std::cout << Board::toFen(board) << "\n";
 
     RESULTS;
 }

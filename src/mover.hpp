@@ -4,14 +4,14 @@
 #include "core.hpp"
 
 #include "moves.hpp"
-
-namespace Restore {
-    using Type = UNumspeed;
-    void restore(Type);
-}
+#include "boards.hpp"
 
 namespace Move {
-    Restore::Type make(Type);
+    UNumspeed make(Type, Board::Type&);
+    void unmake(Type, Board::Type&);
+
+    const UNumspeed success = 1;
+    const UNumspeed fail = 0;
 }
 
 #endif /* MOVER_HPP */
