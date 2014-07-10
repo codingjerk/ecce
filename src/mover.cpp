@@ -23,9 +23,23 @@ Boolspeed Move::make(Type move, Board::Type& board) {
         Board::enpassant(board, Enpassant::null);
     }
 
-    if (Move::isCapture(move)) Board::removePiece(board, to);
-    Board::setPiece(board, board.squares[from], to);
-    Board::removePiece(board, from);
+    //@TODO(FAST): Rewrite
+    if (Move::isEnpassant(move)) {
+        Piece::Type captured = (move & Move::captureMask) >> Move::captureOffset;
+        if (captured == Piece::create(Black, Pawn)) {
+            Board::removePiece(board, to - 8ull);
+            Board::setPiece(board, board.squares[from], to);
+            Board::removePiece(board, from);
+        } else {
+            Board::removePiece(board, to + 8ull);
+            Board::setPiece(board, board.squares[from], to);
+            Board::removePiece(board, from);
+        }
+    } else {
+        if (Move::isCapture(move)) Board::removePiece(board, to);
+        Board::setPiece(board, board.squares[from], to);
+        Board::removePiece(board, from);
+    }
 
     return makeBoolspeed(1);
 }
@@ -37,10 +51,24 @@ void Move::unmake(Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    Board::setPiece(board, board.squares[to], from);
-    Board::removePiece(board, to);
-    //@TODO: Move::getCaptured
-    if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    //@TODO: Rewrite
+    if (Move::isEnpassant(move)) {
+        Piece::Type captured = (move & Move::captureMask) >> Move::captureOffset;
+        if (captured == Piece::create(Black, Pawn)) {
+            Board::setPiece(board, board.squares[to], from);
+            Board::removePiece(board, to);
+            Board::setPiece(board, captured, to - 8ull);
+        } else {
+            Board::setPiece(board, board.squares[to], from);
+            Board::removePiece(board, to);
+            Board::setPiece(board, captured, to + 8ull);
+        }
+    } else {
+        Board::setPiece(board, board.squares[to], from);
+        Board::removePiece(board, to);
+        //@TODO: Move::getCaptured
+        if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    }
 
     ++board.depth;
 }
