@@ -18,12 +18,22 @@ Type Move::create(const Coord::Type from, const Coord::Type to, const Piece::Typ
     ASSERT((from & Coord::typeMask) == from);
     ASSERT((to & Coord::typeMask) == to);
 
-    return (captured << coordsBits) | (from << Coord::usedBits) | to;
+    return (captured << captureOffset) | (from << Coord::usedBits) | to;
 }
 
 Type Move::promotion(const Coord::Type from, const Coord::Type to, const Piece::Type promoted, const Piece::Type captured) {
-    return create(from, to, captured) | (promoted << (coordsBits + captureBits));
+    return create(from, to, captured) 
+         | (promoted << promotionOffset);
 }
+
+template <Color::Type COLOR>
+Type Move::enpassant(const Coord::Type from, const Coord::Type to) {
+    return create(from, to, Piece::create(Color::inv(COLOR), Pawn)) 
+         | (enpassantFlag << specialOffset);
+}
+
+template Type Move::enpassant<White>(const Coord::Type from, const Coord::Type to);
+template Type Move::enpassant<Black>(const Coord::Type from, const Coord::Type to);
 
 Boolspeed Move::isPromotion(const Type move) {
     return move & promotionMask;
@@ -31,6 +41,10 @@ Boolspeed Move::isPromotion(const Type move) {
 
 Boolspeed Move::isCapture(const Type move) {
     return move & captureMask;
+}
+
+Boolspeed Move::isEnpassant(const Type move) {
+    return ((move & specialMask) >> specialOffset) == enpassantFlag;
 }
 
 Type Move::fromString(const std::string str) {
