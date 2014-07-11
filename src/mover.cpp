@@ -37,7 +37,12 @@ Boolspeed Move::make(Type move, Board::Type& board) {
         }
     } else {
         if (Move::isCapture(move)) Board::removePiece(board, to);
-        Board::setPiece(board, board.squares[from], to);
+        if (Move::isPromotion(move)) {
+            const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
+            Board::setPiece(board, promoted, to);
+        } else {
+            Board::setPiece(board, board.squares[from], to);
+        }
         Board::removePiece(board, from);
     }
 
@@ -64,7 +69,12 @@ void Move::unmake(Type move, Board::Type& board) {
             Board::setPiece(board, captured, to + 8ull);
         }
     } else {
-        Board::setPiece(board, board.squares[to], from);
+        if (Move::isPromotion(move)) {
+            const auto promotedColor = ((move & Move::promotionMask) >> Move::promotionOffset) & Color::typeMask;
+            Board::setPiece(board, Piece::create(promotedColor, Pawn), from);
+        } else {
+            Board::setPiece(board, board.squares[to], from);
+        }
         Board::removePiece(board, to);
         //@TODO: Move::getCaptured
         if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
