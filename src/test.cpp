@@ -9,7 +9,7 @@
 #include "mover.hpp"
 #include "checker.hpp"
 
-UNum64 perft_nodes(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
+UNum64 perft_quiet(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
     if (board.turn == White) {
         if (Checker::isCheck<Black>(board)) return 0;
     } else {
@@ -22,8 +22,9 @@ UNum64 perft_nodes(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed 
     Generator::forBoard(buffer[depth], board);
     UNumspeed total = buffer[depth][0];
     for (UNumspeed i = 1; i <= total; ++i) {
-        Move::make(buffer[depth][i], board);
-        result += perft_nodes(buffer, board, depth - 1);
+        if (Move::make(buffer[depth][i], board))
+            result += perft_quiet(buffer, board, depth - 1);
+
         Move::unmake(buffer[depth][i], board);
     }
 
@@ -37,12 +38,16 @@ UNum64 perft(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth)
     Generator::forBoard(buffer[depth], board);
     UNumspeed total = buffer[depth][0];
     for (UNumspeed i = 1; i <= total; ++i) {
-        Move::make(buffer[depth][i], board);
-        const auto nodes = perft_nodes(buffer, board, depth - 1);;
-        std::cout << "Move: " << Move::show(buffer[depth][i]) << " = " << nodes << "\n";
-        result += nodes;
+        if (Move::make(buffer[depth][i], board)) {
+            const auto nodes = perft_quiet(buffer, board, depth - 1);;
+            std::cout << "Move: " << Move::show(buffer[depth][i]) << " = " << nodes << "\n";
+            result += nodes;
+        }
+
         Move::unmake(buffer[depth][i], board);
     }
+    
+    std::cout << "Perft at depth " << depth << " = " << result << "\n";
 
     return result;
 }
@@ -229,14 +234,54 @@ int main(int, char**) {
         CHECK(Board::toFen(board) == Board::toFen(boardMain));
     }
 
-    // Fail d2d3
-    //Board::setFromFen(board, "");
-    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    //Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b KQkq - 0 1");
-    Generator::MoveBuffer *moves = new Generator::MoveBuffer[MAX_DEPTH];
-    for (int depth = 5; depth <= 5; ++depth) {
-        const auto pr = perft(moves, board, depth);
-        std::cout << "Perft at depth " << depth << " = " << pr << "\n";
+    auto const COMPLEX_PERFT_TESTING = true;
+    if (COMPLEX_PERFT_TESTING) {
+        Generator::MoveBuffer *moves = new Generator::MoveBuffer[MAX_DEPTH];
+
+        Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        CHECK(perft_quiet(moves, board, 1) == 20);
+        CHECK(perft_quiet(moves, board, 2) == 400);
+        CHECK(perft_quiet(moves, board, 3) == 8902);
+        CHECK(perft_quiet(moves, board, 4) == 197281);
+        CHECK(perft_quiet(moves, board, 5) == 4865609);
+        CHECK(perft_quiet(moves, board, 6) == 119060324);
+        //CHECK(perft(moves, board, 7) == 3195901860);
+        //CHECK(perft(moves, board, 8) == 84998978956);
+
+        Board::setFromFen(board, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+        CHECK(perft_quiet(moves, board, 1) == 48);
+        CHECK(perft_quiet(moves, board, 2) == 2039);
+        CHECK(perft_quiet(moves, board, 3) == 97862);
+        CHECK(perft_quiet(moves, board, 4) == 4085603);
+        CHECK(perft_quiet(moves, board, 5) == 193690690);
+
+        Board::setFromFen(board, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1");
+        CHECK(perft_quiet(moves, board, 1) == 14);
+        CHECK(perft_quiet(moves, board, 2) == 191);
+        CHECK(perft_quiet(moves, board, 3) == 2812);
+        CHECK(perft_quiet(moves, board, 4) == 43238);
+        CHECK(perft_quiet(moves, board, 5) == 674624);
+        CHECK(perft_quiet(moves, board, 6) == 11030083);
+        CHECK(perft_quiet(moves, board, 7) == 178633661);
+
+        Board::setFromFen(board, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
+        CHECK(perft_quiet(moves, board, 1) == 6);
+        CHECK(perft_quiet(moves, board, 2) == 264);
+        CHECK(perft_quiet(moves, board, 3) == 9467);
+        CHECK(perft_quiet(moves, board, 4) == 422333);
+        CHECK(perft_quiet(moves, board, 5) == 15833292);
+
+        Board::setFromFen(board, "rnbqkb1r/pp1p1ppp/2p5/4P3/2B5/8/PPP1NnPP/RNBQK2R w KQkq - 0 6");
+        CHECK(perft_quiet(moves, board, 1) == 42);
+        CHECK(perft_quiet(moves, board, 2) == 1352);
+        CHECK(perft_quiet(moves, board, 3) == 53392);
+
+        Board::setFromFen(board, "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
+        CHECK(perft_quiet(moves, board, 1) == 46);
+        CHECK(perft_quiet(moves, board, 2) == 2079);
+        CHECK(perft_quiet(moves, board, 3) == 89890);
+        CHECK(perft_quiet(moves, board, 4) == 3894594);
+        CHECK(perft_quiet(moves, board, 5) == 164075551);
     }
 
     RESULTS;
