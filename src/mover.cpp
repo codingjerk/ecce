@@ -1,15 +1,15 @@
 #include "mover.hpp"
 
 #include "generatorTables.hpp"
+#include "checker.hpp"
 
 #include <iostream>
 
 //@TODO(FAST): Make it template
 Boolspeed Move::make(Type move, Board::Type& board) {
-    Color::invert(board.turn);
-
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
 
     --board.depth;
     // @TODO(FAST): rewrite this shit
@@ -22,6 +22,22 @@ Boolspeed Move::make(Type move, Board::Type& board) {
     } else {
         Board::enpassant(board, Enpassant::null);
     }
+
+    auto newCastle = oldCastle;
+    if (board.squares[from] == Piece::create(Black, King)) {
+        newCastle &= ~(Castle::blackQueen | Castle::blackKing);
+    } else if (board.squares[from] == Piece::create(White, King)) {
+        newCastle &= ~(Castle::whiteQueen | Castle::whiteKing);
+    } else if (from == Coord::fromString("a8") && board.squares[from] == Piece::create(Black, Rook)) {
+        newCastle &= ~(Castle::blackQueen);
+    } else if (from == Coord::fromString("a1") && board.squares[from] == Piece::create(White, Rook)) {
+        newCastle &= ~(Castle::whiteQueen);
+    } else if (from == Coord::fromString("h8") && board.squares[from] == Piece::create(Black, Rook)) {
+        newCastle &= ~(Castle::blackKing);
+    } else if (from == Coord::fromString("h1") && board.squares[from] == Piece::create(White, Rook)) {
+        newCastle &= ~(Castle::blackKing);
+    }
+    Board::castle(board, newCastle);
 
     //@TODO(FAST): Rewrite
     if (Move::isEnpassant(move)) {
@@ -44,6 +60,38 @@ Boolspeed Move::make(Type move, Board::Type& board) {
             Board::setPiece(board, board.squares[from], to);
         }
         Board::removePiece(board, from);
+    }
+
+    Color::invert(board.turn);
+
+    if (Move::isCastleLong(move)) {
+        const Coord::Type rookFrom = (board.turn != White)? Coord::fromString("a1"): Coord::fromString("a8");
+        const Coord::Type rookTo   = (board.turn != White)? Coord::fromString("d1"): Coord::fromString("d8");
+
+        Board::setPiece(board, board.squares[rookFrom], rookTo);
+        Board::removePiece(board, rookFrom);
+
+        if (board.turn != White) {
+            if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
+            if (Checker::isAttacked<White>(board, to)) return makeBoolspeed(0);
+        } else {
+            if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
+            if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
+        }
+    } else if (Move::isCastleShort(move)) {
+        const Coord::Type rookFrom = (board.turn != White)? Coord::fromString("h1"): Coord::fromString("h8");
+        const Coord::Type rookTo   = (board.turn != White)? Coord::fromString("f1"): Coord::fromString("f8");
+
+        Board::setPiece(board, board.squares[rookFrom], rookTo);
+        Board::removePiece(board, rookFrom);
+
+        if (board.turn != White) {
+            if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
+            if (Checker::isAttacked<White>(board, to)) return makeBoolspeed(0);
+        } else {
+            if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
+            if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
+        }
     }
 
     return makeBoolspeed(1);
@@ -78,6 +126,20 @@ void Move::unmake(Type move, Board::Type& board) {
         Board::removePiece(board, to);
         //@TODO: Move::getCaptured
         if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    }
+
+    if (Move::isCastleLong(move)) {
+        const Coord::Type rookFrom = (board.turn == White)? Coord::fromString("a1"): Coord::fromString("a8");
+        const Coord::Type rookTo   = (board.turn == White)? Coord::fromString("d1"): Coord::fromString("d8");
+
+        Board::setPiece(board, board.squares[rookTo], rookFrom);
+        Board::removePiece(board, rookTo);
+    } else if (Move::isCastleShort(move)) {
+        const Coord::Type rookFrom = (board.turn == White)? Coord::fromString("h1"): Coord::fromString("h8");
+        const Coord::Type rookTo   = (board.turn == White)? Coord::fromString("f1"): Coord::fromString("f8");
+
+        Board::setPiece(board, board.squares[rookTo], rookFrom);
+        Board::removePiece(board, rookTo);
     }
 
     ++board.depth;

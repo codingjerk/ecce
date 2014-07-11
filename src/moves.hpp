@@ -16,14 +16,19 @@ namespace Move {
 
     Type promotion(const Coord::Type, const Coord::Type, const Piece::Type, const Piece::Type = Piece::null);
     
-    template <Color::Type COLOR>
-    Type enpassant(const Coord::Type, const Coord::Type);
+    template <Color::Type COLOR> Type castleLong();
+    template <Color::Type COLOR> Type castleShort();
+    template <Color::Type COLOR> Type enpassant(const Coord::Type, const Coord::Type);
 
     Boolspeed isPromotion(const Type);
     Boolspeed isCapture(const Type);
     Boolspeed isEnpassant(const Type);
+    Boolspeed isCastleLong(const Type);
+    Boolspeed isCastleShort(const Type);
 
     const UNumspeed enpassantFlag = makeNumspeed(1);
+    const UNumspeed castleLongFlag = makeNumspeed(2);
+    const UNumspeed castleShortFlag = makeNumspeed(3);
 
     std::string show(const Type);
 
