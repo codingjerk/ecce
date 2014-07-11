@@ -14,14 +14,6 @@ void Board::enpassant(Type& board, const Enpassant::Type enpassant) {
     board.info[board.depth].enpassant = enpassant;
 }
 
-void Board::nextCastle(Type& board, const Castle::Type castle) {
-    board.info[board.depth-1].castle = castle;
-}
-
-void Board::nextEnpassant(Type& board, const Enpassant::Type enpassant) {
-    board.info[board.depth-1].enpassant = enpassant;
-}
-
 void setCastleAll(Type& board, const Castle::Type castle) {
     for (UNumspeed depth = 0; depth <= MAX_DEPTH; ++depth) {
         board.info[depth].castle = castle;

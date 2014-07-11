@@ -33,9 +33,6 @@ namespace Board {
     void castle(Type&, const Castle::Type);
     void enpassant(Type&, const Enpassant::Type);
 
-    void nextCastle(Type&, const Castle::Type);
-    void nextEnpassant(Type&, const Enpassant::Type);
-
     Castle::Type castle(const Type&);
     Enpassant::Type enpassant(const Type&);
 
