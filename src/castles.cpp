@@ -14,8 +14,7 @@ Type Castle::create(const Boolspeed wk, const Boolspeed wq, const Boolspeed bk, 
 }
 
 Type Castle::fromString(const std::string str) {
-    if (str.size() == 1) {
-        ASSERT(str == "-");
+    if (str == "-") {
         return null;
     } 
 
