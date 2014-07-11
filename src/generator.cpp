@@ -241,9 +241,17 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     while(legals != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(legals);
 
-        ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 8ull), Coord::Type(bitIndex));
-
+        if (bitIndex < 8ull) { //Pawn goes at last line
+            buffer[0] += 4;
+            buffer[buffer[0]] = Move::promotion(Coord::Type(bitIndex + 8ull), Coord::Type(bitIndex), Piece::create(Black, Knight));
+            buffer[buffer[0]-1] = Move::promotion(Coord::Type(bitIndex + 8ull), Coord::Type(bitIndex), Piece::create(Black, Bishop));
+            buffer[buffer[0]-2] = Move::promotion(Coord::Type(bitIndex + 8ull), Coord::Type(bitIndex), Piece::create(Black, Rook));
+            buffer[buffer[0]-3] = Move::promotion(Coord::Type(bitIndex + 8ull), Coord::Type(bitIndex), Piece::create(Black, Queen));
+        } else {
+            ++buffer[0];
+            buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 8ull), Coord::Type(bitIndex));
+        }
+        
         legals ^= Bitboard::fromIndex(bitIndex);
     }
 
@@ -253,7 +261,7 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     twosteps = (twosteps >> 16ull) & legalSquares; 
     while(twosteps != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(twosteps);
-        
+
         ++buffer[0];
         buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 16ull), Coord::Type(bitIndex));
 
@@ -269,8 +277,16 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
         const auto bitIndex = Bitboard::bitScan(leftCaptures);
         const auto to = Coord::Type(bitIndex);
 
-        ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull + 8ull), to, board.squares[to]);
+        if (bitIndex < 8ull) { //Pawn goes at last line
+            buffer[0] += 4;
+            buffer[buffer[0]] = Move::promotion(Coord::Type(bitIndex + 1ull + 8ull), to, Piece::create(Black, Knight), board.squares[to]);
+            buffer[buffer[0]-1] = Move::promotion(Coord::Type(bitIndex + 1ull + 8ull), to, Piece::create(Black, Bishop), board.squares[to]);
+            buffer[buffer[0]-2] = Move::promotion(Coord::Type(bitIndex + 1ull + 8ull), to, Piece::create(Black, Rook), board.squares[to]);
+            buffer[buffer[0]-3] = Move::promotion(Coord::Type(bitIndex + 1ull + 8ull), to, Piece::create(Black, Queen), board.squares[to]);
+        } else {
+            ++buffer[0];
+            buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull + 8ull), to, board.squares[to]);
+        }
 
         leftCaptures ^= Bitboard::fromIndex(bitIndex);
     }
@@ -284,8 +300,16 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
         const auto bitIndex = Bitboard::bitScan(rightCaptures);
         const auto to = Coord::Type(bitIndex);
         
-        ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull + 8ull), to, board.squares[to]);
+        if (bitIndex < 8ull) { //Pawn goes at last line
+            buffer[0] += 4;
+            buffer[buffer[0]] = Move::promotion(Coord::Type(bitIndex - 1ull + 8ull), to, Piece::create(Black, Knight), board.squares[to]);
+            buffer[buffer[0]-1] = Move::promotion(Coord::Type(bitIndex - 1ull + 8ull), to, Piece::create(Black, Bishop), board.squares[to]);
+            buffer[buffer[0]-2] = Move::promotion(Coord::Type(bitIndex - 1ull + 8ull), to, Piece::create(Black, Rook), board.squares[to]);
+            buffer[buffer[0]-3] = Move::promotion(Coord::Type(bitIndex - 1ull + 8ull), to, Piece::create(Black, Queen), board.squares[to]);
+        } else {
+            ++buffer[0];
+            buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull + 8ull), to, board.squares[to]);
+        }
 
         rightCaptures ^= Bitboard::fromIndex(bitIndex);
     }
