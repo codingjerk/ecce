@@ -44,7 +44,7 @@ template <> Type Move::castleLong<Black>() {
 }
 
 template <> Type Move::castleShort<White>() {
-    return create(Coord::fromString("e1     "), Coord::fromString("g1")) 
+    return create(Coord::fromString("e1"), Coord::fromString("g1")) 
          | (castleShortFlag << specialOffset);
 }
 
