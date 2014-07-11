@@ -8,7 +8,16 @@ using namespace Checker;
 
 template <Color::Type WHO> 
 Boolspeed Checker::isCheck(const Board::Type &board) {
-    //@TODO: Rewrite in king-centric style
+    const auto kingBitboard = board.bitboards[Piece::create(WHO, King)];
+    const auto kingPosition = Bitboard::bitScan(kingBitboard);
+
+    return isAttacked<WHO>(board, kingPosition);
+}
+
+template <Color::Type WHO> 
+Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
+    //@TODO: Rewrite in piece-centric style
+    const Bitboard::Type whoBitboard = Bitboard::fromCoord(who);
     Bitboard::Type attacks = Bitboard::null;
 
     const auto OPP = Color::inv(WHO);
@@ -46,18 +55,18 @@ Boolspeed Checker::isCheck(const Board::Type &board) {
         attacks |= Magic::rookData[magicIndex] & (~board.bitboards[OPP]);
     }
 
-    const auto kingBitboard = board.bitboards[Piece::create(WHO, King)];
-    const auto kingPos = Bitboard::bitScan(kingBitboard);
-
-    bitboard = Tables::pawnCaptureMasks[WHO][kingPos];
+    bitboard = Tables::pawnCaptureMasks[WHO][who];
     if (bitboard & board.bitboards[Piece::create(OPP, Pawn)]) return makeBoolspeed(1);
 
-    bitboard = Tables::kingMasks[kingPos];
+    bitboard = Tables::kingMasks[who];
     if (bitboard & board.bitboards[Piece::create(OPP, King)]) return makeBoolspeed(1);
 
-    return (board.bitboards[Piece::create(WHO, King)] & attacks);
+    return (whoBitboard & attacks);
 }
 
 // Explicit template instantiations
 template Boolspeed Checker::isCheck<White>(const Board::Type&);
 template Boolspeed Checker::isCheck<Black>(const Board::Type&);
+
+template Boolspeed Checker::isAttacked<White>(const Board::Type&, const Coord::Type);
+template Boolspeed Checker::isAttacked<Black>(const Board::Type&, const Coord::Type);
