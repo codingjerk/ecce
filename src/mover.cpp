@@ -35,7 +35,15 @@ Boolspeed Move::make(Type move, Board::Type& board) {
     } else if (from == Coord::fromString("h8") && board.squares[from] == Piece::create(Black, Rook)) {
         newCastle &= ~(Castle::blackKing);
     } else if (from == Coord::fromString("h1") && board.squares[from] == Piece::create(White, Rook)) {
+        newCastle &= ~(Castle::whiteKing);
+    } else if (to == Coord::fromString("a8") && board.squares[to] == Piece::create(Black, Rook)) {
+        newCastle &= ~(Castle::blackQueen);
+    } else if (to == Coord::fromString("a1") && board.squares[to] == Piece::create(White, Rook)) {
+        newCastle &= ~(Castle::whiteQueen);
+    } else if (to == Coord::fromString("h8") && board.squares[to] == Piece::create(Black, Rook)) {
         newCastle &= ~(Castle::blackKing);
+    } else if (to == Coord::fromString("h1") && board.squares[to] == Piece::create(White, Rook)) {
+        newCastle &= ~(Castle::whiteKing);
     }
     Board::castle(board, newCastle);
 
@@ -74,9 +82,11 @@ Boolspeed Move::make(Type move, Board::Type& board) {
         if (board.turn != White) {
             if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
             if (Checker::isAttacked<White>(board, to)) return makeBoolspeed(0);
+            if (Checker::isAttacked<White>(board, from)) return makeBoolspeed(0);
         } else {
             if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
             if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
+            if (Checker::isAttacked<Black>(board, from)) return makeBoolspeed(0);
         }
     } else if (Move::isCastleShort(move)) {
         const Coord::Type rookFrom = (board.turn != White)? Coord::fromString("h1"): Coord::fromString("h8");
@@ -88,9 +98,11 @@ Boolspeed Move::make(Type move, Board::Type& board) {
         if (board.turn != White) {
             if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
             if (Checker::isAttacked<White>(board, to)) return makeBoolspeed(0);
+            if (Checker::isAttacked<White>(board, from)) return makeBoolspeed(0);
         } else {
             if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
             if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
+            if (Checker::isAttacked<Black>(board, from)) return makeBoolspeed(0);
         }
     }
 
