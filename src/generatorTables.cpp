@@ -90,27 +90,35 @@ void Tables::initTables() {
     }
 
     forCoord(x)
-    for(UNumspeed y = 1; y <= 6; ++y) {
+    for(UNumspeed y = 0; y <= 7; ++y) {
         const auto from = Coord::create(x, y);
         auto whiteToBits = Bitboard::null;
         auto blackToBits = Bitboard::null;
 
         // Left capture
         if (x - 1 <= 7) {
-            const auto whiteTo = Coord::create(x-1, y+1);
-            whiteToBits |= Bitboard::fromCoord(whiteTo);
+            if (y+1 <= 7) {
+                const auto whiteTo = Coord::create(x-1, y+1);
+                whiteToBits |= Bitboard::fromCoord(whiteTo);
+            }
 
-            const auto blackTo = Coord::create(x-1, y-1);
-            blackToBits |= Bitboard::fromCoord(blackTo);
+            if (y-1 <= 7) {
+                const auto blackTo = Coord::create(x-1, y-1);
+                blackToBits |= Bitboard::fromCoord(blackTo);
+            }
         }
 
         // Right capture
         if (x + 1 <= 7) {
-            const auto whiteTo = Coord::create(x+1, y+1);
-            whiteToBits |= Bitboard::fromCoord(whiteTo);
+            if (y+1 <= 7) {
+                const auto whiteTo = Coord::create(x+1, y+1);
+                whiteToBits |= Bitboard::fromCoord(whiteTo);
+            }
 
-            const auto blackTo = Coord::create(x+1, y-1);
-            blackToBits |= Bitboard::fromCoord(blackTo);
+            if (y-1 <= 7) {
+                const auto blackTo = Coord::create(x+1, y-1);
+                blackToBits |= Bitboard::fromCoord(blackTo);
+            }
         }
 
         whiteToBits &= ~Bitboard::fromCoord(from);
