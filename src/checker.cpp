@@ -52,6 +52,9 @@ Boolspeed Checker::isCheck(const Board::Type &board) {
     bitboard = Tables::pawnCaptureMasks[WHO][kingPos];
     if (bitboard & board.bitboards[Piece::create(OPP, Pawn)]) return makeBoolspeed(1);
 
+    bitboard = Tables::kingMasks[kingPos];
+    if (bitboard & board.bitboards[Piece::create(OPP, King)]) return makeBoolspeed(1);
+
     return (board.bitboards[Piece::create(WHO, King)] & attacks);
 }
 
