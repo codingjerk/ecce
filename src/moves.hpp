@@ -20,6 +20,8 @@ namespace Move {
     template <Color::Type COLOR> Type castleShort();
     template <Color::Type COLOR> Type enpassant(const Coord::Type, const Coord::Type);
 
+    UNumspeed special(const Type);
+
     Boolspeed isPromotion(const Type);
     Boolspeed isCapture(const Type);
     Boolspeed isEnpassant(const Type);

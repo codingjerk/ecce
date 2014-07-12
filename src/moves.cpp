@@ -53,6 +53,10 @@ template <> Type Move::castleShort<Black>() {
          | (castleShortFlag << specialOffset);
 }
 
+UNumspeed Move::special(const Type move) {
+    return (move & specialMask) >> specialOffset;
+}
+
 template Type Move::enpassant<White>(const Coord::Type from, const Coord::Type to);
 template Type Move::enpassant<Black>(const Coord::Type from, const Coord::Type to);
 
