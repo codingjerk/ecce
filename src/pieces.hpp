@@ -13,7 +13,10 @@ namespace Piece {
 
     void initTables();
 
-    Type create(const Color::Type, const Dignity::Type);
+    inline Type create(const Color::Type color, const Dignity::Type dignity) {
+        return color | dignity;
+    }
+
     Type fromChar(const char);
     Type fromString(const std::string);
 
