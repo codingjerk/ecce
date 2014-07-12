@@ -23,7 +23,8 @@ Type Move::create(const Coord::Type from, const Coord::Type to, const Piece::Typ
 
 Type Move::promotion(const Coord::Type from, const Coord::Type to, const Piece::Type promoted, const Piece::Type captured) {
     return create(from, to, captured) 
-         | (promoted << promotionOffset);
+         | (promoted << promotionOffset)
+         | (promotionFlag << specialOffset);
 }
 
 template <Color::Type COLOR>

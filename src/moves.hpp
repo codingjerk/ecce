@@ -33,6 +33,7 @@ namespace Move {
     const UNumspeed castleLongFlag = makeNumspeed(2);
     const UNumspeed castleShortFlag = makeNumspeed(3);
     const UNumspeed pawnDoubleFlag = makeNumspeed(4);
+    const UNumspeed promotionFlag = makeNumspeed(5);
 
     std::string show(const Type);
 
