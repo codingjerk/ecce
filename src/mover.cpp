@@ -10,9 +10,21 @@
 Castle::Type castleChanging[makeUNumspeed(1) << Coord::usedBits][makeUNumspeed(1) << Coord::usedBits];
 
 Boolspeed makeUsual(Move::Type move, Board::Type& board) {
-    std::cout << "MAKE USUAL\n";
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
 
-    return 0;
+    if (Move::isCapture(move)) Board::removePiece(board, to);
+    
+    if (Move::isPromotion(move)) {
+        const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
+        Board::setPiece(board, promoted, to);
+    } else {
+        Board::setPiece(board, board.squares[from], to);
+    }
+
+    Board::removePiece(board, from);
+
+    return makeBoolspeed(1);
 }
 
 Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
@@ -116,25 +128,7 @@ Boolspeed Move::make(Type move, Board::Type& board) {
     Color::invert(board.turn);
 
     const auto specialIndex = Move::special(move);
-    if (specialIndex == Move::enpassantFlag 
-     || specialIndex == Move::castleLongFlag
-     || specialIndex == Move::castleShortFlag) {
-        return specialMake[specialIndex](move, board);
-    }
-    
-    //@TODO(FAST): Rewrite
-    {
-        if (Move::isCapture(move)) Board::removePiece(board, to);
-        if (Move::isPromotion(move)) {
-            const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
-            Board::setPiece(board, promoted, to);
-        } else {
-            Board::setPiece(board, board.squares[from], to);
-        }
-        Board::removePiece(board, from);
-    }
-
-    return makeBoolspeed(1);
+    return specialMake[specialIndex](move, board);    
 }
 
 void Move::unmake(Type move, Board::Type& board) {
