@@ -17,12 +17,23 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
 
     if (Move::isCapture(move)) Board::removePiece(board, to);
     
-    if (Move::isPromotion(move)) {
-        const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
-        Board::setPiece(board, promoted, to);
-    } else {
-        Board::setPiece(board, board.squares[from], to);
-    }
+    Board::setPiece(board, board.squares[from], to);
+
+    Board::removePiece(board, from);
+
+    return makeBoolspeed(1);
+}
+
+Boolspeed makePromotion(Move::Type move, Board::Type& board) {
+    Board::enpassant(board, Enpassant::null);
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    if (Move::isCapture(move)) Board::removePiece(board, to);
+    
+    const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
+    Board::setPiece(board, promoted, to);
 
     Board::removePiece(board, from);
 
@@ -38,14 +49,7 @@ Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
         Board::enpassant(board, to + 8ull);
     }
 
-    if (Move::isCapture(move)) Board::removePiece(board, to);
-    
-    if (Move::isPromotion(move)) {
-        const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
-        Board::setPiece(board, promoted, to);
-    } else {
-        Board::setPiece(board, board.squares[from], to);
-    }
+    Board::setPiece(board, board.squares[from], to);
 
     Board::removePiece(board, from);
 
@@ -128,12 +132,13 @@ Boolspeed makeCastleShort(Move::Type move, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
-Boolspeed (*specialMake[5])(Move::Type, Board::Type&) = {
+Boolspeed (*specialMake[6])(Move::Type, Board::Type&) = {
     makeUsual,
     makeEnpassant,
     makeCastleLong,
     makeCastleShort,
-    makePawnDouble
+    makePawnDouble,
+    makePromotion
 };
 
 //@TODO(FAST): Make it template
