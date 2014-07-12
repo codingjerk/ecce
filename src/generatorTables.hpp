@@ -13,6 +13,9 @@ namespace Tables {
     extern Bitboard::Type rookMasks[makeUNumspeed(1) << Coord::usedBits];
     extern Bitboard::Type pawnCaptureMasks[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Coord::usedBits];
 
+    extern Bitboard::Type bishopFullMasks[makeUNumspeed(1) << Coord::usedBits];
+    extern Bitboard::Type rookFullMasks[makeUNumspeed(1) << Coord::usedBits];
+
     extern Bitboard::Type pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
 
     extern Bitboard::Type castleNeeded[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Dignity::usedBits];

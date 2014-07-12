@@ -1,5 +1,7 @@
 #include "generatorTables.hpp"
 
+#include <iostream>
+
 using namespace Tables;
 
 Bitboard::Type Tables::knightMasks[makeUNumspeed(1) << Coord::usedBits];
@@ -7,6 +9,9 @@ Bitboard::Type Tables::kingMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::bishopMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::rookMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::pawnCaptureMasks[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Coord::usedBits];
+
+Bitboard::Type Tables::bishopFullMasks[makeUNumspeed(1) << Coord::usedBits];
+Bitboard::Type Tables::rookFullMasks[makeUNumspeed(1) << Coord::usedBits];
 
 Bitboard::Type Tables::pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
 
@@ -72,6 +77,25 @@ void Tables::initTables() {
         const auto from = Coord::create(x, y);
         auto toBits = Bitboard::null;
 
+        for (Numspeed xDirection = -1; xDirection <= 1; xDirection += 2)
+        for (Numspeed yDirection = -1; yDirection <= 1; yDirection += 2) {
+            for (Numspeed delta = makeNumspeed(1); delta <= makeNumspeed(7); ++delta) {
+                if (UNumspeed(x + delta*xDirection) <= makeUNumspeed(7) && UNumspeed(y + delta*yDirection) <= makeUNumspeed(7)
+                 && UNumspeed(x + delta*xDirection) >= makeUNumspeed(0) && UNumspeed(y + delta*yDirection) >= makeUNumspeed(0)) {
+                    auto to = Coord::create(x + delta*xDirection, y + delta*yDirection);
+                    toBits |= Bitboard::fromCoord(to);
+                }
+            }
+        }
+
+        bishopFullMasks[from] = toBits;
+    }
+
+    forCoord(x)
+    forCoord(y) {
+        const auto from = Coord::create(x, y);
+        auto toBits = Bitboard::null;
+
         for (Numspeed xTo = 1; xTo <= 6; ++xTo) {
             const auto to = Coord::create(xTo, y);
 
@@ -87,6 +111,28 @@ void Tables::initTables() {
         toBits &= ~Bitboard::fromCoord(from);
 
         rookMasks[from] = toBits;
+    }
+
+    forCoord(x)
+    forCoord(y) {
+        const auto from = Coord::create(x, y);
+        auto toBits = Bitboard::null;
+
+        for (Numspeed xTo = 0; xTo <= 7; ++xTo) {
+            const auto to = Coord::create(xTo, y);
+
+            toBits |= Bitboard::fromCoord(to);
+        }
+
+        for (Numspeed yTo = 0; yTo <= 7; ++yTo) {
+            const auto to = Coord::create(x, yTo);
+
+            toBits |= Bitboard::fromCoord(to);
+        }
+
+        toBits &= ~Bitboard::fromCoord(from);
+
+        rookFullMasks[from] = toBits;
     }
 
     forCoord(x)
