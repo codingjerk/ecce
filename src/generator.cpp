@@ -183,7 +183,7 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
         bitIndex = Bitboard::bitScan(twosteps);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 16ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::pawnDouble(Coord::Type(bitIndex - 16ull), Coord::Type(bitIndex));
 
         twosteps ^= Bitboard::fromIndex(bitIndex);
     }
@@ -287,7 +287,7 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
         const auto bitIndex = Bitboard::bitScan(twosteps);
 
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 16ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::pawnDouble(Coord::Type(bitIndex + 16ull), Coord::Type(bitIndex));
 
         twosteps ^= Bitboard::fromIndex(bitIndex);
     }

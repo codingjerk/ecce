@@ -97,11 +97,12 @@ Boolspeed makeCastleShort(Move::Type move, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
-Boolspeed (*specialMake[4])(Move::Type, Board::Type&) = {
+Boolspeed (*specialMake[5])(Move::Type, Board::Type&) = {
     makeUsual,
     makeEnpassant,
     makeCastleLong,
-    makeCastleShort
+    makeCastleShort,
+    makeUsual
 };
 
 //@TODO(FAST): Make it template
