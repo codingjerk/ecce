@@ -65,6 +65,7 @@ int main(int, char**) {
     CHECK(Coord::show(Coord::fromRaw(1,0)) == "b1");
 
     SECTION(Moves);
+    Move::initTables();
     CHECK(Move::fromString("a1a1") == 0);
     CHECK(Move::show(0) == "a1a1");
     CHECK(Move::show(Move::fromString("a8h1")) == "a8h1");
@@ -244,7 +245,7 @@ int main(int, char**) {
         CHECK(perft_quiet(moves, board, 3) == 8902);
         CHECK(perft_quiet(moves, board, 4) == 197281);
         CHECK(perft_quiet(moves, board, 5) == 4865609);
-        CHECK(perft_quiet(moves, board, 6) == 119060324);
+        //CHECK(perft_quiet(moves, board, 6) == 119060324);
         //CHECK(perft(moves, board, 7) == 3195901860);
         //CHECK(perft(moves, board, 8) == 84998978956);
 
@@ -253,7 +254,7 @@ int main(int, char**) {
         CHECK(perft_quiet(moves, board, 2) == 2039);
         CHECK(perft_quiet(moves, board, 3) == 97862);
         CHECK(perft_quiet(moves, board, 4) == 4085603);
-        CHECK(perft_quiet(moves, board, 5) == 193690690);
+        //CHECK(perft_quiet(moves, board, 5) == 193690690);
 
         Board::setFromFen(board, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1");
         CHECK(perft_quiet(moves, board, 1) == 14);
@@ -261,15 +262,15 @@ int main(int, char**) {
         CHECK(perft_quiet(moves, board, 3) == 2812);
         CHECK(perft_quiet(moves, board, 4) == 43238);
         CHECK(perft_quiet(moves, board, 5) == 674624);
-        CHECK(perft_quiet(moves, board, 6) == 11030083);
-        CHECK(perft_quiet(moves, board, 7) == 178633661);
+        //CHECK(perft_quiet(moves, board, 6) == 11030083);
+        //CHECK(perft_quiet(moves, board, 7) == 178633661);
 
         Board::setFromFen(board, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
         CHECK(perft_quiet(moves, board, 1) == 6);
         CHECK(perft_quiet(moves, board, 2) == 264);
         CHECK(perft_quiet(moves, board, 3) == 9467);
         CHECK(perft_quiet(moves, board, 4) == 422333);
-        CHECK(perft_quiet(moves, board, 5) == 15833292);
+        //CHECK(perft_quiet(moves, board, 5) == 15833292);
 
         Board::setFromFen(board, "rnbqkb1r/pp1p1ppp/2p5/4P3/2B5/8/PPP1NnPP/RNBQK2R w KQkq - 0 6");
         CHECK(perft_quiet(moves, board, 1) == 42);
@@ -281,7 +282,7 @@ int main(int, char**) {
         CHECK(perft_quiet(moves, board, 2) == 2079);
         CHECK(perft_quiet(moves, board, 3) == 89890);
         CHECK(perft_quiet(moves, board, 4) == 3894594);
-        CHECK(perft_quiet(moves, board, 5) == 164075551);
+        //CHECK(perft_quiet(moves, board, 5) == 164075551);
     }
 
     RESULTS;
