@@ -7,6 +7,8 @@
 #include "boards.hpp"
 
 namespace Move {
+    void initTables();
+
     Boolspeed make(Type, Board::Type&);
     void unmake(Type, Board::Type&);
 }

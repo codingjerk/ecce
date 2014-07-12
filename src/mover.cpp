@@ -2,8 +2,12 @@
 
 #include "generatorTables.hpp"
 #include "checker.hpp"
+#include "castles.hpp"
 
 #include <iostream>
+
+//                         [from coord] [to coord]
+Castle::Type castleChanging[makeUNumspeed(1) << Coord::usedBits][makeUNumspeed(1) << Coord::usedBits];
 
 //@TODO(FAST): Make it template
 Boolspeed Move::make(Type move, Board::Type& board) {
@@ -23,30 +27,8 @@ Boolspeed Move::make(Type move, Board::Type& board) {
         Board::enpassant(board, Enpassant::null);
     }
 
-    auto newCastle = oldCastle;
-    if (board.squares[from] == Piece::create(Black, King)) {
-        newCastle &= ~(Castle::blackQueen | Castle::blackKing);
-    } else if (board.squares[from] == Piece::create(White, King)) {
-        newCastle &= ~(Castle::whiteQueen | Castle::whiteKing);
-    } else if (from == Coord::fromString("a8") && board.squares[from] == Piece::create(Black, Rook)) {
-        newCastle &= ~(Castle::blackQueen);
-    } else if (from == Coord::fromString("a1") && board.squares[from] == Piece::create(White, Rook)) {
-        newCastle &= ~(Castle::whiteQueen);
-    } else if (from == Coord::fromString("h8") && board.squares[from] == Piece::create(Black, Rook)) {
-        newCastle &= ~(Castle::blackKing);
-    } else if (from == Coord::fromString("h1") && board.squares[from] == Piece::create(White, Rook)) {
-        newCastle &= ~(Castle::whiteKing);
-    } else if (to == Coord::fromString("a8") && board.squares[to] == Piece::create(Black, Rook)) {
-        newCastle &= ~(Castle::blackQueen);
-    } else if (to == Coord::fromString("a1") && board.squares[to] == Piece::create(White, Rook)) {
-        newCastle &= ~(Castle::whiteQueen);
-    } else if (to == Coord::fromString("h8") && board.squares[to] == Piece::create(Black, Rook)) {
-        newCastle &= ~(Castle::blackKing);
-    } else if (to == Coord::fromString("h1") && board.squares[to] == Piece::create(White, Rook)) {
-        newCastle &= ~(Castle::whiteKing);
-    }
-    Board::castle(board, newCastle);
-
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+    
     //@TODO(FAST): Rewrite
     if (Move::isEnpassant(move)) {
         Piece::Type captured = (move & Move::captureMask) >> Move::captureOffset;
@@ -155,4 +137,47 @@ void Move::unmake(Type move, Board::Type& board) {
     }
 
     ++board.depth;
+}
+
+void Move::initTables() {
+    const Castle::Type castleAll = Castle::fromString("KQkq");
+    const Castle::Type castleNone = Castle::fromString("-");
+
+    forCoord(x)
+    forCoord(y) {
+        const auto from = Coord::create(x, y);
+        
+        forCoord(x)
+        forCoord(y) {
+            const auto to = Coord::create(x, y);
+
+            auto castle = castleAll;
+
+            if (from == Coord::fromString("e8") || to == Coord::fromString("e8")) {
+                castle &= ~(Castle::blackQueen | Castle::blackKing);
+            } 
+
+            if (from == Coord::fromString("e1") || to == Coord::fromString("e1")) {
+                castle &= ~(Castle::whiteQueen | Castle::whiteKing);
+            } 
+
+            if (from == Coord::fromString("a8") || to == Coord::fromString("a8")) {
+                castle &= ~(Castle::blackQueen);
+            }
+
+            if (from == Coord::fromString("a1") || to == Coord::fromString("a1")) {
+                castle &= ~(Castle::whiteQueen);
+            }
+
+            if (from == Coord::fromString("h8") || to == Coord::fromString("h8")) {
+                castle &= ~(Castle::blackKing);
+            }
+
+            if (from == Coord::fromString("h1") || to == Coord::fromString("h1")) {
+                castle &= ~(Castle::whiteKing);
+            }
+
+            castleChanging[from][to] = castle;
+        }
+    }
 }
