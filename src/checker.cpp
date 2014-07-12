@@ -16,52 +16,40 @@ Boolspeed Checker::isCheck(const Board::Type &board) {
 
 template <Color::Type WHO> 
 Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
-    //@TODO: Rewrite in piece-centric style
-    const Bitboard::Type whoBitboard = Bitboard::fromCoord(who);
-    Bitboard::Type attacks = Bitboard::null;
-
+    //@TODO: Add statistic miner
     const auto OPP = Color::inv(WHO);
 
-    auto bitboard = board.bitboards[Piece::create(OPP, Knight)];
-    while(bitboard != Bitboard::null) {
-        const auto from = Bitboard::bitScan(bitboard);
-        bitboard ^= Bitboard::fromIndex(from);
+    // Knight attacks
+    if (board.bitboards[Piece::create(OPP, Knight)] & Tables::knightMasks[who])
+        return makeBoolspeed(1);
+    
+    // Bishop & Queen attacks
+    //@TODO: Try to use simple fuzzy check before magic
+    const Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
+    UNumspeed magicIndex = Magic::bishopOffsets[who] 
+            + UNumspeed(((nonEmpty & Tables::bishopMasks[who]) * Magic::bishopMagics[who]) 
+                >> (Magic::bishopMaskShifts[who]));
 
-        attacks |= (~board.bitboards[OPP]) & Tables::knightMasks[from];
-    }
+    if (Magic::bishopData[magicIndex] 
+     & (board.bitboards[Piece::create(OPP, Bishop)] | board.bitboards[Piece::create(OPP, Queen)]))
+        return makeBoolspeed(2);
 
-    Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
-    bitboard = board.bitboards[Piece::create(OPP, Bishop)] | board.bitboards[Piece::create(OPP, Queen)];
-    while(bitboard != Bitboard::null) {
-        const auto from = Bitboard::bitScan(bitboard);
-        bitboard ^= Bitboard::fromIndex(from);
+    // Rook & Queen attacks
+    magicIndex = Magic::rookOffsets[who] 
+        + UNumspeed(((nonEmpty & Tables::rookMasks[who]) * Magic::rookMagics[who]) 
+            >> (Magic::rookMaskShifts[who]));
 
-        const UNumspeed magicIndex = Magic::bishopOffsets[from] 
-            + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) * Magic::bishopMagics[from]) 
-                >> (Magic::bishopMaskShifts[from]));
+    if (Magic::rookData[magicIndex] 
+     & (board.bitboards[Piece::create(OPP, Rook)] | board.bitboards[Piece::create(OPP, Queen)]))
+        return makeBoolspeed(3);
 
-        attacks |= Magic::bishopData[magicIndex] & (~board.bitboards[OPP]);
-    }
+    if (Tables::pawnCaptureMasks[WHO][who] & board.bitboards[Piece::create(OPP, Pawn)]) 
+        return makeBoolspeed(4);
 
-    bitboard = board.bitboards[Piece::create(OPP, Rook)] | board.bitboards[Piece::create(OPP, Queen)];
-    while(bitboard != Bitboard::null) {
-        const auto from = Bitboard::bitScan(bitboard);
-        bitboard ^= Bitboard::fromIndex(from);
+    if (Tables::kingMasks[who] & board.bitboards[Piece::create(OPP, King)]) 
+        return makeBoolspeed(5);
 
-        const UNumspeed magicIndex = Magic::rookOffsets[from] 
-            + UNumspeed(((nonEmpty & Tables::rookMasks[from]) * Magic::rookMagics[from]) 
-                >> (Magic::rookMaskShifts[from]));
-
-        attacks |= Magic::rookData[magicIndex] & (~board.bitboards[OPP]);
-    }
-
-    bitboard = Tables::pawnCaptureMasks[WHO][who];
-    if (bitboard & board.bitboards[Piece::create(OPP, Pawn)]) return makeBoolspeed(1);
-
-    bitboard = Tables::kingMasks[who];
-    if (bitboard & board.bitboards[Piece::create(OPP, King)]) return makeBoolspeed(1);
-
-    return (whoBitboard & attacks);
+    return makeBoolspeed(0);
 }
 
 // Explicit template instantiations
