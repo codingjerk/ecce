@@ -32,6 +32,11 @@ Type Move::enpassant(const Coord::Type from, const Coord::Type to) {
          | (enpassantFlag << specialOffset);
 }
 
+Type Move::pawnDouble(const Coord::Type from, const Coord::Type to) {
+    return create(from, to) 
+         | (pawnDoubleFlag << specialOffset);
+}
+
 //@TODO: functions for special moves
 template <> Type Move::castleLong<White>() {
     return create(Coord::fromString("e1"), Coord::fromString("c1")) 

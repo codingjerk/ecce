@@ -19,6 +19,7 @@ namespace Move {
     template <Color::Type COLOR> Type castleLong();
     template <Color::Type COLOR> Type castleShort();
     template <Color::Type COLOR> Type enpassant(const Coord::Type, const Coord::Type);
+    Type pawnDouble(const Coord::Type, const Coord::Type);
 
     UNumspeed special(const Type);
 
@@ -31,6 +32,7 @@ namespace Move {
     const UNumspeed enpassantFlag = makeNumspeed(1);
     const UNumspeed castleLongFlag = makeNumspeed(2);
     const UNumspeed castleShortFlag = makeNumspeed(3);
+    const UNumspeed pawnDoubleFlag = makeNumspeed(4);
 
     std::string show(const Type);
 
