@@ -45,8 +45,10 @@ std::string Bitboard::show(const Type bitboard) {
 }
 
 UNumspeed Bitboard::bitScan(Type bitboard) {
-   asm("bsfq %0, %0": "=r" (bitboard): "0" (bitboard));
-   return bitboard;
+    ASSERT(bitboard != Bitboard::null);
+
+    asm("bsfq %0, %0": "=r" (bitboard): "0" (bitboard));
+    return bitboard;
 }
 
 // Temporary version, need to use more fast
