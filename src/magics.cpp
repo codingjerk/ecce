@@ -119,8 +119,7 @@ Bitboard::Type upLeft(const Bitboard::Type b) { return (b & ~(Bitboard::leftLine
 Bitboard::Type downRight(const Bitboard::Type b) { return (b & ~(Bitboard::rightLine|Bitboard::downLine)) >> 7; }
 Bitboard::Type downLeft(const Bitboard::Type b) { return (b & ~(Bitboard::leftLine|Bitboard::downLine)) >> 9; }
 
-Bitboard::Type calculateBishopAttacks(UNumspeed from, const Bitboard::Type nonEmpty)
-{
+Bitboard::Type calculateBishopAttacks(UNumspeed from, const Bitboard::Type nonEmpty) {
     Bitboard::Type result = 0;
     Bitboard::Type x = 0;
 
@@ -159,8 +158,7 @@ Bitboard::Type calculateBishopAttacks(UNumspeed from, const Bitboard::Type nonEm
     return result;
 }
 
-Bitboard::Type calculateRookAttacks(UNumspeed from, const Bitboard::Type nonEmpty)
-{
+Bitboard::Type calculateRookAttacks(UNumspeed from, const Bitboard::Type nonEmpty) {
     Bitboard::Type result = 0;
     Bitboard::Type x = 0;
 
