@@ -14,11 +14,11 @@ namespace Bitboard {
     void initTables();
 
     inline Type fromCoord(const Coord::Type coord) {
-        return 1ull << coord;
+        return makeUNum64(1) << coord;
     }
 
     inline Type fromIndex(const UNumspeed index) {
-        return 1ull << index;
+        return makeUNum64(1) << index;
     }
 
     UNumspeed bitScan(Type);
@@ -26,7 +26,7 @@ namespace Bitboard {
     UNumspeed enabledCount(Type);
 
     const Type null = makeUNum64(0);
-    const Type full = ~(makeUNum64(0));
+    const Type full = ~makeUNum64(0);
 
     extern Type upLine;
     extern Type downLine;

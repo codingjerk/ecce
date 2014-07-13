@@ -32,7 +32,6 @@ UNumspeed Bitboard::bitScan(Type bitboard) {
     return bitboard;
 }
 
-// Temporary version, need to use more fast
 UNumspeed Bitboard::enabledCount(Type bitboard) {
     UNumspeed result = 0;
 
