@@ -100,7 +100,7 @@ Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
-Boolspeed makeCastleLong(Move::Type move, Board::Type& board) {
+Boolspeed makeCastleWhiteLong(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
@@ -116,26 +116,20 @@ Boolspeed makeCastleLong(Move::Type move, Board::Type& board) {
     Board::setPiece(board, board.squares[from], to);
     Board::removePiece(board, from);
 
-    const Coord::Type rookFrom = (board.turn != White)? Coord::fromString("a1"): Coord::fromString("a8");
-    const Coord::Type rookTo   = (board.turn != White)? Coord::fromString("d1"): Coord::fromString("d8");
+    const Coord::Type rookFrom = Coord::fromString("a1");
+    const Coord::Type rookTo   = Coord::fromString("d1");
 
     Board::setPiece(board, board.squares[rookFrom], rookTo);
     Board::removePiece(board, rookFrom);
 
-    if (board.turn != White) {
-        if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
-        if (Checker::isAttacked<White>(board, to)) return makeBoolspeed(0);
-        if (Checker::isAttacked<White>(board, from)) return makeBoolspeed(0);
-    } else {
-        if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
-        if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
-        if (Checker::isAttacked<Black>(board, from)) return makeBoolspeed(0);
-    }
+    if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, to))     return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, from))   return makeBoolspeed(0);
 
     return makeBoolspeed(1);
 }
 
-Boolspeed makeCastleShort(Move::Type move, Board::Type& board) {
+Boolspeed makeCastleWhiteShort(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
@@ -151,33 +145,87 @@ Boolspeed makeCastleShort(Move::Type move, Board::Type& board) {
     Board::setPiece(board, board.squares[from], to);
     Board::removePiece(board, from);
 
-    const Coord::Type rookFrom = (board.turn != White)? Coord::fromString("h1"): Coord::fromString("h8");
-    const Coord::Type rookTo   = (board.turn != White)? Coord::fromString("f1"): Coord::fromString("f8");
+    const Coord::Type rookFrom = Coord::fromString("h1");
+    const Coord::Type rookTo   = Coord::fromString("f1");
 
     Board::setPiece(board, board.squares[rookFrom], rookTo);
     Board::removePiece(board, rookFrom);
 
-    if (board.turn != White) {
-        if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
-        if (Checker::isAttacked<White>(board, to)) return makeBoolspeed(0);
-        if (Checker::isAttacked<White>(board, from)) return makeBoolspeed(0);
-    } else {
-        if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
-        if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
-        if (Checker::isAttacked<Black>(board, from)) return makeBoolspeed(0);
-    }
+    if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, to))     return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, from))   return makeBoolspeed(0);
+
+    return makeBoolspeed(1);
+}
+
+Boolspeed makeCastleBlackLong(Move::Type move, Board::Type& board) {
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    --board.depth;
+
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, Enpassant::null);
+
+    Board::setPiece(board, board.squares[from], to);
+    Board::removePiece(board, from);
+
+    const Coord::Type rookFrom = Coord::fromString("a8");
+    const Coord::Type rookTo   = Coord::fromString("d8");
+
+    Board::setPiece(board, board.squares[rookFrom], rookTo);
+    Board::removePiece(board, rookFrom);
+
+    if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, from)) return makeBoolspeed(0);
+
+    return makeBoolspeed(1);
+}
+
+Boolspeed makeCastleBlackShort(Move::Type move, Board::Type& board) {
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    --board.depth;
+
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, Enpassant::null);
+
+    Board::setPiece(board, board.squares[from], to);
+    Board::removePiece(board, from);
+
+    const Coord::Type rookFrom = Coord::fromString("h8");
+    const Coord::Type rookTo   = Coord::fromString("f8");
+
+    Board::setPiece(board, board.squares[rookFrom], rookTo);
+    Board::removePiece(board, rookFrom);
+
+    if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, from)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
 }
 
 //@TODO(fast): More special flags and functions
-Boolspeed (*specialMake[6])(Move::Type, Board::Type&) = {
+Boolspeed (*specialMake[8])(Move::Type, Board::Type&) = {
     makeUsual,
     makeEnpassant,
-    makeCastleLong,
-    makeCastleShort,
+    makeCastleWhiteLong,
+    makeCastleWhiteShort,
     makePawnDouble,
-    makePromotion
+    makePromotion,
+    makeCastleBlackLong,
+    makeCastleBlackShort
 };
 
 //@TODO(FAST): Make it template
@@ -200,7 +248,7 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
     if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
-void unmakeCastleShort(Move::Type move, Board::Type& board) {
+void unmakeCastleWhiteShort(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
     ++board.depth;
@@ -211,14 +259,14 @@ void unmakeCastleShort(Move::Type move, Board::Type& board) {
     Board::setPiece(board, board.squares[to], from);
     Board::removePiece(board, to);
 
-    const Coord::Type rookFrom = (board.turn == White)? Coord::fromString("h1"): Coord::fromString("h8");
-    const Coord::Type rookTo   = (board.turn == White)? Coord::fromString("f1"): Coord::fromString("f8");
+    const Coord::Type rookFrom = Coord::fromString("h1");
+    const Coord::Type rookTo   = Coord::fromString("f1");
 
     Board::setPiece(board, board.squares[rookTo], rookFrom);
     Board::removePiece(board, rookTo);
 }
 
-void unmakeCastleLong(Move::Type move, Board::Type& board) {
+void unmakeCastleWhiteLong(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
     ++board.depth;
@@ -229,8 +277,44 @@ void unmakeCastleLong(Move::Type move, Board::Type& board) {
     Board::setPiece(board, board.squares[to], from);
     Board::removePiece(board, to);
 
-    const Coord::Type rookFrom = (board.turn == White)? Coord::fromString("a1"): Coord::fromString("a8");
-    const Coord::Type rookTo   = (board.turn == White)? Coord::fromString("d1"): Coord::fromString("d8");
+    const Coord::Type rookFrom = Coord::fromString("a1");
+    const Coord::Type rookTo   = Coord::fromString("d1");
+
+    Board::setPiece(board, board.squares[rookTo], rookFrom);
+    Board::removePiece(board, rookTo);
+}
+
+void unmakeCastleBlackShort(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
+
+    ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+
+    const Coord::Type rookFrom = Coord::fromString("h8");
+    const Coord::Type rookTo   = Coord::fromString("f8");
+
+    Board::setPiece(board, board.squares[rookTo], rookFrom);
+    Board::removePiece(board, rookTo);
+}
+
+void unmakeCastleBlackLong(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
+
+    ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+
+    const Coord::Type rookFrom = Coord::fromString("a8");
+    const Coord::Type rookTo   = Coord::fromString("d8");
 
     Board::setPiece(board, board.squares[rookTo], rookFrom);
     Board::removePiece(board, rookTo);
@@ -284,13 +368,15 @@ void unmakeEnpassant(Move::Type move, Board::Type& board) {
     }
 }
 
-void (*specialUnmake[6])(Move::Type, Board::Type&) = {
+void (*specialUnmake[8])(Move::Type, Board::Type&) = {
     unmakeUsual,
     unmakeEnpassant,
-    unmakeCastleLong,
-    unmakeCastleShort,
+    unmakeCastleWhiteLong,
+    unmakeCastleWhiteShort,
     unmakePawnDouble,
-    unmakePromotion
+    unmakePromotion,
+    unmakeCastleBlackLong,
+    unmakeCastleBlackShort
 };
 
 void Move::unmake(Type move, Board::Type& board) {

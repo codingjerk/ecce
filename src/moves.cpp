@@ -31,22 +31,22 @@ Type Move::pawnDouble(const Coord::Type from, const Coord::Type to) {
 //@TODO: functions for special moves
 template <> Type Move::castleLong<White>() {
     return create(Coord::fromString("e1"), Coord::fromString("c1")) 
-         | (castleLongFlag << specialOffset);
+         | (castleLongWhiteFlag << specialOffset);
 }
 
 template <> Type Move::castleLong<Black>() {
     return create(Coord::fromString("e8"), Coord::fromString("c8")) 
-         | (castleLongFlag << specialOffset);
+         | (castleLongBlackFlag << specialOffset);
 }
 
 template <> Type Move::castleShort<White>() {
     return create(Coord::fromString("e1"), Coord::fromString("g1")) 
-         | (castleShortFlag << specialOffset);
+         | (castleShortWhiteFlag << specialOffset);
 }
 
 template <> Type Move::castleShort<Black>() {
     return create(Coord::fromString("e8"), Coord::fromString("g8")) 
-         | (castleShortFlag << specialOffset);
+         | (castleShortBlackFlag << specialOffset);
 }
 
 UNumspeed Move::special(const Type move) {
@@ -67,14 +67,6 @@ Boolspeed Move::isCapture(const Type move) {
 //@TODO: Flag specialFlag(Move)
 Boolspeed Move::isEnpassant(const Type move) {
     return ((move & specialMask) >> specialOffset) == enpassantFlag;
-}
-
-Boolspeed Move::isCastleLong(const Type move) {
-    return ((move & specialMask) >> specialOffset) == castleLongFlag;
-}
-
-Boolspeed Move::isCastleShort(const Type move) {
-    return ((move & specialMask) >> specialOffset) == castleShortFlag;
 }
 
 Type Move::fromString(const std::string str) {
