@@ -6,7 +6,6 @@
 #include "core.hpp"
 
 #include "coords.hpp"
-#include "moves.hpp"
 
 namespace Bitboard {
     using Type = UNum64;
