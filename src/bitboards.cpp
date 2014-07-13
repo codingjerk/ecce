@@ -9,13 +9,6 @@ Type Bitboard::leftLine;
 Type Bitboard::rightLine;
 
 Type coordToBitboardTable[makeUNumspeed(1) << Coord::usedBits];
-Type moveToBitboardTable[makeUNumspeed(1) << Move::usedBits];
-
-Type Bitboard::fromMove(const Move::Type move) {
-    ASSERT((move & Move::typeMask) == move);
-
-    return moveToBitboardTable[move];
-}
 
 std::string Bitboard::show(const Type bitboard) {
     std::string result;
@@ -59,18 +52,6 @@ void Bitboard::initTables() {
         auto coord = Coord::fromRaw(x, y);
         Type bitboard = makeUNum64(1) << (y|x);
         coordToBitboardTable[coord] = bitboard;
-    }
-
-    forRawYCoords(yFrom) 
-    forRawXCoords(xFrom) 
-    forRawYCoords(yTo) 
-    forRawXCoords(xTo) {
-        auto from = Coord::fromRaw(xFrom, yFrom);
-        auto to = Coord::fromRaw(xTo, yTo);
-        Type bitboard = coordToBitboardTable[from] ^ coordToBitboardTable[to];
-        auto move = Move::create(from, to);
-
-        moveToBitboardTable[move] = bitboard;
     }
 
     leftLine = Bitboard::fromCoord(Coord::fromString("a1"))

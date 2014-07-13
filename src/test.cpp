@@ -81,7 +81,6 @@ int main(int, char**) {
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n00000000\n");
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("a1"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n10000000\n");
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("h8"))) == "00000001\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n");
-    CHECK(Bitboard::show(Bitboard::fromMove(Move::fromString("a1b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n10000000\n");
 
     SECTION(Colors);
     Color::initTables();
