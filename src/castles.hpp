@@ -20,6 +20,9 @@ namespace Castle {
     const Type blackKing  = makeUNumspeed(2);
     const Type blackQueen = makeUNumspeed(1);
 
+    const Type white = whiteKing | whiteQueen;
+    const Type black = blackKing | blackQueen;
+
     const UNumspeed usedBits = 4;
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
 
