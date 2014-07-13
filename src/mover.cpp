@@ -185,52 +185,116 @@ Boolspeed Move::make(Type move, Board::Type& board) {
     return specialMake[specialIndex](move, board);    
 }
 
-void Move::unmake(Type move, Board::Type& board) {
+void unmakeUsual(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
-    //@TODO: Coord::getFrom, getTo
+    ++board.depth;
+
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    //@TODO: Rewrite
-    if (Move::isEnpassant(move)) {
-        Piece::Type captured = (move & Move::captureMask) >> Move::captureOffset;
-        if (captured == Piece::create(Black, Pawn)) {
-            Board::setPiece(board, board.squares[to], from);
-            Board::removePiece(board, to);
-            Board::setPiece(board, captured, to - 8ull);
-        } else {
-            Board::setPiece(board, board.squares[to], from);
-            Board::removePiece(board, to);
-            Board::setPiece(board, captured, to + 8ull);
-        }
-    } else {
-        if (Move::isPromotion(move)) {
-            const auto promotedColor = ((move & Move::promotionMask) >> Move::promotionOffset) & Color::typeMask;
-            Board::setPiece(board, Piece::create(promotedColor, Pawn), from);
-        } else {
-            Board::setPiece(board, board.squares[to], from);
-        }
-        Board::removePiece(board, to);
-        //@TODO: Move::getCaptured
-        if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
-    }
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+    //@TODO: Move::getCaptured
+    if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
+}
 
-    if (Move::isCastleLong(move)) {
-        const Coord::Type rookFrom = (board.turn == White)? Coord::fromString("a1"): Coord::fromString("a8");
-        const Coord::Type rookTo   = (board.turn == White)? Coord::fromString("d1"): Coord::fromString("d8");
-
-        Board::setPiece(board, board.squares[rookTo], rookFrom);
-        Board::removePiece(board, rookTo);
-    } else if (Move::isCastleShort(move)) {
-        const Coord::Type rookFrom = (board.turn == White)? Coord::fromString("h1"): Coord::fromString("h8");
-        const Coord::Type rookTo   = (board.turn == White)? Coord::fromString("f1"): Coord::fromString("f8");
-
-        Board::setPiece(board, board.squares[rookTo], rookFrom);
-        Board::removePiece(board, rookTo);
-    }
+void unmakeCastleShort(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
 
     ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+
+    const Coord::Type rookFrom = (board.turn == White)? Coord::fromString("h1"): Coord::fromString("h8");
+    const Coord::Type rookTo   = (board.turn == White)? Coord::fromString("f1"): Coord::fromString("f8");
+
+    Board::setPiece(board, board.squares[rookTo], rookFrom);
+    Board::removePiece(board, rookTo);
+}
+
+void unmakeCastleLong(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
+
+    ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+
+    const Coord::Type rookFrom = (board.turn == White)? Coord::fromString("a1"): Coord::fromString("a8");
+    const Coord::Type rookTo   = (board.turn == White)? Coord::fromString("d1"): Coord::fromString("d8");
+
+    Board::setPiece(board, board.squares[rookTo], rookFrom);
+    Board::removePiece(board, rookTo);
+}
+
+void unmakePawnDouble(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
+
+    ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+}
+
+void unmakePromotion(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
+
+    ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    const auto promotedColor = ((move & Move::promotionMask) >> Move::promotionOffset) & Color::typeMask;
+    Board::setPiece(board, Piece::create(promotedColor, Pawn), from);
+
+    Board::removePiece(board, to);
+
+    if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
+}
+
+void unmakeEnpassant(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
+
+    ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Piece::Type captured = (move & Move::captureMask) >> Move::captureOffset;
+    if (captured == Piece::create(Black, Pawn)) {
+        Board::setPiece(board, board.squares[to], from);
+        Board::removePiece(board, to);
+        Board::setPiece(board, captured, to - 8ull);
+    } else {
+        Board::setPiece(board, board.squares[to], from);
+        Board::removePiece(board, to);
+        Board::setPiece(board, captured, to + 8ull);
+    }
+}
+
+void (*specialUnmake[6])(Move::Type, Board::Type&) = {
+    unmakeUsual,
+    unmakeEnpassant,
+    unmakeCastleLong,
+    unmakeCastleShort,
+    unmakePawnDouble,
+    unmakePromotion
+};
+
+void Move::unmake(Type move, Board::Type& board) {
+    const auto specialIndex = Move::special(move);
+    specialUnmake[specialIndex](move, board);
 }
 
 void Move::initTables() {
