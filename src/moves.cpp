@@ -1,13 +1,3 @@
-//@TODO(GLOBAL): Store more info in move:
-//coord from, to (12 bits)
-//piece, that moves (4 bits)
-//piece, that captured (4 bits)
-//piece, that promoted (4 bits)
-//total - 24 bits
-//and we also can store movetype (8 bits - up to 256 types)
-//types examples: simple, enpassant, 0-0-0, 0-0, capture, promotion, capture with promotion
-//pawn doublemove, checkpossibles (with simple fuzzy calculations)
-
 #include "moves.hpp"
 
 #include "cstf.hpp"
