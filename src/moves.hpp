@@ -64,11 +64,10 @@ namespace Move {
     }
 
     template <Color::Type COLOR>
-    Type enpassant(const Coord::Type from, const Coord::Type to) {
+    inline Type enpassant(const Coord::Type from, const Coord::Type to) {
         return create(from, to, Piece::create(Color::inv(COLOR), Pawn)) 
              | (enpassantFlag << specialOffset);
     }
-
 
     template <Color::Type COLOR> inline Type castleLong();
     
