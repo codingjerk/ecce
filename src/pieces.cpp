@@ -33,6 +33,8 @@ std::string Piece::show(const Type piece) {
 }
 
 void Piece::initTables() {
+    pieceToCharTable[null]                  = '.';
+
     pieceToCharTable[create(Black, Pawn)]   = 'p';
     pieceToCharTable[create(Black, Knight)] = 'n';
     pieceToCharTable[create(Black, Bishop)] = 'b';
