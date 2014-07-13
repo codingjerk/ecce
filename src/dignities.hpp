@@ -7,13 +7,12 @@
 
 namespace Dignity {
     using Type = UNumspeed;
-    const Type rangedMask = makeUNumspeed(4);
     const Type Pawn   = makeUNumspeed(1); 
     const Type Knight = makeUNumspeed(2); 
-    const Type King   = makeUNumspeed(3); 
-    const Type Bishop = rangedMask /*4*/; 
-    const Type Rook   = rangedMask + makeUNumspeed(1) /*5*/; 
-    const Type Queen  = rangedMask + makeUNumspeed(2) /*6*/;
+    const Type Bishop = makeUNumspeed(3);
+    const Type Rook   = makeUNumspeed(4);
+    const Type Queen  = makeUNumspeed(5);
+    const Type King   = makeUNumspeed(6); 
 
     const UNumspeed usedBits = makeUNumspeed(3);
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
