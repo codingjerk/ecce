@@ -28,7 +28,6 @@ Type Move::pawnDouble(const Coord::Type from, const Coord::Type to) {
          | (pawnDoubleFlag << specialOffset);
 }
 
-//@TODO: functions for special moves
 template <> Type Move::castleLong<White>() {
     return create(Coord::fromString("e1"), Coord::fromString("c1")) 
          | (castleLongWhiteFlag << specialOffset);
@@ -56,17 +55,8 @@ UNumspeed Move::special(const Type move) {
 template Type Move::enpassant<White>(const Coord::Type from, const Coord::Type to);
 template Type Move::enpassant<Black>(const Coord::Type from, const Coord::Type to);
 
-Boolspeed Move::isPromotion(const Type move) {
-    return move & promotionMask;
-}
-
 Boolspeed Move::isCapture(const Type move) {
     return move & captureMask;
-}
-
-//@TODO: Flag specialFlag(Move)
-Boolspeed Move::isEnpassant(const Type move) {
-    return ((move & specialMask) >> specialOffset) == enpassantFlag;
 }
 
 Type Move::fromString(const std::string str) {

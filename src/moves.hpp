@@ -23,9 +23,7 @@ namespace Move {
 
     UNumspeed special(const Type);
 
-    Boolspeed isPromotion(const Type);
     Boolspeed isCapture(const Type);
-    Boolspeed isEnpassant(const Type);
 
     const UNumspeed enpassantFlag = makeNumspeed(1);
     const UNumspeed castleLongWhiteFlag = makeNumspeed(2);
