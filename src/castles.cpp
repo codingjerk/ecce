@@ -1,7 +1,5 @@
 #include "castles.hpp"
 
-#include <limits.h>
-
 #include "cstf.hpp"
 
 using namespace Castle;
@@ -14,7 +12,9 @@ Type Castle::create(const Boolspeed wk, const Boolspeed wq, const Boolspeed bk, 
 }
 
 Type Castle::fromString(const std::string str) {
-    if (str == "-") {
+    if (str[0] == '-') {
+        ASSERT(str == "-");
+
         return null;
     } 
 
