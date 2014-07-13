@@ -9,7 +9,10 @@
 namespace Enpassant {
     using Type = Coord::Type;
 
-    Type create(const Coord::Type);
+    inline Type create(const Coord::Type coord) {
+        return coord;
+    }
+
     Type fromString(const std::string);
 
     std::string show(const Type);

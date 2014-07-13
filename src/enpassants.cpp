@@ -6,10 +6,6 @@
 
 using namespace Enpassant;
 
-Type Enpassant::create(const Coord::Type coord) {
-    return coord;
-}
-
 Type Enpassant::fromString(const std::string str) {
     if (str.size() == 1) {
         ASSERT(str == "-");
@@ -20,7 +16,7 @@ Type Enpassant::fromString(const std::string str) {
 }
 
 std::string Enpassant::show(const Type enpassant) {
-    if (enpassant & null) {
+    if (enpassant == null) {
         return "-";
     } else {
         return Coord::show(enpassant);
