@@ -6,6 +6,7 @@
 #include "core.hpp"
 
 #include "boards.hpp"
+#include "moves.hpp"
 
 namespace Generator {
     const UNumspeed BUFFER_SIZE = 1024;

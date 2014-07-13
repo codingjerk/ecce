@@ -3,6 +3,8 @@
 
 #include "core.hpp"
 #include "bitboards.hpp"
+#include "colors.hpp"
+#include "dignities.hpp"
 
 namespace Tables {
     void initTables();

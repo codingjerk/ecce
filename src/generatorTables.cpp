@@ -1,7 +1,5 @@
 #include "generatorTables.hpp"
 
-#include <iostream>
-
 using namespace Tables;
 
 Bitboard::Type Tables::knightMasks[makeUNumspeed(1) << Coord::usedBits];
