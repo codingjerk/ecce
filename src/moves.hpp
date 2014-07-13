@@ -13,9 +13,6 @@ namespace Move {
 
     Type fromString(const std::string);
 
-    template <Color::Type COLOR> Type castleLong();
-    template <Color::Type COLOR> Type castleShort();
-
     const UNumspeed enpassantFlag = makeNumspeed(1);
     const UNumspeed castleLongFlag = makeNumspeed(2);
     const UNumspeed castleShortFlag = makeNumspeed(3);
@@ -70,6 +67,35 @@ namespace Move {
     Type enpassant(const Coord::Type from, const Coord::Type to) {
         return create(from, to, Piece::create(Color::inv(COLOR), Pawn)) 
              | (enpassantFlag << specialOffset);
+    }
+
+
+    template <Color::Type COLOR> inline Type castleLong();
+    
+    template <>
+    inline Type castleLong<White>() {
+        return create(Coord::E1, Coord::C1) 
+             | (castleLongFlag << specialOffset);
+    }
+
+    template <>
+    inline Type castleLong<Black>() {
+        return create(Coord::E8, Coord::C8) 
+             | (castleLongFlag << specialOffset);
+    }
+
+    template <Color::Type COLOR> inline Type castleShort();
+
+    template <>
+    inline Type castleShort<White>() {
+        return create(Coord::E1, Coord::G1) 
+             | (castleShortFlag << specialOffset);
+    }
+
+    template <>
+    inline Type castleShort<Black>() {
+        return create(Coord::E8, Coord::G8) 
+             | (castleShortFlag << specialOffset);
     }
 }
 
