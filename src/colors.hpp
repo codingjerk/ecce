@@ -15,8 +15,13 @@ namespace Color {
     Type fromChar(const char);
     Type fromString(const std::string);
 
-    void invert(Type&);
-    Type inv(Type);
+    inline void invert(Type& color) {
+        color ^= White;
+    }
+
+    inline Type inv(Type color) {
+        return color ^ White;
+    }
     
     std::string show(const Type);
 
