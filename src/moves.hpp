@@ -11,19 +11,10 @@
 namespace Move {
     using Type = UNumspeed;
 
-    Type create(const Coord::Type, const Coord::Type, const Piece::Type captured = Piece::null);
     Type fromString(const std::string);
 
-    Type promotion(const Coord::Type, const Coord::Type, const Piece::Type, const Piece::Type = Piece::null);
-    
     template <Color::Type COLOR> Type castleLong();
     template <Color::Type COLOR> Type castleShort();
-    template <Color::Type COLOR> Type enpassant(const Coord::Type, const Coord::Type);
-    Type pawnDouble(const Coord::Type, const Coord::Type);
-
-    UNumspeed special(const Type);
-
-    Boolspeed isCapture(const Type);
 
     const UNumspeed enpassantFlag = makeNumspeed(1);
     const UNumspeed castleLongWhiteFlag = makeNumspeed(2);
@@ -53,6 +44,35 @@ namespace Move {
 
     const UNumspeed usedBits = coordsBits + specialBits + captureBits + promotionBits;
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
+
+    inline UNumspeed special(const Type move) {
+        return (move & specialMask) >> specialOffset;
+    }
+
+    inline Boolspeed isCapture(const Type move) {
+        return move & captureMask;
+    }
+
+    inline Type create(const Coord::Type from, const Coord::Type to, const Piece::Type captured = Piece::null) {
+        return (captured << captureOffset) | (from << Coord::usedBits) | to;
+    }
+
+    inline Type promotion(const Coord::Type from, const Coord::Type to, const Piece::Type promoted, const Piece::Type captured = Piece::null) {
+        return create(from, to, captured) 
+             | (promoted << promotionOffset)
+             | (promotionFlag << specialOffset);
+    }
+
+    inline Type pawnDouble(const Coord::Type from, const Coord::Type to) {
+        return create(from, to) 
+             | (pawnDoubleFlag << specialOffset);
+    }
+
+    template <Color::Type COLOR>
+    Type enpassant(const Coord::Type from, const Coord::Type to) {
+        return create(from, to, Piece::create(Color::inv(COLOR), Pawn)) 
+             | (enpassantFlag << specialOffset);
+    }
 }
 
 #endif /* MOVES_HPP */

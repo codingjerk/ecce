@@ -4,59 +4,24 @@
 
 using namespace Move;
 
-Type Move::create(const Coord::Type from, const Coord::Type to, const Piece::Type captured) {
-    ASSERT((from & Coord::typeMask) == from);
-    ASSERT((to & Coord::typeMask) == to);
-
-    return (captured << captureOffset) | (from << Coord::usedBits) | to;
-}
-
-Type Move::promotion(const Coord::Type from, const Coord::Type to, const Piece::Type promoted, const Piece::Type captured) {
-    return create(from, to, captured) 
-         | (promoted << promotionOffset)
-         | (promotionFlag << specialOffset);
-}
-
-template <Color::Type COLOR>
-Type Move::enpassant(const Coord::Type from, const Coord::Type to) {
-    return create(from, to, Piece::create(Color::inv(COLOR), Pawn)) 
-         | (enpassantFlag << specialOffset);
-}
-
-Type Move::pawnDouble(const Coord::Type from, const Coord::Type to) {
-    return create(from, to) 
-         | (pawnDoubleFlag << specialOffset);
-}
-
 template <> Type Move::castleLong<White>() {
-    return create(Coord::fromString("e1"), Coord::fromString("c1")) 
+    return create(Coord::E1, Coord::C1) 
          | (castleLongWhiteFlag << specialOffset);
 }
 
 template <> Type Move::castleLong<Black>() {
-    return create(Coord::fromString("e8"), Coord::fromString("c8")) 
+    return create(Coord::E8, Coord::C8) 
          | (castleLongBlackFlag << specialOffset);
 }
 
 template <> Type Move::castleShort<White>() {
-    return create(Coord::fromString("e1"), Coord::fromString("g1")) 
+    return create(Coord::E1, Coord::G1) 
          | (castleShortWhiteFlag << specialOffset);
 }
 
 template <> Type Move::castleShort<Black>() {
-    return create(Coord::fromString("e8"), Coord::fromString("g8")) 
+    return create(Coord::E8, Coord::G8) 
          | (castleShortBlackFlag << specialOffset);
-}
-
-UNumspeed Move::special(const Type move) {
-    return (move & specialMask) >> specialOffset;
-}
-
-template Type Move::enpassant<White>(const Coord::Type from, const Coord::Type to);
-template Type Move::enpassant<Black>(const Coord::Type from, const Coord::Type to);
-
-Boolspeed Move::isCapture(const Type move) {
-    return move & captureMask;
 }
 
 Type Move::fromString(const std::string str) {
