@@ -170,6 +170,7 @@ Boolspeed makeCastleShort(Move::Type move, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
+//@TODO(fast): More special flags and functions
 Boolspeed (*specialMake[6])(Move::Type, Board::Type&) = {
     makeUsual,
     makeEnpassant,
