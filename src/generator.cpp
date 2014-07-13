@@ -11,7 +11,7 @@
 
 using namespace Generator;
 
-void addLegals(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
+inline void addLegals(MoveBuffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
     while(legals != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(legals);
         const auto to = Coord::Type(bitIndex);
@@ -152,7 +152,6 @@ namespace Generator {
 template <> 
 void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     //@TODO(low): Refactoring using tables?
-    //@TODO(IMPORTANT): Enpassant and promotions
     const Bitboard::Type legalSquares = ~(board.bitboards[White] | board.bitboards[Black]);
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
     const auto onestep = (pawns << makeUNum64(8)) & legalSquares;
@@ -256,7 +255,6 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
 template <> 
 void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     //@TODO: Refactoring using tables?
-    //@TODO(IMPORTANT): Enpassant and promotions
     const Bitboard::Type legalSquares = ~(board.bitboards[Black] | board.bitboards[White]);
     const auto pawns = board.bitboards[Piece::create(Black, Pawn)];
     const auto onestep = (pawns >> makeUNum64(8)) & legalSquares;
@@ -358,6 +356,7 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
 }
 }
 
+//@TODO(low): After debugging inline all generator's parts in this function
 template <Color::Type COLOR> 
 void Generator::forBoard(MoveBuffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
