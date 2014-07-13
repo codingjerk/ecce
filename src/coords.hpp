@@ -8,8 +8,10 @@
 namespace Coord {
     using Type = UNumspeed; 
 
-    Type create(const UNumspeed, const UNumspeed);
-    Type fromRaw(const UNumspeed, const UNumspeed);
+    inline Type fromRaw(const UNumspeed rawX, const UNumspeed rawY) {
+        return rawX | rawY;
+    }
+
     Type fromChars(const char, const char);
     Type fromString(const std::string);
 
@@ -24,6 +26,10 @@ namespace Coord {
 
     const UNumspeed usedBits = usedBitsByComponent * makeUNumspeed(2);
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
+
+    inline Type create(const UNumspeed x, const UNumspeed y) {
+        return fromRaw(x, y << usedBitsByComponent);
+    }
 
     #define forRawXCoords(var) for (UNumspeed var = Coord::componentLower; var <= Coord::componentHighter; ++var)
     #define forRawYCoords(var) for (Numspeed var = makeNumspeed(56); var >= makeNumspeed(0); var -= 8)
