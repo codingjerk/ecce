@@ -1,5 +1,6 @@
 #include "checker.hpp"
 
+#include "cstf.hpp"
 #include "bitboards.hpp"
 #include "generatorTables.hpp"
 #include "magics.hpp"
@@ -9,6 +10,8 @@ using namespace Checker;
 template <Color::Type WHO> 
 Boolspeed Checker::isCheck(const Board::Type &board) {
     const auto kingBitboard = board.bitboards[Piece::create(WHO, King)];
+    ASSERT(kingBitboard != Bitboard::null);
+
     const auto kingPosition = Bitboard::bitScan(kingBitboard);
 
     return isAttacked<WHO>(board, kingPosition);
@@ -26,9 +29,6 @@ Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
     if (Tables::pawnCaptureMasks[WHO][who] & board.bitboards[Piece::create(OPP, Pawn)]) 
         return makeBoolspeed(2);
 
-    // King attacks
-    if (Tables::kingMasks[who] & board.bitboards[Piece::create(OPP, King)]) 
-        return makeBoolspeed(3);
 
     // Bishop & Queen attacks
     const Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
@@ -49,7 +49,8 @@ Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
      & (board.bitboards[Piece::create(OPP, Rook)] | board.bitboards[Piece::create(OPP, Queen)]))
         return makeBoolspeed(5);
 
-    return makeBoolspeed(0);
+    // King attacks
+    return (Tables::kingMasks[who] & board.bitboards[Piece::create(OPP, King)]);
 }
 
 // Explicit template instantiations
