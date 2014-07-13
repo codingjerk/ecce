@@ -13,9 +13,14 @@ namespace Bitboard {
 
     void initTables();
 
-    Type fromCoord(const Coord::Type);
     Type fromMove(const Move::Type);
-    Type fromIndex(const UNumspeed);
+    inline Type fromCoord(const Coord::Type coord) {
+        return 1ull << coord;
+    }
+
+    inline Type fromIndex(const UNumspeed index) {
+        return 1ull << index;
+    }
 
     UNumspeed bitScan(Type);
 

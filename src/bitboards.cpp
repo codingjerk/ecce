@@ -11,18 +11,6 @@ Type Bitboard::rightLine;
 Type coordToBitboardTable[makeUNumspeed(1) << Coord::usedBits];
 Type moveToBitboardTable[makeUNumspeed(1) << Move::usedBits];
 
-Type Bitboard::fromCoord(const Coord::Type coord) {
-    ASSERT((coord & Coord::typeMask) == coord);
-
-    return coordToBitboardTable[coord];
-}
-
-Type Bitboard::fromIndex(const UNumspeed index) {
-    ASSERT(index < 64);
-
-    return 1ull << index;
-}
-
 Type Bitboard::fromMove(const Move::Type move) {
     ASSERT((move & Move::typeMask) == move);
 
