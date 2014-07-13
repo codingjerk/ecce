@@ -22,7 +22,6 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
 
     Board::enpassant(board, Enpassant::null);
 
-    //@TODO(?): add a capture flag?
     if (Move::isCapture(move)) Board::removePiece(board, to);
     
     Board::setPiece(board, board.squares[from], to);
@@ -58,8 +57,11 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
 Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
-    
+    const auto oldCastle = Board::castle(board);
+
     --board.depth;
+
+    Board::castle(board, oldCastle);
 
     Color::invert(board.turn);
 
@@ -79,8 +81,11 @@ Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
 Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
 
     --board.depth;
+
+    Board::castle(board, oldCastle);
 
     Color::invert(board.turn);
 
