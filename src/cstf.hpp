@@ -80,8 +80,12 @@ std::string firsts(std::string);
     #define ASSERT(expr) {\
         if (!(expr)) std::cout << "!!! Assert was failed (" << #expr << ")\n";\
     }
+
+    #define SHOW(var) std::cout << #var << " = " << var << "\n";
 #else
     #define ASSERT(expr)
+
+    #define SHOW(var)
 #endif
 
 #endif /* CSTF_HPP */

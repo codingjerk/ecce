@@ -37,7 +37,4 @@ using UNummax = unsigned long long;
 
 const UNumspeed MAX_DEPTH = makeUNumspeed(50);
 
-// --- Usefull macroses ---
-#define SHOW(var) std::cout << #var << " = " << var << "\n";
-
 #endif /* CORE_HPP */
