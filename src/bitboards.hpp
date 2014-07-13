@@ -14,6 +14,7 @@ namespace Bitboard {
     void initTables();
 
     Type fromMove(const Move::Type);
+    
     inline Type fromCoord(const Coord::Type coord) {
         return 1ull << coord;
     }
