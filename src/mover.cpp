@@ -54,7 +54,7 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
-Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
+Boolspeed makePawnDoubleWhite(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
@@ -65,11 +65,7 @@ Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
 
     Color::invert(board.turn);
 
-    if (board.turn != White) {// 2 lines up 
-        Board::enpassant(board, to - 8ull);
-    } else {
-        Board::enpassant(board, to + 8ull);
-    }
+    Board::enpassant(board, to - 8ull);
 
     Board::setPiece(board, board.squares[from], to);
 
@@ -78,7 +74,27 @@ Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
-Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
+Boolspeed makePawnDoubleBlack(Move::Type move, Board::Type& board) {
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    --board.depth;
+
+    Board::castle(board, oldCastle);
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, to + 8ull);
+
+    Board::setPiece(board, board.squares[from], to);
+
+    Board::removePiece(board, from);
+
+    return makeBoolspeed(1);
+}
+
+Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
@@ -91,16 +107,29 @@ Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
 
     Board::enpassant(board, Enpassant::null);
 
-    Piece::Type captured = (move & Move::captureMask) >> Move::captureOffset;
-    if (captured == Piece::create(Black, Pawn)) {
-        Board::removePiece(board, to - 8ull);
-        Board::setPiece(board, board.squares[from], to);
-        Board::removePiece(board, from);
-    } else {
-        Board::removePiece(board, to + 8ull);
-        Board::setPiece(board, board.squares[from], to);
-        Board::removePiece(board, from);
-    }
+    Board::removePiece(board, to - 8ull);
+    Board::setPiece(board, board.squares[from], to);
+    Board::removePiece(board, from);
+
+    return makeBoolspeed(1);
+}
+
+Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    --board.depth;
+
+    Board::castle(board, oldCastle);
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, Enpassant::null);
+
+    Board::removePiece(board, to + 8ull);
+    Board::setPiece(board, board.squares[from], to);
+    Board::removePiece(board, from);
 
     return makeBoolspeed(1);
 }
@@ -201,15 +230,22 @@ Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
-Boolspeed (*Move::specialMake[8])(Move::Type, Board::Type&) = {
+Boolspeed (*Move::specialMakeWhite[6])(Move::Type, Board::Type&) = {
     makeUsual,
-    makeEnpassant,
+    makeEnpassantWhite,
     makeCastleWhiteLong,
     makeCastleWhiteShort,
-    makePawnDouble,
-    makePromotion,
+    makePawnDoubleWhite,
+    makePromotion
+};
+
+Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
+    makeUsual,
+    makeEnpassantBlack,
     makeCastleBlackLong,
-    makeCastleBlackShort
+    makeCastleBlackShort,
+    makePawnDoubleBlack,
+    makePromotion
 };
 
 void unmakeUsual(Move::Type move, Board::Type& board) {
@@ -286,7 +322,7 @@ void unmakePawnDouble(Move::Type move, Board::Type& board) {
     Board::removePiece(board, to);
 }
 
-void unmakePromotion(Move::Type move, Board::Type& board) {
+void unmakePromotionWhite(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
     ++board.depth;
@@ -294,15 +330,14 @@ void unmakePromotion(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    const auto promotedColor = ((move & Move::promotionMask) >> Move::promotionOffset) & Color::typeMask;
-    Board::setPiece(board, Piece::create(promotedColor, Pawn), from);
+    Board::setPiece(board, Piece::create(White, Pawn), from);
 
     Board::removePiece(board, to);
 
     if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
-void unmakeEnpassant(Move::Type move, Board::Type& board) {
+void unmakePromotionBlack(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
     ++board.depth;
@@ -310,27 +345,55 @@ void unmakeEnpassant(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    Piece::Type captured = (move & Move::captureMask) >> Move::captureOffset;
-    if (captured == Piece::create(Black, Pawn)) {
-        Board::setPiece(board, board.squares[to], from);
-        Board::removePiece(board, to);
-        Board::setPiece(board, captured, to - 8ull);
-    } else {
-        Board::setPiece(board, board.squares[to], from);
-        Board::removePiece(board, to);
-        Board::setPiece(board, captured, to + 8ull);
-    }
+    Board::setPiece(board, Piece::create(Black, Pawn), from);
+
+    Board::removePiece(board, to);
+
+    if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
-void (*Move::specialUnmake[8])(Move::Type, Board::Type&) = {
+void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
+
+    ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+    Board::setPiece(board, Piece::create(Black, Pawn), to - 8ull);
+}
+
+void unmakeEnpassantBlack(Move::Type move, Board::Type& board) {
+    Color::invert(board.turn);
+
+    ++board.depth;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+    Board::setPiece(board, Piece::create(White, Pawn), to + 8ull);
+}
+
+void (*Move::specialUnmakeWhite[6])(Move::Type, Board::Type&) = {
     unmakeUsual,
-    unmakeEnpassant,
+    unmakeEnpassantWhite,
     unmakeCastleWhiteLong,
     unmakeCastleWhiteShort,
     unmakePawnDouble,
-    unmakePromotion,
+    unmakePromotionWhite
+};
+
+void (*Move::specialUnmakeBlack[6])(Move::Type, Board::Type&) = {
+    unmakeUsual,
+    unmakeEnpassantBlack,
     unmakeCastleBlackLong,
-    unmakeCastleBlackShort
+    unmakeCastleBlackShort,
+    unmakePawnDouble,
+    unmakePromotionBlack
 };
 
 void Move::initTables() {

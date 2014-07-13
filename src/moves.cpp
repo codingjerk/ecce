@@ -6,22 +6,22 @@ using namespace Move;
 
 template <> Type Move::castleLong<White>() {
     return create(Coord::E1, Coord::C1) 
-         | (castleLongWhiteFlag << specialOffset);
+         | (castleLongFlag << specialOffset);
 }
 
 template <> Type Move::castleLong<Black>() {
     return create(Coord::E8, Coord::C8) 
-         | (castleLongBlackFlag << specialOffset);
+         | (castleLongFlag << specialOffset);
 }
 
 template <> Type Move::castleShort<White>() {
     return create(Coord::E1, Coord::G1) 
-         | (castleShortWhiteFlag << specialOffset);
+         | (castleShortFlag << specialOffset);
 }
 
 template <> Type Move::castleShort<Black>() {
     return create(Coord::E8, Coord::G8) 
-         | (castleShortBlackFlag << specialOffset);
+         | (castleShortFlag << specialOffset);
 }
 
 Type Move::fromString(const std::string str) {

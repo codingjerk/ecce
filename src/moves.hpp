@@ -17,12 +17,10 @@ namespace Move {
     template <Color::Type COLOR> Type castleShort();
 
     const UNumspeed enpassantFlag = makeNumspeed(1);
-    const UNumspeed castleLongWhiteFlag = makeNumspeed(2);
-    const UNumspeed castleShortWhiteFlag = makeNumspeed(3);
+    const UNumspeed castleLongFlag = makeNumspeed(2);
+    const UNumspeed castleShortFlag = makeNumspeed(3);
     const UNumspeed pawnDoubleFlag = makeNumspeed(4);
     const UNumspeed promotionFlag = makeNumspeed(5);
-    const UNumspeed castleLongBlackFlag = makeNumspeed(6);
-    const UNumspeed castleShortBlackFlag = makeNumspeed(7);
 
     std::string show(const Type);
 
