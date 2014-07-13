@@ -7,10 +7,21 @@
 #include "boards.hpp"
 
 namespace Move {
+    extern Boolspeed (*specialMake[8])(Move::Type, Board::Type&);
+    extern void (*specialUnmake[8])(Move::Type, Board::Type&);
+
     void initTables();
 
-    Boolspeed make(Type, Board::Type&);
-    void unmake(Type, Board::Type&);
+    //@TODO(FAST): Make it template
+    inline Boolspeed make(Type move, Board::Type& board) {
+        const auto specialIndex = Move::special(move);
+        return specialMake[specialIndex](move, board);    
+    }
+
+    inline void unmake(Type move, Board::Type& board) {
+        const auto specialIndex = Move::special(move);
+        specialUnmake[specialIndex](move, board);
+    }
 }
 
 #endif /* MOVER_HPP */

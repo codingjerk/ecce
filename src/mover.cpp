@@ -201,8 +201,7 @@ Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
-//@TODO(fast): More special flags and functions
-Boolspeed (*specialMake[8])(Move::Type, Board::Type&) = {
+Boolspeed (*Move::specialMake[8])(Move::Type, Board::Type&) = {
     makeUsual,
     makeEnpassant,
     makeCastleWhiteLong,
@@ -212,12 +211,6 @@ Boolspeed (*specialMake[8])(Move::Type, Board::Type&) = {
     makeCastleBlackLong,
     makeCastleBlackShort
 };
-
-//@TODO(FAST): Make it template
-Boolspeed Move::make(Type move, Board::Type& board) {
-    const auto specialIndex = Move::special(move);
-    return specialMake[specialIndex](move, board);    
-}
 
 void unmakeUsual(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
@@ -329,7 +322,7 @@ void unmakeEnpassant(Move::Type move, Board::Type& board) {
     }
 }
 
-void (*specialUnmake[8])(Move::Type, Board::Type&) = {
+void (*Move::specialUnmake[8])(Move::Type, Board::Type&) = {
     unmakeUsual,
     unmakeEnpassant,
     unmakeCastleWhiteLong,
@@ -339,11 +332,6 @@ void (*specialUnmake[8])(Move::Type, Board::Type&) = {
     unmakeCastleBlackLong,
     unmakeCastleBlackShort
 };
-
-void Move::unmake(Type move, Board::Type& board) {
-    const auto specialIndex = Move::special(move);
-    specialUnmake[specialIndex](move, board);
-}
 
 void Move::initTables() {
     const Castle::Type castleAll = Castle::fromString("KQkq");
