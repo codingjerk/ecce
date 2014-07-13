@@ -10,11 +10,19 @@
 Castle::Type castleChanging[makeUNumspeed(1) << Coord::usedBits][makeUNumspeed(1) << Coord::usedBits];
 
 Boolspeed makeUsual(Move::Type move, Board::Type& board) {
-    Board::enpassant(board, Enpassant::null);
-
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
 
+    --board.depth;
+
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, Enpassant::null);
+
+    //@TODO(?): add a capture flag?
     if (Move::isCapture(move)) Board::removePiece(board, to);
     
     Board::setPiece(board, board.squares[from], to);
@@ -25,10 +33,17 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
 }
 
 Boolspeed makePromotion(Move::Type move, Board::Type& board) {
-    Board::enpassant(board, Enpassant::null);
-
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    --board.depth;
+
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, Enpassant::null);
 
     if (Move::isCapture(move)) Board::removePiece(board, to);
     
@@ -43,6 +58,11 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
 Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
+    
+    --board.depth;
+
+    Color::invert(board.turn);
+
     if (board.turn != White) {// 2 lines up 
         Board::enpassant(board, to - 8ull);
     } else {
@@ -57,10 +77,14 @@ Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
 }
 
 Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
-    Board::enpassant(board, Enpassant::null);
-
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
+
+    --board.depth;
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, Enpassant::null);
 
     Piece::Type captured = (move & Move::captureMask) >> Move::captureOffset;
     if (captured == Piece::create(Black, Pawn)) {
@@ -77,10 +101,17 @@ Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
 }
 
 Boolspeed makeCastleLong(Move::Type move, Board::Type& board) {
-    Board::enpassant(board, Enpassant::null);
-
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    --board.depth;
+
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, Enpassant::null);
 
     Board::setPiece(board, board.squares[from], to);
     Board::removePiece(board, from);
@@ -105,10 +136,17 @@ Boolspeed makeCastleLong(Move::Type move, Board::Type& board) {
 }
 
 Boolspeed makeCastleShort(Move::Type move, Board::Type& board) {
-    Board::enpassant(board, Enpassant::null);
-
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    --board.depth;
+
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+
+    Color::invert(board.turn);
+
+    Board::enpassant(board, Enpassant::null);
 
     Board::setPiece(board, board.squares[from], to);
     Board::removePiece(board, from);
@@ -143,16 +181,6 @@ Boolspeed (*specialMake[6])(Move::Type, Board::Type&) = {
 
 //@TODO(FAST): Make it template
 Boolspeed Move::make(Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-    const auto oldCastle = Board::castle(board);
-
-    --board.depth;
-
-    Board::castle(board, oldCastle & castleChanging[from][to]);
-
-    Color::invert(board.turn);
-
     const auto specialIndex = Move::special(move);
     return specialMake[specialIndex](move, board);    
 }
@@ -160,7 +188,7 @@ Boolspeed Move::make(Type move, Board::Type& board) {
 void Move::unmake(Type move, Board::Type& board) {
     Color::invert(board.turn);
 
-    //@TODO: Coord::getFrom
+    //@TODO: Coord::getFrom, getTo
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
