@@ -6,32 +6,20 @@
 
 using namespace Board;
 
-void Board::castle(Type& board, const Castle::Type castle) {
-    board.info[board.depth].castle = castle;
-}
-
-void Board::enpassant(Type& board, const Enpassant::Type enpassant) {
-    board.info[board.depth].enpassant = enpassant;
-}
-
-void setCastleAll(Type& board, const Castle::Type castle) {
-    for (UNumspeed depth = 0; depth <= MAX_DEPTH; ++depth) {
-        board.info[depth].castle = castle;
-    }
-}
-
-void setEnpassantAll(Type& board, const Enpassant::Type enpassant) {
-    for (UNumspeed depth = 0; depth <= MAX_DEPTH; ++depth) {
-        board.info[depth].enpassant = enpassant;
-    }
-}
-
 Castle::Type Board::castle(const Type& board) {
     return board.info[board.depth].castle;
 }
 
+void Board::castle(Type& board, const Castle::Type castle) {
+    board.info[board.depth].castle = castle;
+}
+
 Enpassant::Type Board::enpassant(const Type& board) {
     return board.info[board.depth].enpassant;
+}
+
+void Board::enpassant(Type& board, const Enpassant::Type enpassant) {
+    board.info[board.depth].enpassant = enpassant;
 }
 
 void setPositionFromFen(Type &board, const std::string fen) {
@@ -110,6 +98,8 @@ void Board::removePiece(Type &board, const Coord::Type coord) {
 void Board::setFromFen(Type &board, const std::string fen) {
     std::stringstream fenStream(fen);
 
+    board.depth = MAX_DEPTH;
+
     std::string positionPart;
     fenStream >> positionPart;
     setPositionFromFen(board, positionPart);
@@ -120,11 +110,11 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
     std::string castlePart;
     fenStream >> castlePart;
-    setCastleAll(board, Castle::fromString(castlePart));
+    castle(board, Castle::fromString(castlePart));
 
     std::string enapassantPart;
     fenStream >> enapassantPart;
-    setEnpassantAll(board, Enpassant::fromString(enapassantPart));
+    enpassant(board, Enpassant::fromString(enapassantPart));
 
     UNumspeed halfmoveClockPart;
     fenStream >> halfmoveClockPart;
@@ -148,6 +138,17 @@ std::string Board::toFen(const Type &board) {
     return resultStream.str();
 }
 
-std::string Board::show(const Type&) {
-    return "@TODO(IMPORTANT): Write Board::show() function";
+std::string Board::show(const Type& board) {
+    std::string result;
+    result.reserve(64+8);
+
+    forRawYCoords(y) {
+        forRawXCoords(x) {
+            result += Piece::show(board.squares[x|y]);
+        }
+
+        result += "\n";
+    }
+
+    return result;
 }

@@ -30,11 +30,11 @@ namespace Board {
         Info info[MAX_DEPTH+1];
     };
 
-    void castle(Type&, const Castle::Type);
-    void enpassant(Type&, const Enpassant::Type);
-
     Castle::Type castle(const Type&);
+    void castle(Type&, const Castle::Type);
+
     Enpassant::Type enpassant(const Type&);
+    void enpassant(Type&, const Enpassant::Type);
 
     void setPiece(Type&, const Piece::Type, const Coord::Type);
     void removePiece(Type&, const Coord::Type);
