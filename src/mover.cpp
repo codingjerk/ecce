@@ -105,118 +105,98 @@ Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
-Boolspeed makeCastleWhiteLong(Move::Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
+Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
     --board.depth;
 
-    Board::castle(board, oldCastle & castleChanging[from][to]);
+    Board::castle(board, oldCastle & ~(Castle::whiteKing | Castle::whiteQueen));
 
     Color::invert(board.turn);
 
     Board::enpassant(board, Enpassant::null);
 
-    Board::setPiece(board, board.squares[from], to);
-    Board::removePiece(board, from);
+    Board::setPiece(board, board.squares[Coord::E1], Coord::C1);
+    Board::removePiece(board, Coord::E1);
 
-    const Coord::Type rookFrom = Coord::fromString("a1");
-    const Coord::Type rookTo   = Coord::fromString("d1");
+    Board::setPiece(board, board.squares[Coord::A1], Coord::D1);
+    Board::removePiece(board, Coord::A1);
 
-    Board::setPiece(board, board.squares[rookFrom], rookTo);
-    Board::removePiece(board, rookFrom);
-
-    if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, to))     return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, from))   return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, Coord::D1)) return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, Coord::C1)) return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
 }
 
-Boolspeed makeCastleWhiteShort(Move::Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
+Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
     --board.depth;
 
-    Board::castle(board, oldCastle & castleChanging[from][to]);
+    Board::castle(board, oldCastle & ~Castle::white);
 
     Color::invert(board.turn);
 
     Board::enpassant(board, Enpassant::null);
 
-    Board::setPiece(board, board.squares[from], to);
-    Board::removePiece(board, from);
+    Board::setPiece(board, board.squares[Coord::E1], Coord::G1);
+    Board::removePiece(board, Coord::E1);
 
-    const Coord::Type rookFrom = Coord::fromString("h1");
-    const Coord::Type rookTo   = Coord::fromString("f1");
+    Board::setPiece(board, board.squares[Coord::H1], Coord::F1);
+    Board::removePiece(board, Coord::H1);
 
-    Board::setPiece(board, board.squares[rookFrom], rookTo);
-    Board::removePiece(board, rookFrom);
-
-    if (Checker::isAttacked<White>(board, rookTo)) return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, to))     return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, from))   return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, Coord::F1)) return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, Coord::G1))     return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, Coord::E1))   return makeBoolspeed(0);
 
     return makeBoolspeed(1);
 }
 
-Boolspeed makeCastleBlackLong(Move::Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
+Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
     --board.depth;
 
-    Board::castle(board, oldCastle & castleChanging[from][to]);
+    Board::castle(board, oldCastle & ~Castle::black);
 
     Color::invert(board.turn);
 
     Board::enpassant(board, Enpassant::null);
 
-    Board::setPiece(board, board.squares[from], to);
-    Board::removePiece(board, from);
+    Board::setPiece(board, board.squares[Coord::E8], Coord::C8);
+    Board::removePiece(board, Coord::E8);
 
-    const Coord::Type rookFrom = Coord::fromString("a8");
-    const Coord::Type rookTo   = Coord::fromString("d8");
+    Board::setPiece(board, board.squares[Coord::A8], Coord::D8);
+    Board::removePiece(board, Coord::A8);
 
-    Board::setPiece(board, board.squares[rookFrom], rookTo);
-    Board::removePiece(board, rookFrom);
-
-    if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
-    if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
-    if (Checker::isAttacked<Black>(board, from)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, Coord::D8)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, Coord::C8)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
 }
 
-Boolspeed makeCastleBlackShort(Move::Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
+Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
     --board.depth;
 
-    Board::castle(board, oldCastle & castleChanging[from][to]);
+    Board::castle(board, oldCastle & ~Castle::black);
 
     Color::invert(board.turn);
 
     Board::enpassant(board, Enpassant::null);
 
-    Board::setPiece(board, board.squares[from], to);
-    Board::removePiece(board, from);
+    Board::setPiece(board, board.squares[Coord::E8], Coord::G8);
+    Board::removePiece(board, Coord::E8);
 
-    const Coord::Type rookFrom = Coord::fromString("h8");
-    const Coord::Type rookTo   = Coord::fromString("f8");
+    Board::setPiece(board, board.squares[Coord::H8], Coord::F8);
+    Board::removePiece(board, Coord::H8);
 
-    Board::setPiece(board, board.squares[rookFrom], rookTo);
-    Board::removePiece(board, rookFrom);
-
-    if (Checker::isAttacked<Black>(board, rookTo)) return makeBoolspeed(0);
-    if (Checker::isAttacked<Black>(board, to)) return makeBoolspeed(0);
-    if (Checker::isAttacked<Black>(board, from)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, Coord::F8)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, Coord::G8)) return makeBoolspeed(0);
+    if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
 }
@@ -253,76 +233,52 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
     if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
-void unmakeCastleWhiteShort(Move::Type move, Board::Type& board) {
+void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
     Color::invert(board.turn);
 
     ++board.depth;
 
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
+    Board::setPiece(board, board.squares[Coord::G1], Coord::E1);
+    Board::removePiece(board, Coord::G1);
 
-    Board::setPiece(board, board.squares[to], from);
-    Board::removePiece(board, to);
-
-    const Coord::Type rookFrom = Coord::fromString("h1");
-    const Coord::Type rookTo   = Coord::fromString("f1");
-
-    Board::setPiece(board, board.squares[rookTo], rookFrom);
-    Board::removePiece(board, rookTo);
+    Board::setPiece(board, board.squares[Coord::F1], Coord::H1);
+    Board::removePiece(board, Coord::F1);
 }
 
-void unmakeCastleWhiteLong(Move::Type move, Board::Type& board) {
+void unmakeCastleWhiteLong(Move::Type, Board::Type& board) {
     Color::invert(board.turn);
 
     ++board.depth;
 
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
+    Board::setPiece(board, board.squares[Coord::C1], Coord::E1);
+    Board::removePiece(board, Coord::C1);
 
-    Board::setPiece(board, board.squares[to], from);
-    Board::removePiece(board, to);
-
-    const Coord::Type rookFrom = Coord::fromString("a1");
-    const Coord::Type rookTo   = Coord::fromString("d1");
-
-    Board::setPiece(board, board.squares[rookTo], rookFrom);
-    Board::removePiece(board, rookTo);
+    Board::setPiece(board, board.squares[Coord::D1], Coord::A1);
+    Board::removePiece(board, Coord::D1);
 }
 
-void unmakeCastleBlackShort(Move::Type move, Board::Type& board) {
+void unmakeCastleBlackShort(Move::Type, Board::Type& board) {
     Color::invert(board.turn);
 
     ++board.depth;
 
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
+    Board::setPiece(board, board.squares[Coord::G8], Coord::E8);
+    Board::removePiece(board, Coord::G8);
 
-    Board::setPiece(board, board.squares[to], from);
-    Board::removePiece(board, to);
-
-    const Coord::Type rookFrom = Coord::fromString("h8");
-    const Coord::Type rookTo   = Coord::fromString("f8");
-
-    Board::setPiece(board, board.squares[rookTo], rookFrom);
-    Board::removePiece(board, rookTo);
+    Board::setPiece(board, board.squares[Coord::F8], Coord::H8);
+    Board::removePiece(board, Coord::F8);
 }
 
-void unmakeCastleBlackLong(Move::Type move, Board::Type& board) {
+void unmakeCastleBlackLong(Move::Type, Board::Type& board) {
     Color::invert(board.turn);
 
     ++board.depth;
 
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
+    Board::setPiece(board, board.squares[Coord::C8], Coord::E8);
+    Board::removePiece(board, Coord::C8);
 
-    Board::setPiece(board, board.squares[to], from);
-    Board::removePiece(board, to);
-
-    const Coord::Type rookFrom = Coord::fromString("a8");
-    const Coord::Type rookTo   = Coord::fromString("d8");
-
-    Board::setPiece(board, board.squares[rookTo], rookFrom);
-    Board::removePiece(board, rookTo);
+    Board::setPiece(board, board.squares[Coord::D8], Coord::A8);
+    Board::removePiece(board, Coord::D8);
 }
 
 void unmakePawnDouble(Move::Type move, Board::Type& board) {
