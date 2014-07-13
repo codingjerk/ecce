@@ -17,7 +17,7 @@ using Nummax = signed long long;
 using UNummax = unsigned long long;
 
 // --- Additional macroses to making values
-#define makeBoolspeed(num) num##ll
+#define makeBoolspeed(num) num##ull
 
 #define makeNum64(num) num##ll
 #define makeUNum64(num) num##ull
@@ -33,8 +33,9 @@ using UNummax = unsigned long long;
 
 // --- Main definitions ---
 #define DEBUGMODE
+#undef DEBUGMODE
 
-const UNumspeed MAX_DEPTH = makeUNumspeed(100);
+const UNumspeed MAX_DEPTH = makeUNumspeed(50);
 
 // --- Usefull macroses ---
 #define SHOW(var) std::cout << #var << " = " << var << "\n";
