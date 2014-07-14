@@ -201,7 +201,7 @@ int main(int, char**) {
         CHECK(Perft::perft_quiet(moves, board, 3) == 8902);
         CHECK(Perft::perft_quiet(moves, board, 4) == 197281);
         CHECK(Perft::perft_quiet(moves, board, 5) == 4865609);
-        //CHECK(Perft::perft_quiet(moves, board, 6) == 119060324);
+        CHECK(Perft::perft_quiet(moves, board, 6) == 119060324);
         //CHECK(Perft::perft(moves, board, 7) == 3195901860);
         //CHECK(Perft::perft(moves, board, 8) == 84998978956);
 
