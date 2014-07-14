@@ -6,22 +6,6 @@
 
 using namespace Board;
 
-Castle::Type Board::castle(const Type& board) {
-    return board.info[board.depth].castle;
-}
-
-void Board::castle(Type& board, const Castle::Type castle) {
-    board.info[board.depth].castle = castle;
-}
-
-Enpassant::Type Board::enpassant(const Type& board) {
-    return board.info[board.depth].enpassant;
-}
-
-void Board::enpassant(Type& board, const Enpassant::Type enpassant) {
-    board.info[board.depth].enpassant = enpassant;
-}
-
 void setPositionFromFen(Type &board, const std::string fen) {
     for (auto& bitboard: board.bitboards) {
         bitboard = Bitboard::null;
@@ -77,22 +61,6 @@ std::string getFenPosition(const Type &board) {
     }
 
     return result;
-}
-
-void Board::setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {
-    ASSERT(board.squares[coord] == Piece::null);
-
-    board.bitboards[piece] |= Bitboard::fromCoord(coord);
-    board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
-    board.squares[coord] = piece; 
-}
-
-void Board::removePiece(Type &board, const Coord::Type coord) {
-    ASSERT(board.squares[coord] != Piece::null);
-
-    board.bitboards[board.squares[coord]] ^= Bitboard::fromCoord(coord);
-    board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
-    board.squares[coord] = Piece::null; 
 }
 
 void Board::setFromFen(Type &board, const std::string fen) {

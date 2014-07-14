@@ -30,14 +30,33 @@ namespace Board {
         Info info[MAX_DEPTH+1];
     };
 
-    Castle::Type castle(const Type&);
-    void castle(Type&, const Castle::Type);
+    inline Castle::Type castle(const Type& board) {
+        return board.info[board.depth].castle;
+    }
+    
+    inline void castle(Type& board, const Castle::Type castle) {
+        board.info[board.depth].castle = castle;
+    }
+    
+    inline Enpassant::Type enpassant(const Type& board) {
+        return board.info[board.depth].enpassant;
+    }
+    
+    inline void enpassant(Type& board, const Enpassant::Type enpassant) {
+        board.info[board.depth].enpassant = enpassant;
+    }
 
-    Enpassant::Type enpassant(const Type&);
-    void enpassant(Type&, const Enpassant::Type);
+    inline void setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {
+        board.bitboards[piece] |= Bitboard::fromCoord(coord);
+        board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
+        board.squares[coord] = piece; 
+    }
 
-    void setPiece(Type&, const Piece::Type, const Coord::Type);
-    void removePiece(Type&, const Coord::Type);
+    inline void removePiece(Type &board, const Coord::Type coord) {
+        board.bitboards[board.squares[coord]] ^= Bitboard::fromCoord(coord);
+        board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
+        board.squares[coord] = Piece::null; 
+    }
 
     void setFromFen(Type&, const std::string);
     std::string toFen(const Type&);
