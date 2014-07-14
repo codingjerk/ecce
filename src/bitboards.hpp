@@ -24,8 +24,14 @@ namespace Bitboard {
     }
 
     inline UNumspeed bitScan(Type bitboard) {
-        asm("bsfq %0, %0": "=r" (bitboard): "0" (bitboard));
-        return bitboard;
+        #ifdef OSLINUX
+            asm("bsfq %0, %0": "=r" (bitboard): "0" (bitboard));
+            return bitboard;
+        #else
+            unsigned long result;
+            _BitScanForward64(&result, bitboard);
+            return result;
+        #endif
     }
 
     inline UNumspeed enabledCount(Type bitboard) {
