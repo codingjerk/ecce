@@ -78,8 +78,8 @@ void Tables::initTables() {
         for (Numspeed xDirection = -1; xDirection <= 1; xDirection += 2)
         for (Numspeed yDirection = -1; yDirection <= 1; yDirection += 2) {
             for (Numspeed delta = makeNumspeed(1); delta <= makeNumspeed(7); ++delta) {
-                if (UNumspeed(x + delta*xDirection) <= makeUNumspeed(7) && UNumspeed(y + delta*yDirection) <= makeUNumspeed(7)
-                 && UNumspeed(x + delta*xDirection) >= makeUNumspeed(0) && UNumspeed(y + delta*yDirection) >= makeUNumspeed(0)) {
+                if (UNumspeed(x + delta*xDirection) <= makeUNumspeed(7) 
+                 && UNumspeed(y + delta*yDirection) <= makeUNumspeed(7)) {
                     auto to = Coord::create(x + delta*xDirection, y + delta*yDirection);
                     toBits |= Bitboard::fromCoord(to);
                 }

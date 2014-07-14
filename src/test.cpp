@@ -185,7 +185,7 @@ int main(int, char**) {
     buffer[0] = 0;
     Generator::forBoard(buffer, board);
     total = buffer[0];
-    for (int i = 1; i <= total; ++i) {
+    for (unsigned int i = 1; i <= total; ++i) {
         Move::make(buffer[i], board);
         Move::unmake(buffer[i], board);
         CHECK(Board::toFen(board) == Board::toFen(boardMain));
