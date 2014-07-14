@@ -8,6 +8,7 @@
 #include "generator.hpp"
 #include "mover.hpp"
 #include "checker.hpp"
+#include "evaluation.hpp"
 
 #include "perft.hpp"
 
@@ -191,7 +192,7 @@ int main(int, char**) {
         CHECK(Board::toFen(board) == Board::toFen(boardMain));
     }
 
-    auto const COMPLEX_PERFT_TESTING = true;
+    auto const COMPLEX_PERFT_TESTING = false;
     if (COMPLEX_PERFT_TESTING) {
         Generator::MoveBuffer *moves = new Generator::MoveBuffer[MAX_DEPTH];
 
@@ -210,7 +211,7 @@ int main(int, char**) {
         CHECK(Perft::perft_quiet(moves, board, 2) == 2039);
         CHECK(Perft::perft_quiet(moves, board, 3) == 97862);
         CHECK(Perft::perft_quiet(moves, board, 4) == 4085603);
-        //CHECK(Perft::perft_quiet(moves, board, 5) == 193690690);
+        CHECK(Perft::perft_quiet(moves, board, 5) == 193690690);
 
         Board::setFromFen(board, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1");
         CHECK(Perft::perft_quiet(moves, board, 1) == 14);
@@ -218,7 +219,7 @@ int main(int, char**) {
         CHECK(Perft::perft_quiet(moves, board, 3) == 2812);
         CHECK(Perft::perft_quiet(moves, board, 4) == 43238);
         CHECK(Perft::perft_quiet(moves, board, 5) == 674624);
-        //CHECK(Perft::perft_quiet(moves, board, 6) == 11030083);
+        CHECK(Perft::perft_quiet(moves, board, 6) == 11030083);
         //CHECK(Perft::perft_quiet(moves, board, 7) == 178633661);
 
         Board::setFromFen(board, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
@@ -226,7 +227,7 @@ int main(int, char**) {
         CHECK(Perft::perft_quiet(moves, board, 2) == 264);
         CHECK(Perft::perft_quiet(moves, board, 3) == 9467);
         CHECK(Perft::perft_quiet(moves, board, 4) == 422333);
-        //CHECK(Perft::perft_quiet(moves, board, 5) == 15833292);
+        CHECK(Perft::perft_quiet(moves, board, 5) == 15833292);
 
         Board::setFromFen(board, "rnbqkb1r/pp1p1ppp/2p5/4P3/2B5/8/PPP1NnPP/RNBQK2R w KQkq - 0 6");
         CHECK(Perft::perft_quiet(moves, board, 1) == 42);
@@ -240,6 +241,16 @@ int main(int, char**) {
         CHECK(Perft::perft_quiet(moves, board, 4) == 3894594);
         //CHECK(Perft::perft_quiet(moves, board, 5) == 164075551);
     }
+
+    SECTION(Evaluation);
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    CHECK(Eval::material<White>(board) == 0);
+    CHECK(Eval::material<Black>(board) == 0);
+
+    Board::removePiece(board, Coord::E2);
+
+    CHECK(Eval::material<White>(board) == -Score::Pawn);
+    CHECK(Eval::material<Black>(board) == Score::Pawn);
 
     RESULTS;
 }
