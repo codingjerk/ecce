@@ -248,9 +248,12 @@ int main(int, char**) {
     CHECK(Eval::material<Black>(board) == 0);
 
     Board::removePiece(board, Coord::E2);
-
     CHECK(Eval::material<White>(board) == -Score::Pawn);
     CHECK(Eval::material<Black>(board) == Score::Pawn);
+
+    Board::removePiece(board, Coord::A8);
+    CHECK(Eval::material<White>(board) == Score::Rook - Score::Pawn);
+    CHECK(Eval::material<Black>(board) == Score::Pawn - Score::Rook);
 
     RESULTS;
 }
