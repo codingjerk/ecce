@@ -4,7 +4,7 @@
 #include "core.hpp"
 
 namespace Score {
-    using Type = UNumspeed;
+    using Type = Numspeed;
 
     const Type Pawn   = 10000;
     const Type Knight = 30000;
