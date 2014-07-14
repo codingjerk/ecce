@@ -22,6 +22,8 @@ namespace Castle {
     const Type white = whiteKing | whiteQueen;
     const Type black = blackKing | blackQueen;
 
+    const Type all = white | black;
+
     const Type null = 0;
 
     const UNumspeed usedBits = 4;

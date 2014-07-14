@@ -397,9 +397,6 @@ void (*Move::specialUnmakeBlack[6])(Move::Type, Board::Type&) = {
 };
 
 void Move::initTables() {
-    const Castle::Type castleAll = Castle::fromString("KQkq");
-    const Castle::Type castleNone = Castle::fromString("-");
-
     forCoord(x)
     forCoord(y) {
         const auto from = Coord::create(x, y);
@@ -408,14 +405,14 @@ void Move::initTables() {
         forCoord(y) {
             const auto to = Coord::create(x, y);
 
-            auto castle = castleAll;
+            auto castle = Castle::all;
 
             if (from == Coord::E8 || to == Coord::E8) {
-                castle &= ~(Castle::blackQueen | Castle::blackKing);
+                castle &= ~(Castle::black);
             } 
 
             if (from == Coord::E1 || to == Coord::E1) {
-                castle &= ~(Castle::whiteQueen | Castle::whiteKing);
+                castle &= ~(Castle::white);
             } 
 
             if (from == Coord::A8 || to == Coord::A8) {
