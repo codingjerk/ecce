@@ -258,7 +258,7 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
 
     Board::setPiece(board, board.squares[to], from);
     Board::removePiece(board, to);
-    //@TODO: Move::getCaptured
+    
     if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
