@@ -18,32 +18,32 @@ namespace Board {
     };
 
     struct Type {
-        Bitboard::Type bitboards[makeUNumspeed(1) << Piece::usedBits] = {Bitboard::null};
-        Piece::Type squares[makeUNumspeed(1) << Coord::usedBits] = {Piece::null};
+        Bitboard::Type bitboards[makeUNumspeed(1) << Piece::usedBits];
+        Piece::Type squares[makeUNumspeed(1) << Coord::usedBits];
         
         Color::Type turn = Black;
 
         UNumspeed halfmoveClock = makeUNumspeed(0);
         UNumspeed fullmoveNumber = makeUNumspeed(1);
 
-        UNumspeed depth = MAX_DEPTH;
         Info info[MAX_DEPTH+1];
+        Info *depthPtr = info;
     };
 
     inline Castle::Type castle(const Type& board) {
-        return board.info[board.depth].castle;
+        return board.depthPtr->castle;
     }
     
     inline void castle(Type& board, const Castle::Type castle) {
-        board.info[board.depth].castle = castle;
+        board.depthPtr->castle = castle;
     }
     
     inline Enpassant::Type enpassant(const Type& board) {
-        return board.info[board.depth].enpassant;
+        return board.depthPtr->enpassant;
     }
     
     inline void enpassant(Type& board, const Enpassant::Type enpassant) {
-        board.info[board.depth].enpassant = enpassant;
+        board.depthPtr->enpassant = enpassant;
     }
 
     inline void setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {

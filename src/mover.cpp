@@ -14,7 +14,7 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
 
@@ -36,7 +36,7 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
 
@@ -59,7 +59,7 @@ Boolspeed makePawnDoubleWhite(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle);
 
@@ -79,7 +79,7 @@ Boolspeed makePawnDoubleBlack(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle);
 
@@ -99,7 +99,7 @@ Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle);
 
@@ -119,7 +119,7 @@ Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle);
 
@@ -137,7 +137,7 @@ Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
 Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~(Castle::whiteKing | Castle::whiteQueen));
 
@@ -161,7 +161,7 @@ Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
 Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::white);
 
@@ -185,7 +185,7 @@ Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
 Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::black);
 
@@ -209,7 +209,7 @@ Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
 Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
-    --board.depth;
+    ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::black);
 
@@ -251,7 +251,7 @@ Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
 void unmakeUsual(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -265,7 +265,7 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
 void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     Board::setPiece(board, board.squares[Coord::G1], Coord::E1);
     Board::removePiece(board, Coord::G1);
@@ -277,7 +277,7 @@ void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
 void unmakeCastleWhiteLong(Move::Type, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     Board::setPiece(board, board.squares[Coord::C1], Coord::E1);
     Board::removePiece(board, Coord::C1);
@@ -289,7 +289,7 @@ void unmakeCastleWhiteLong(Move::Type, Board::Type& board) {
 void unmakeCastleBlackShort(Move::Type, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     Board::setPiece(board, board.squares[Coord::G8], Coord::E8);
     Board::removePiece(board, Coord::G8);
@@ -301,7 +301,7 @@ void unmakeCastleBlackShort(Move::Type, Board::Type& board) {
 void unmakeCastleBlackLong(Move::Type, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     Board::setPiece(board, board.squares[Coord::C8], Coord::E8);
     Board::removePiece(board, Coord::C8);
@@ -313,7 +313,7 @@ void unmakeCastleBlackLong(Move::Type, Board::Type& board) {
 void unmakePawnDouble(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -325,7 +325,7 @@ void unmakePawnDouble(Move::Type move, Board::Type& board) {
 void unmakePromotionWhite(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -340,7 +340,7 @@ void unmakePromotionWhite(Move::Type move, Board::Type& board) {
 void unmakePromotionBlack(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -355,7 +355,7 @@ void unmakePromotionBlack(Move::Type move, Board::Type& board) {
 void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -368,7 +368,7 @@ void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
 void unmakeEnpassantBlack(Move::Type move, Board::Type& board) {
     Color::invert(board.turn);
 
-    ++board.depth;
+    --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;

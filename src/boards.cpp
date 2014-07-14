@@ -66,7 +66,7 @@ std::string getFenPosition(const Type &board) {
 void Board::setFromFen(Type &board, const std::string fen) {
     std::stringstream fenStream(fen);
 
-    board.depth = MAX_DEPTH;
+    board.depthPtr = board.info;
 
     std::string positionPart;
     fenStream >> positionPart;
