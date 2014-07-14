@@ -25,26 +25,6 @@ std::string Bitboard::show(const Type bitboard) {
     return result;
 }
 
-UNumspeed Bitboard::bitScan(Type bitboard) {
-    ASSERT(bitboard != Bitboard::null);
-
-    asm("bsfq %0, %0": "=r" (bitboard): "0" (bitboard));
-    return bitboard;
-}
-
-UNumspeed Bitboard::enabledCount(Type bitboard) {
-    UNumspeed result = 0;
-
-    while (bitboard != Bitboard::null) {
-        auto const bit = bitScan(bitboard);
-        bitboard ^= fromIndex(bit);
-
-        ++result;
-    }
-
-    return result;
-}
-
 void Bitboard::initTables() {
     forRawYCoords(y)
     forRawXCoords(x) {

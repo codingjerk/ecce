@@ -12,6 +12,9 @@ namespace Bitboard {
 
     void initTables();
 
+    const Type null = makeUNum64(0);
+    const Type full = ~makeUNum64(0);
+
     inline Type fromCoord(const Coord::Type coord) {
         return makeUNum64(1) << coord;
     }
@@ -20,12 +23,23 @@ namespace Bitboard {
         return makeUNum64(1) << index;
     }
 
-    UNumspeed bitScan(Type);
+    inline UNumspeed bitScan(Type bitboard) {
+        asm("bsfq %0, %0": "=r" (bitboard): "0" (bitboard));
+        return bitboard;
+    }
 
-    UNumspeed enabledCount(Type);
+    inline UNumspeed enabledCount(Type bitboard) {
+        UNumspeed result = 0;
 
-    const Type null = makeUNum64(0);
-    const Type full = ~makeUNum64(0);
+        while (bitboard != Bitboard::null) {
+            auto const bit = bitScan(bitboard);
+            bitboard ^= fromIndex(bit);
+
+            ++result;
+        }
+
+        return result;
+    }
 
     extern Type upLine;
     extern Type downLine;
