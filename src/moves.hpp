@@ -65,7 +65,9 @@ namespace Move {
 
     template <Color::Type COLOR>
     inline Type enpassant(const Coord::Type from, const Coord::Type to) {
-        return create(from, to, Piece::create(Color::inv(COLOR), Pawn)) 
+        const auto OPP = COLOR == White? Black: White; // Color::inv is bad idea with templates
+
+        return create(from, to, Piece::create(OPP, Pawn)) 
              | (enpassantFlag << specialOffset);
     }
 
