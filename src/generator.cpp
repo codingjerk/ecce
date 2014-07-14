@@ -157,9 +157,9 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
     const auto onestep = (pawns << makeUNum64(8)) & legalSquares;
 
     UNumspeed bitIndex;
-    auto legals = onestep;
-    while(legals != Bitboard::null) {
-        bitIndex = Bitboard::bitScan(legals);
+    auto workingBB = onestep;
+    while(workingBB != Bitboard::null) {
+        bitIndex = Bitboard::bitScan(workingBB);
         
         if (bitIndex >= 56ull) { //Pawn goes at last line
             buffer[0] += 4;
@@ -172,28 +172,28 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
             buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 8ull), Coord::Type(bitIndex));
         }
 
-        legals ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromIndex(bitIndex);
     }
 
-    auto twosteps = pawns & Tables::pawnStartLine[White];
-    twosteps &= onestep >> 8ull;
-    twosteps = (twosteps << 16ull) & legalSquares; 
-    while(twosteps != Bitboard::null) {
-        bitIndex = Bitboard::bitScan(twosteps);
+    workingBB = pawns & Tables::pawnStartLine[White];
+    workingBB &= onestep >> 8ull;
+    workingBB = (workingBB << 16ull) & legalSquares; 
+    while(workingBB != Bitboard::null) {
+        bitIndex = Bitboard::bitScan(workingBB);
         
         ++buffer[0];
         buffer[buffer[0]] = Move::pawnDouble(Coord::Type(bitIndex - 16ull), Coord::Type(bitIndex));
 
-        twosteps ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromIndex(bitIndex);
     }
 
-    auto leftCaptures = pawns & ~Bitboard::leftLine;
-    leftCaptures <<= 8ull;
-    leftCaptures >>= 1ull;
-    auto leftCapturesEp = leftCaptures;
-    leftCaptures &= board.bitboards[Black];
-    while(leftCaptures != Bitboard::null) {
-        bitIndex = Bitboard::bitScan(leftCaptures);
+    workingBB = pawns & ~Bitboard::leftLine;
+    workingBB <<= 8ull;
+    workingBB >>= 1ull;
+    auto leftCapturesEp = workingBB;
+    workingBB &= board.bitboards[Black];
+    while(workingBB != Bitboard::null) {
+        bitIndex = Bitboard::bitScan(workingBB);
         const auto to = Coord::Type(bitIndex);
         
         if (bitIndex >= 56ull) { //Pawn goes at last line
@@ -207,16 +207,16 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
             buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull - 8ull), to, board.squares[to]);
         }
 
-        leftCaptures ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromIndex(bitIndex);
     }
 
-    auto rightCaptures = pawns & ~Bitboard::rightLine;
-    rightCaptures <<= 8ull;
-    rightCaptures <<= 1ull;
-    auto rightCapturesEp = rightCaptures;
-    rightCaptures &= board.bitboards[Black];
-    while(rightCaptures != Bitboard::null) {
-        bitIndex = Bitboard::bitScan(rightCaptures);
+    workingBB = pawns & ~Bitboard::rightLine;
+    workingBB <<= 8ull;
+    workingBB <<= 1ull;
+    auto rightCapturesEp = workingBB;
+    workingBB &= board.bitboards[Black];
+    while(workingBB != Bitboard::null) {
+        bitIndex = Bitboard::bitScan(workingBB);
         const auto to = Coord::Type(bitIndex);
         
         if (bitIndex >= 56ull) { //Pawn goes at last line
@@ -230,22 +230,22 @@ void forPawns<White>(MoveBuffer &buffer, const Board::Type &board) {
             buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull - 8ull), to, board.squares[to]);
         }
 
-        rightCaptures ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromIndex(bitIndex);
     }
 
     if (Board::enpassant(board) != Enpassant::null) {
-        const auto bitIndex = Board::enpassant(board);
-        Bitboard::Type enpassantBitboard = Bitboard::fromIndex(bitIndex);
+        bitIndex = Board::enpassant(board);
+        workingBB = Bitboard::fromIndex(bitIndex);
         const auto to = Coord::Type(bitIndex);
 
-        leftCapturesEp &= enpassantBitboard;
-        if (leftCapturesEp != Bitboard::null) {
+        leftCapturesEp &= workingBB;
+        if (leftCapturesEp) {
             ++buffer[0];
             buffer[buffer[0]] = Move::enpassant<White>(Coord::Type(bitIndex + 1ull - 8ull), to);
         }
 
-        rightCapturesEp &= enpassantBitboard;
-        if (rightCapturesEp != Bitboard::null) {
+        rightCapturesEp &= workingBB;
+        if (rightCapturesEp) {
             ++buffer[0];
             buffer[buffer[0]] = Move::enpassant<White>(Coord::Type(bitIndex - 1ull - 8ull), to);
         }
@@ -259,9 +259,10 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
     const auto pawns = board.bitboards[Piece::create(Black, Pawn)];
     const auto onestep = (pawns >> makeUNum64(8)) & legalSquares;
 
-    auto legals = onestep;
-    while(legals != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(legals);
+    UNumspeed bitIndex;
+    auto workingBB = onestep;
+    while(workingBB != Bitboard::null) {
+        bitIndex = Bitboard::bitScan(workingBB);
 
         if (bitIndex < 8ull) { //Pawn goes at last line
             buffer[0] += 4;
@@ -274,29 +275,26 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
             buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 8ull), Coord::Type(bitIndex));
         }
         
-        legals ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromIndex(bitIndex);
     }
 
-    const auto startpawns = pawns & Tables::pawnStartLine[Black];
-    auto twosteps = startpawns;
-    twosteps &= onestep << 8ull;
-    twosteps = (twosteps >> 16ull) & legalSquares; 
-    while(twosteps != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(twosteps);
+    workingBB = pawns & Tables::pawnStartLine[Black];
+    workingBB &= onestep << 8ull;
+    workingBB = (workingBB >> 16ull) & legalSquares; 
+    while(workingBB != Bitboard::null) {
+        bitIndex = Bitboard::bitScan(workingBB);
 
         ++buffer[0];
         buffer[buffer[0]] = Move::pawnDouble(Coord::Type(bitIndex + 16ull), Coord::Type(bitIndex));
 
-        twosteps ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromIndex(bitIndex);
     }
 
-    auto leftCaptures = pawns & ~Bitboard::leftLine;
-    leftCaptures >>= 8ull;
-    leftCaptures >>= 1ull;
-    auto leftCapturesEp = leftCaptures;
-    leftCaptures &= board.bitboards[White];
-    while(leftCaptures != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(leftCaptures);
+    workingBB = (pawns & ~Bitboard::leftLine) >> 9ull;
+    auto leftCapturesEp = workingBB;
+    workingBB &= board.bitboards[White];
+    while(workingBB != Bitboard::null) {
+        bitIndex = Bitboard::bitScan(workingBB);
         const auto to = Coord::Type(bitIndex);
 
         if (bitIndex < 8ull) { //Pawn goes at last line
@@ -310,16 +308,14 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
             buffer[buffer[0]] = Move::create(Coord::Type(bitIndex + 1ull + 8ull), to, board.squares[to]);
         }
 
-        leftCaptures ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromIndex(bitIndex);
     }
 
-    auto rightCaptures = pawns & ~Bitboard::rightLine;
-    rightCaptures >>= 8ull;
-    rightCaptures <<= 1ull;
-    auto rightCapturesEp = rightCaptures;
-    rightCaptures &= board.bitboards[White];
-    while(rightCaptures != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(rightCaptures);
+    workingBB = (pawns & ~Bitboard::rightLine) >> 7ull;
+    auto rightCapturesEp = workingBB;
+    workingBB &= board.bitboards[White];
+    while(workingBB != Bitboard::null) {
+        bitIndex = Bitboard::bitScan(workingBB);
         const auto to = Coord::Type(bitIndex);
         
         if (bitIndex < 8ull) { //Pawn goes at last line
@@ -333,22 +329,22 @@ void forPawns<Black>(MoveBuffer &buffer, const Board::Type &board) {
             buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 1ull + 8ull), to, board.squares[to]);
         }
 
-        rightCaptures ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromIndex(bitIndex);
     }
 
     if (Board::enpassant(board) != Enpassant::null) {
-        const auto bitIndex = Board::enpassant(board);
-        Bitboard::Type enpassantBitboard = Bitboard::fromIndex(bitIndex);
+        bitIndex = Board::enpassant(board);
+        workingBB = Bitboard::fromIndex(bitIndex);
         const auto to = Coord::Type(bitIndex);
 
-        leftCapturesEp &= enpassantBitboard;
-        if (leftCapturesEp != Bitboard::null) {
+        leftCapturesEp &= workingBB;
+        if (leftCapturesEp) {
             ++buffer[0];
             buffer[buffer[0]] = Move::enpassant<Black>(Coord::Type(bitIndex + 1ull + 8ull), to);
         }
 
-        rightCapturesEp &= enpassantBitboard;
-        if (rightCapturesEp != Bitboard::null) {
+        rightCapturesEp &= workingBB;
+        if (rightCapturesEp) {
             ++buffer[0];
             buffer[buffer[0]] = Move::enpassant<Black>(Coord::Type(bitIndex - 1ull + 8ull), to);
         }
