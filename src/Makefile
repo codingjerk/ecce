@@ -1,9 +1,9 @@
-CC=clang++
-LD=clang++
+CC=g++
+LD=g++
 
 CCFLAGS=$(CCSTDFLAGS) $(CCWFLAGS) $(CCOFLAGS) 
 CCSTDFLAGS=-std=c++11
-CCWFLAGS=-Wextra
+CCWFLAGS=-Wall -Wextra
 CCOFLAGS=-O3
 
 LDFLAGS=-pthread
