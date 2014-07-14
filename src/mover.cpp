@@ -410,27 +410,27 @@ void Move::initTables() {
 
             auto castle = castleAll;
 
-            if (from == Coord::fromString("e8") || to == Coord::fromString("e8")) {
+            if (from == Coord::E8 || to == Coord::E8) {
                 castle &= ~(Castle::blackQueen | Castle::blackKing);
             } 
 
-            if (from == Coord::fromString("e1") || to == Coord::fromString("e1")) {
+            if (from == Coord::E1 || to == Coord::E1) {
                 castle &= ~(Castle::whiteQueen | Castle::whiteKing);
             } 
 
-            if (from == Coord::fromString("a8") || to == Coord::fromString("a8")) {
+            if (from == Coord::A8 || to == Coord::A8) {
                 castle &= ~(Castle::blackQueen);
             }
 
-            if (from == Coord::fromString("a1") || to == Coord::fromString("a1")) {
+            if (from == Coord::A1 || to == Coord::A1) {
                 castle &= ~(Castle::whiteQueen);
             }
 
-            if (from == Coord::fromString("h8") || to == Coord::fromString("h8")) {
+            if (from == Coord::H8 || to == Coord::H8) {
                 castle &= ~(Castle::blackKing);
             }
 
-            if (from == Coord::fromString("h1") || to == Coord::fromString("h1")) {
+            if (from == Coord::H1 || to == Coord::H1) {
                 castle &= ~(Castle::whiteKing);
             }
 

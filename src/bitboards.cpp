@@ -53,40 +53,40 @@ void Bitboard::initTables() {
         coordToBitboardTable[coord] = bitboard;
     }
 
-    leftLine = Bitboard::fromCoord(Coord::fromString("a1"))
-             | Bitboard::fromCoord(Coord::fromString("a2"))
-             | Bitboard::fromCoord(Coord::fromString("a3"))
-             | Bitboard::fromCoord(Coord::fromString("a4"))
-             | Bitboard::fromCoord(Coord::fromString("a5"))
-             | Bitboard::fromCoord(Coord::fromString("a6"))
-             | Bitboard::fromCoord(Coord::fromString("a7"))
-             | Bitboard::fromCoord(Coord::fromString("a8"));
+    leftLine = Bitboard::fromCoord(Coord::A1)
+             | Bitboard::fromCoord(Coord::A2)
+             | Bitboard::fromCoord(Coord::A3)
+             | Bitboard::fromCoord(Coord::A4)
+             | Bitboard::fromCoord(Coord::A5)
+             | Bitboard::fromCoord(Coord::A6)
+             | Bitboard::fromCoord(Coord::A7)
+             | Bitboard::fromCoord(Coord::A8);
 
-    rightLine = Bitboard::fromCoord(Coord::fromString("h1"))
-              | Bitboard::fromCoord(Coord::fromString("h2"))
-              | Bitboard::fromCoord(Coord::fromString("h3"))
-              | Bitboard::fromCoord(Coord::fromString("h4"))
-              | Bitboard::fromCoord(Coord::fromString("h5"))
-              | Bitboard::fromCoord(Coord::fromString("h6"))
-              | Bitboard::fromCoord(Coord::fromString("h7"))
-              | Bitboard::fromCoord(Coord::fromString("h8"));
+    rightLine = Bitboard::fromCoord(Coord::H1)
+              | Bitboard::fromCoord(Coord::H2)
+              | Bitboard::fromCoord(Coord::H3)
+              | Bitboard::fromCoord(Coord::H4)
+              | Bitboard::fromCoord(Coord::H5)
+              | Bitboard::fromCoord(Coord::H6)
+              | Bitboard::fromCoord(Coord::H7)
+              | Bitboard::fromCoord(Coord::H8);
 
-    upLine = Bitboard::fromCoord(Coord::fromString("a8"))
-           | Bitboard::fromCoord(Coord::fromString("b8"))
-           | Bitboard::fromCoord(Coord::fromString("c8"))
-           | Bitboard::fromCoord(Coord::fromString("d8"))
-           | Bitboard::fromCoord(Coord::fromString("e8"))
-           | Bitboard::fromCoord(Coord::fromString("f8"))
-           | Bitboard::fromCoord(Coord::fromString("g8"))
-           | Bitboard::fromCoord(Coord::fromString("h8"));
+    upLine = Bitboard::fromCoord(Coord::A8)
+           | Bitboard::fromCoord(Coord::B8)
+           | Bitboard::fromCoord(Coord::C8)
+           | Bitboard::fromCoord(Coord::D8)
+           | Bitboard::fromCoord(Coord::E8)
+           | Bitboard::fromCoord(Coord::F8)
+           | Bitboard::fromCoord(Coord::G8)
+           | Bitboard::fromCoord(Coord::H8);
 
 
-    downLine = Bitboard::fromCoord(Coord::fromString("a1"))
-             | Bitboard::fromCoord(Coord::fromString("b1"))
-             | Bitboard::fromCoord(Coord::fromString("c1"))
-             | Bitboard::fromCoord(Coord::fromString("d1"))
-             | Bitboard::fromCoord(Coord::fromString("e1"))
-             | Bitboard::fromCoord(Coord::fromString("f1"))
-             | Bitboard::fromCoord(Coord::fromString("g1"))
-             | Bitboard::fromCoord(Coord::fromString("h1"));
+    downLine = Bitboard::fromCoord(Coord::A1)
+             | Bitboard::fromCoord(Coord::B1)
+             | Bitboard::fromCoord(Coord::C1)
+             | Bitboard::fromCoord(Coord::D1)
+             | Bitboard::fromCoord(Coord::E1)
+             | Bitboard::fromCoord(Coord::F1)
+             | Bitboard::fromCoord(Coord::G1)
+             | Bitboard::fromCoord(Coord::H1);
 }

@@ -171,40 +171,40 @@ void Tables::initTables() {
         pawnCaptureMasks[Black][from] = blackToBits;
     }
 
-    pawnStartLine[White] = Bitboard::fromCoord(Coord::fromString("a2"))
-                         | Bitboard::fromCoord(Coord::fromString("b2"))
-                         | Bitboard::fromCoord(Coord::fromString("c2"))
-                         | Bitboard::fromCoord(Coord::fromString("d2"))
-                         | Bitboard::fromCoord(Coord::fromString("e2"))
-                         | Bitboard::fromCoord(Coord::fromString("f2"))
-                         | Bitboard::fromCoord(Coord::fromString("g2"))
-                         | Bitboard::fromCoord(Coord::fromString("h2"));
+    pawnStartLine[White] = Bitboard::fromCoord(Coord::A2)
+                         | Bitboard::fromCoord(Coord::B2)
+                         | Bitboard::fromCoord(Coord::C2)
+                         | Bitboard::fromCoord(Coord::D2)
+                         | Bitboard::fromCoord(Coord::E2)
+                         | Bitboard::fromCoord(Coord::F2)
+                         | Bitboard::fromCoord(Coord::G2)
+                         | Bitboard::fromCoord(Coord::H2);
 
-    pawnStartLine[Black] = Bitboard::fromCoord(Coord::fromString("a7"))
-                         | Bitboard::fromCoord(Coord::fromString("b7"))
-                         | Bitboard::fromCoord(Coord::fromString("c7"))
-                         | Bitboard::fromCoord(Coord::fromString("d7"))
-                         | Bitboard::fromCoord(Coord::fromString("e7"))
-                         | Bitboard::fromCoord(Coord::fromString("f7"))
-                         | Bitboard::fromCoord(Coord::fromString("g7"))
-                         | Bitboard::fromCoord(Coord::fromString("h7"));
+    pawnStartLine[Black] = Bitboard::fromCoord(Coord::A7)
+                         | Bitboard::fromCoord(Coord::B7)
+                         | Bitboard::fromCoord(Coord::C7)
+                         | Bitboard::fromCoord(Coord::D7)
+                         | Bitboard::fromCoord(Coord::E7)
+                         | Bitboard::fromCoord(Coord::F7)
+                         | Bitboard::fromCoord(Coord::G7)
+                         | Bitboard::fromCoord(Coord::H7);
 
-    castleNeeded[White][King]  = Bitboard::fromCoord(Coord::fromString("f1"))
-                               | Bitboard::fromCoord(Coord::fromString("g1"));
+    castleNeeded[White][King]  = Bitboard::fromCoord(Coord::F1)
+                               | Bitboard::fromCoord(Coord::G1);
 
-    castleNeeded[White][Queen] = Bitboard::fromCoord(Coord::fromString("d1"))
-                               | Bitboard::fromCoord(Coord::fromString("c1"))
-                               | Bitboard::fromCoord(Coord::fromString("b1"));
+    castleNeeded[White][Queen] = Bitboard::fromCoord(Coord::D1)
+                               | Bitboard::fromCoord(Coord::C1)
+                               | Bitboard::fromCoord(Coord::B1);
 
-    castleNeeded[Black][King]  = Bitboard::fromCoord(Coord::fromString("f8"))
-                               | Bitboard::fromCoord(Coord::fromString("g8"));
+    castleNeeded[Black][King]  = Bitboard::fromCoord(Coord::F8)
+                               | Bitboard::fromCoord(Coord::G8);
 
-    castleNeeded[Black][Queen] = Bitboard::fromCoord(Coord::fromString("d8"))
-                               | Bitboard::fromCoord(Coord::fromString("c8"))
-                               | Bitboard::fromCoord(Coord::fromString("b8"));
+    castleNeeded[Black][Queen] = Bitboard::fromCoord(Coord::D8)
+                               | Bitboard::fromCoord(Coord::C8)
+                               | Bitboard::fromCoord(Coord::B8);
 
-    castleTarget[White][King] = Coord::fromString("g1");
-    castleTarget[White][Queen] = Coord::fromString("c1");
-    castleTarget[Black][King] = Coord::fromString("g8");
-    castleTarget[Black][Queen] = Coord::fromString("c8");
+    castleTarget[White][King] = Coord::G1;
+    castleTarget[White][Queen] = Coord::C1;
+    castleTarget[Black][King] = Coord::G8;
+    castleTarget[Black][Queen] = Coord::C8;
 }
