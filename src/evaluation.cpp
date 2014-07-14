@@ -2,9 +2,28 @@
 
 using namespace Eval;
 
-template <Color::Type COLOR>
-Score::Type Eval::material(Board::Type&) {
-    return 0;
+namespace Eval {
+template <>
+Score::Type material<White>(Board::Type& board) {
+    Score::Type result = 0;
+
+    result += Bitboard::enabledCount(board.bitboards[Piece::create(White, Pawn)]) * Score::Pawn;
+    
+    result -= Bitboard::enabledCount(board.bitboards[Piece::create(Black, Pawn)]) * Score::Pawn;
+
+    return result;
+}
+
+template <>
+Score::Type material<Black>(Board::Type& board) {
+    Score::Type result = 0;
+    
+    result += Bitboard::enabledCount(board.bitboards[Piece::create(Black, Pawn)]) * Score::Pawn;
+
+    result -= Bitboard::enabledCount(board.bitboards[Piece::create(White, Pawn)]) * Score::Pawn;
+
+    return result;
+}
 }
 
 template Score::Type Eval::material<White>(Board::Type&);
