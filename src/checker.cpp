@@ -19,7 +19,7 @@ Boolspeed Checker::isCheck(const Board::Type &board) {
 
 template <Color::Type WHO> 
 Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
-    const auto OPP = Color::inv(WHO);
+    const auto OPP = WHO == White? Black: White; // Not Color::inv, because in slow with templates
 
     // Knight attacks
     if (board.bitboards[Piece::create(OPP, Knight)] & Tables::knightMasks[who])
@@ -29,25 +29,29 @@ Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
     if (Tables::pawnCaptureMasks[WHO][who] & board.bitboards[Piece::create(OPP, Pawn)]) 
         return makeBoolspeed(2);
 
-
     // Bishop & Queen attacks
-    const Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
-    UNumspeed magicIndex = Magic::bishopOffsets[who] 
-            + UNumspeed(((nonEmpty & Tables::bishopMasks[who]) * Magic::bishopMagics[who]) 
-                >> (Magic::bishopMaskShifts[who]));
+    if (Tables::bishopFullMasks[who] & (board.bitboards[Piece::create(OPP, Bishop)] | board.bitboards[Piece::create(OPP, Queen)])) {
+        const Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
+        UNumspeed magicIndex = Magic::bishopOffsets[who] 
+                + UNumspeed(((nonEmpty & Tables::bishopMasks[who]) * Magic::bishopMagics[who]) 
+                    >> (Magic::bishopMaskShifts[who]));
 
-    if (Magic::bishopData[magicIndex] 
-     & (board.bitboards[Piece::create(OPP, Bishop)] | board.bitboards[Piece::create(OPP, Queen)]))
-        return makeBoolspeed(4);
+        if (Magic::bishopData[magicIndex] 
+         & (board.bitboards[Piece::create(OPP, Bishop)] | board.bitboards[Piece::create(OPP, Queen)]))
+            return makeBoolspeed(4);
+    }
 
     // Rook & Queen attacks
-    magicIndex = Magic::rookOffsets[who] 
-        + UNumspeed(((nonEmpty & Tables::rookMasks[who]) * Magic::rookMagics[who]) 
-            >> (Magic::rookMaskShifts[who]));
+    if (Tables::rookFullMasks[who] & (board.bitboards[Piece::create(OPP, Rook)] | board.bitboards[Piece::create(OPP, Queen)])) {
+        const Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
+        UNumspeed magicIndex = Magic::rookOffsets[who] 
+            + UNumspeed(((nonEmpty & Tables::rookMasks[who]) * Magic::rookMagics[who]) 
+                >> (Magic::rookMaskShifts[who]));
 
-    if (Magic::rookData[magicIndex] 
-     & (board.bitboards[Piece::create(OPP, Rook)] | board.bitboards[Piece::create(OPP, Queen)]))
-        return makeBoolspeed(5);
+        if (Magic::rookData[magicIndex] 
+         & (board.bitboards[Piece::create(OPP, Rook)] | board.bitboards[Piece::create(OPP, Queen)]))
+            return makeBoolspeed(5);
+    }
 
     // King attacks
     return (Tables::kingMasks[who] & board.bitboards[Piece::create(OPP, King)]);
