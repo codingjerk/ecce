@@ -18,8 +18,6 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
 
-    Color::invert(board.turn);
-
     Board::enpassant(board, Enpassant::null);
 
     if (Move::isCapture(move)) Board::removePiece(board, to);
@@ -39,8 +37,6 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
-
-    Color::invert(board.turn);
 
     Board::enpassant(board, Enpassant::null);
 
@@ -63,8 +59,6 @@ Boolspeed makePawnDoubleWhite(Move::Type move, Board::Type& board) {
 
     Board::castle(board, oldCastle);
 
-    Color::invert(board.turn);
-
     Board::enpassant(board, to - 8ull);
 
     Board::setPiece(board, board.squares[from], to);
@@ -82,8 +76,6 @@ Boolspeed makePawnDoubleBlack(Move::Type move, Board::Type& board) {
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
-
-    Color::invert(board.turn);
 
     Board::enpassant(board, to + 8ull);
 
@@ -103,8 +95,6 @@ Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
 
     Board::castle(board, oldCastle);
 
-    Color::invert(board.turn);
-
     Board::enpassant(board, Enpassant::null);
 
     Board::removePiece(board, to - 8ull);
@@ -123,8 +113,6 @@ Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
 
     Board::castle(board, oldCastle);
 
-    Color::invert(board.turn);
-
     Board::enpassant(board, Enpassant::null);
 
     Board::removePiece(board, to + 8ull);
@@ -140,8 +128,6 @@ Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~(Castle::whiteKing | Castle::whiteQueen));
-
-    Color::invert(board.turn);
 
     Board::enpassant(board, Enpassant::null);
 
@@ -165,8 +151,6 @@ Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
 
     Board::castle(board, oldCastle & ~Castle::white);
 
-    Color::invert(board.turn);
-
     Board::enpassant(board, Enpassant::null);
 
     Board::setPiece(board, board.squares[Coord::E1], Coord::G1);
@@ -189,8 +173,6 @@ Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
 
     Board::castle(board, oldCastle & ~Castle::black);
 
-    Color::invert(board.turn);
-
     Board::enpassant(board, Enpassant::null);
 
     Board::setPiece(board, board.squares[Coord::E8], Coord::C8);
@@ -212,8 +194,6 @@ Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::black);
-
-    Color::invert(board.turn);
 
     Board::enpassant(board, Enpassant::null);
 
@@ -249,8 +229,6 @@ Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
 };
 
 void unmakeUsual(Move::Type move, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -263,8 +241,6 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
 }
 
 void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     Board::setPiece(board, board.squares[Coord::G1], Coord::E1);
@@ -275,8 +251,6 @@ void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
 }
 
 void unmakeCastleWhiteLong(Move::Type, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     Board::setPiece(board, board.squares[Coord::C1], Coord::E1);
@@ -287,8 +261,6 @@ void unmakeCastleWhiteLong(Move::Type, Board::Type& board) {
 }
 
 void unmakeCastleBlackShort(Move::Type, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     Board::setPiece(board, board.squares[Coord::G8], Coord::E8);
@@ -299,8 +271,6 @@ void unmakeCastleBlackShort(Move::Type, Board::Type& board) {
 }
 
 void unmakeCastleBlackLong(Move::Type, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     Board::setPiece(board, board.squares[Coord::C8], Coord::E8);
@@ -311,8 +281,6 @@ void unmakeCastleBlackLong(Move::Type, Board::Type& board) {
 }
 
 void unmakePawnDouble(Move::Type move, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -323,8 +291,6 @@ void unmakePawnDouble(Move::Type move, Board::Type& board) {
 }
 
 void unmakePromotionWhite(Move::Type move, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -338,8 +304,6 @@ void unmakePromotionWhite(Move::Type move, Board::Type& board) {
 }
 
 void unmakePromotionBlack(Move::Type move, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -353,8 +317,6 @@ void unmakePromotionBlack(Move::Type move, Board::Type& board) {
 }
 
 void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -366,8 +328,6 @@ void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
 }
 
 void unmakeEnpassantBlack(Move::Type move, Board::Type& board) {
-    Color::invert(board.turn);
-
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
