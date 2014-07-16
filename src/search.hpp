@@ -9,31 +9,33 @@
 
 namespace Search {
     template <Color::Type COLOR>
-    Score::Type nodeSearch(Generator::MoveBuffer *moves, Board::Type &board, UNumspeed depth) {
+    Score::Type nodeSearch(Generator::MoveBuffer *moves, Board::Type &board, UNumspeed depth, Score::Type alpha, Score::Type beta) {
         const auto OPP = COLOR == White? Black: White;
 
         if (depth == 0) {
             return Eval::material<COLOR>(board);
         }
 
-        Score::Type maxScore = -Score::Infinity;
-
         Generator::forBoard<COLOR>(moves[depth], board);
 
         UNumspeed total = moves[depth][0];
         for (UNumspeed i = 1; i <= total; ++i) {
             if (Move::make<COLOR>(moves[depth][i], board)) {
-                auto score = -nodeSearch<OPP>(moves, board, depth - 1);
+                auto score = -nodeSearch<OPP>(moves, board, depth - 1, -beta, -alpha);
 
-                if (score > maxScore) {
-                    score = maxScore;
+                if (score > alpha) {
+                    alpha = score;
                 }
             }
 
             Move::unmake<COLOR>(moves[depth][i], board);
+
+            if (alpha >= beta) {
+                return beta;
+            }
         }
 
-        return maxScore;
+        return alpha;
     }
 
     template <Color::Type COLOR>
@@ -43,18 +45,18 @@ namespace Search {
         const auto OPP = COLOR == White? Black: White;
 
         Move::Type result = 0;
-        Score::Type maxScore = -Score::Infinity;
+        Score::Type alpha = -Score::Infinity;
 
         Generator::forBoard<COLOR>(moves[depth], board);
 
         UNumspeed total = moves[depth][0];
         for (UNumspeed i = 1; i <= total; ++i) {
             if (Move::make<COLOR>(moves[depth][i], board)) {
-                auto score = -nodeSearch<OPP>(moves, board, depth - 1);
+                auto score = -nodeSearch<OPP>(moves, board, depth - 1, -Score::Infinity, -alpha);
 
-                if (score > maxScore) {
+                if (score > alpha) {
                     result = moves[depth][i];
-                    score = maxScore;
+                    alpha = score;
                 }
             }
 
