@@ -3,7 +3,7 @@
 
 namespace Perft {
     template <Color::Type COLOR>
-    UNum64 perft_quiet(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
+    UNum64 perft_quiet(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
         const Color::Type OPP = COLOR == White? Black: White;
         if (Checker::isCheck<OPP>(board)) return 0;
 
@@ -22,7 +22,7 @@ namespace Perft {
         return result;
     }
 
-    UNum64 perft_quiet(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
+    UNum64 perft_quiet(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
         if (board.turn == White) {
             return perft_quiet<White>(buffer, board, depth);
         } else {
@@ -31,7 +31,7 @@ namespace Perft {
     }
 
     template <Color::Type COLOR>
-    UNum64 perft(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
+    UNum64 perft(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
         const Color::Type OPP = COLOR == White? Black: White;
 
         if (depth == 0) return 1;
@@ -54,7 +54,7 @@ namespace Perft {
         return result;
     }
 
-    UNum64 perft(Generator::MoveBuffer *buffer, Board::Type &board, UNumspeed depth) {
+    UNum64 perft(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
         if (board.turn == White) {
             return perft<White>(buffer, board, depth);
         } else {

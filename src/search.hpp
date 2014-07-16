@@ -9,7 +9,7 @@
 
 namespace Search {
     template <Color::Type COLOR>
-    Score::Type nodeSearch(Generator::MoveBuffer *moves, Board::Type &board, UNumspeed depth, Score::Type alpha, Score::Type beta) {
+    Score::Type nodeSearch(Move::Buffer *moves, Board::Type &board, UNumspeed depth, Score::Type alpha, Score::Type beta) {
         const auto OPP = COLOR == White? Black: White;
 
         if (depth == 0) {
@@ -40,7 +40,7 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type search(Board::Type &board, UNumspeed depth) {
-        Generator::MoveBuffer *moves = new Generator::MoveBuffer[MAX_DEPTH];
+        Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
 
         const auto OPP = COLOR == White? Black: White;
 

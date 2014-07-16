@@ -11,6 +11,7 @@
 #include "evaluation.hpp"
 
 #include "perft.hpp"
+#include "search.hpp"
 
 int main(int, char**) {
     SECTION(Framework);
@@ -68,7 +69,7 @@ int main(int, char**) {
 
     SECTION(Generator);
     Generator::initTables();
-    Generator::MoveBuffer buffer;
+    Move::Buffer buffer;
 
     buffer[0] = 0;
     Generator::forKnights<Black>(buffer, board);
@@ -194,7 +195,7 @@ int main(int, char**) {
 
     auto const COMPLEX_PERFT_TESTING = false;
     if (COMPLEX_PERFT_TESTING) {
-        Generator::MoveBuffer *moves = new Generator::MoveBuffer[MAX_DEPTH];
+        Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
 
         Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         CHECK(Perft::perft_quiet(moves, board, 1) == 20);
@@ -254,6 +255,11 @@ int main(int, char**) {
     Board::removePiece(board, Coord::A8);
     CHECK(Eval::material<White>(board) == Score::Rook - Score::Pawn);
     CHECK(Eval::material<Black>(board) == Score::Pawn - Score::Rook);
+
+    for (UNumspeed depth = 1; depth <= 5; ++depth) {
+        auto bestmove = Search::search<White>(board, depth);
+        std::cout << Move::show(bestmove) << "\n";
+    }
 
     RESULTS;
 }

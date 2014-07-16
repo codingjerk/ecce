@@ -9,20 +9,17 @@
 #include "moves.hpp"
 
 namespace Generator {
-    const UNumspeed BUFFER_SIZE = 256;
-    using MoveBuffer = Move::Type[BUFFER_SIZE];
-
     void initTables();
 
-    template <Color::Type COLOR> void forPawns(MoveBuffer&, const Board::Type&);
-    template <Color::Type COLOR> void forKnights(MoveBuffer&, const Board::Type&);
-    template <Color::Type COLOR> void forKings(MoveBuffer&, const Board::Type&);
-    template <Color::Type COLOR> void forBishops(MoveBuffer&, const Board::Type&);
-    template <Color::Type COLOR> void forRooks(MoveBuffer&, const Board::Type&);
-    template <Color::Type COLOR> void forQueens(MoveBuffer&, const Board::Type&);
+    template <Color::Type COLOR> void forPawns(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void forKnights(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void forKings(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void forBishops(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void forRooks(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void forQueens(Move::Buffer&, const Board::Type&);
 
-    void forBoard(MoveBuffer&, const Board::Type&);
-    template <Color::Type COLOR> void forBoard(MoveBuffer&, const Board::Type&);
+    void forBoard(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void forBoard(Move::Buffer&, const Board::Type&);
 }
 
 #endif /* GENERATOR_HPP */
