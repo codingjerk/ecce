@@ -9,7 +9,7 @@
 
 namespace Eval {
     template <Color::Type COLOR>
-    Score::Type material(Board::Type&);
+    Score::Type material(const Board::Type&);
 }
 
 #endif /* EVALUATION_HPP */

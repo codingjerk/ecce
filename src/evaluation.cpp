@@ -4,7 +4,7 @@ using namespace Eval;
 
 namespace Eval {
 template <>
-Score::Type material<White>(Board::Type& board) {
+Score::Type material<White>(const Board::Type& board) {
     Score::Type result = 0;
 
     result += Bitboard::enabledCount(board.bitboards[Piece::create(White, Pawn)])   * Score::Pawn;
@@ -23,7 +23,7 @@ Score::Type material<White>(Board::Type& board) {
 }
 
 template <>
-Score::Type material<Black>(Board::Type& board) {
+Score::Type material<Black>(const Board::Type& board) {
     Score::Type result = 0;
     
     result += Bitboard::enabledCount(board.bitboards[Piece::create(Black, Pawn)])   * Score::Pawn;
@@ -42,5 +42,5 @@ Score::Type material<Black>(Board::Type& board) {
 }
 }
 
-template Score::Type Eval::material<White>(Board::Type&);
-template Score::Type Eval::material<Black>(Board::Type&);
+template Score::Type Eval::material<White>(const Board::Type&);
+template Score::Type Eval::material<Black>(const Board::Type&);
