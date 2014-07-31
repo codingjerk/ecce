@@ -27,7 +27,8 @@ SRC=cstf.cpp\
 	mover.cpp\
 	checker.cpp\
 	evaluation.cpp\
-	scores.cpp
+	scores.cpp\
+	uci.cpp
 
 MAINSRC=ecce.cpp $(SRC)
 MAINOBJ=$(MAINSRC:.cpp=.o)
