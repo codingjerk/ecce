@@ -119,17 +119,17 @@ bool unknown(std::string command) {
 typedef bool (*ProcessFunction)(std::list<std::string>);
 
 std::map<std::string, ProcessFunction> uciFunctions = {
-    {"uci",        &uci},
-    {"debug",      &debug},
-    {"isready",    &isready},
-    {"setoption",  &setoption},
-    {"ucinewgame", &ucinewgame},
-    {"position",   &position},
-    {"board",      &board},
-    {"exit",       &exit},
-    {"quit",       &exit},
-    {"go",         &go},
-    {"stop",       &stop}
+    { "uci",        &uci },
+    { "debug",      &debug },
+    { "isready",    &isready },
+    { "setoption",  &setoption },
+    { "ucinewgame", &ucinewgame },
+    { "position",   &position },
+    { "board",      &board },
+    { "exit",       &exit },
+    { "quit",       &exit },
+    { "go",         &go },
+    { "stop",       &stop }
 };
 
 bool processCommand() {
