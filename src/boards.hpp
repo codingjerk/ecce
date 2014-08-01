@@ -30,6 +30,8 @@ namespace Board {
         Info *depthPtr = info;
     };
 
+    extern Board::Type master;
+
     inline Castle::Type castle(const Type& board) {
         return board.depthPtr->castle;
     }

@@ -6,6 +6,8 @@
 
 using namespace Board;
 
+Board::Type Board::master;
+
 void setPositionFromFen(Type &board, const std::string fen) {
     for (auto& bitboard: board.bitboards) {
         bitboard = Bitboard::null;
