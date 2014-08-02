@@ -11,7 +11,6 @@
 #include "evaluation.hpp"
 
 #include "perft.hpp"
-#include "search.hpp"
 
 int main(int, char**) {
     SECTION(Framework);
@@ -255,11 +254,6 @@ int main(int, char**) {
     Board::removePiece(board, Coord::A8);
     CHECK(Eval::material<White>(board) == Score::Rook - Score::Pawn);
     CHECK(Eval::material<Black>(board) == Score::Pawn - Score::Rook);
-
-    for (UNumspeed depth = 1; depth <= 5; ++depth) {
-        auto bestmove = Search::search<White>(board, depth);
-        std::cout << Move::show(bestmove) << "\n";
-    }
 
     RESULTS;
 }
