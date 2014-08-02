@@ -7,6 +7,7 @@
 #include <map>
 
 #include "boards.hpp"
+#include "search.hpp"
 
 // @TODO: Move to info.{h,c}pp
 namespace Info {
@@ -92,7 +93,12 @@ bool go(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
 
     if (*cursor == "depth") {
+        ++cursor;
+        std::stringstream ss(*cursor);
+        unsigned long long depth;
+        ss >> depth;
 
+        Search::incremental(depth);
     } else {
         std::cout << "go depth command only supported yet.\n";
     }
