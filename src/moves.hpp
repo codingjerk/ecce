@@ -7,6 +7,7 @@
 
 #include "coords.hpp"
 #include "pieces.hpp"
+#include "boards.hpp"
 
 namespace Move {
     using Type = UNumspeed;
@@ -42,6 +43,48 @@ namespace Move {
 
     const UNumspeed usedBits = coordsBits + specialBits + captureBits + promotionBits;
     const UNumspeed typeMask = (makeUNumspeed(1) << usedBits) - makeUNumspeed(1);
+
+    inline Type fromString(const std::string text, Board::Type &board) {
+        Move::Type simple = fromString(text);
+
+        // @TODO: Create methods Move::from and Move::to
+        Coord::Type from = (simple >> Coord::usedBits) & Coord::typeMask; 
+        Coord::Type to = simple & Coord::typeMask;
+
+        // Captures
+        simple |= (board.squares[to] << captureOffset);
+
+        // PawnDoubles
+        if (board.squares[from] & Pawn) {
+            if (from - to == 16 || to - from == 16) {
+                simple |= (pawnDoubleFlag << specialOffset);
+            }//v
+            // v
+            // Promotions
+            else if (text.size() == 5) {
+                Color::Type we = (board.squares[from]) & Color::typeMask;
+                Piece::Type promoted = Piece::fromChar(text[4]) & Dignity::typeMask | we;
+                simple |= (promoted << promotionOffset)
+                       |  (promotionFlag << specialOffset);
+            }//v
+            // v
+            // Enpassants
+            else if (to == Board::enpassant(board)) {
+                simple |= (enpassantFlag << specialOffset);
+            }
+        }//v
+        // v
+        // Castles
+        else if (board.squares[from] & King && (from == Coord::E1 || from == Coord::E8)) {
+            if (to == Coord::C1 || to == Coord::C8) {
+                simple |= (castleLongFlag << specialOffset);
+            } else if (to == Coord::G1 || to == Coord::G8) {
+                simple |= (castleShortFlag << specialOffset);
+            }
+        }
+
+        return simple;
+    }
 
     inline UNumspeed special(const Type move) {
         return (move & specialMask) >> specialOffset;
