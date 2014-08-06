@@ -1,3 +1,5 @@
+#include "tests.hpp"
+
 #include "cstf.hpp"
 
 #include "coords.hpp"
@@ -12,10 +14,9 @@
 
 #include "perft.hpp"
 
-int main(int, char**) {
+int Tests::runAll(bool COMPLEX_PERFT_TESTING) {    
     SECTION(Framework);
     CHECK(true);
-    //EXCEPTION(throw 1);
 
     SECTION(Coords);
     CHECK(Coord::fromString("a1") == 0);
@@ -192,7 +193,6 @@ int main(int, char**) {
         CHECK(Board::toFen(board) == Board::toFen(boardMain));
     }
 
-    auto const COMPLEX_PERFT_TESTING = false;
     if (COMPLEX_PERFT_TESTING) {
         Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
 
