@@ -11,9 +11,16 @@
 
 // @TODO: Move to info.{h,c}pp
 namespace Info {
-    std::string name    = "Ecce";
-    std::string version = "rev. 200";
-    std::string author  = "D. Gruzdev";
+    const std::string name    = "Ecce";
+    const std::string version = "rev. 200";
+    const std::string author  = "D. Gruzdev";
+}
+
+// @TODO: Move to options.{h,c}pp
+namespace Options {
+    void show() {
+        // Empty
+    }
 }
 
 bool exit(std::list<std::string>) {
@@ -24,7 +31,7 @@ bool uci(std::list<std::string>) {
     std::cout << "id name " << Info::name << " " << Info::version << "\n";
     std::cout << "id author " << Info::author << "\n";
 
-    // @TODO: out options
+    Options::show();
 
     std::cout << "uciok\n" << std::flush;
 
