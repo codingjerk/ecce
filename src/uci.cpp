@@ -8,6 +8,7 @@
 
 #include "boards.hpp"
 #include "search.hpp"
+#include "colors.hpp"
 
 // @TODO: Move to info.{h,c}pp
 namespace Info {
@@ -88,9 +89,11 @@ bool position(std::list<std::string> arguments) {
     }
 
     if (*cursor == "moves") {
-        ++cursor;
-
-        std::cout << "@TODO: position moves isn't ready yet.\n";
+        for (++cursor; cursor != arguments.end(); ++cursor) {
+            Move::Type move = Move::fromString(*cursor, Board::master);
+            Move::make(move, Board::master);
+            Color::invert(Board::master.turn);
+        }
     }
 
     return true;
