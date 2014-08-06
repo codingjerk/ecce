@@ -9,6 +9,7 @@
 #include "boards.hpp"
 #include "search.hpp"
 #include "colors.hpp"
+#include "tests.hpp"
 
 // @TODO: Move to info.{h,c}pp
 namespace Info {
@@ -116,6 +117,18 @@ bool go(std::list<std::string> arguments) {
     return true;
 }
 
+bool test(std::list<std::string> arguments) {
+    auto cursor = arguments.begin();
+
+    if (*cursor == "complex") {
+        Tests::runAll(true);
+    } else {
+        Tests::runAll();
+    }
+
+    return true;
+}
+
 bool board(std::list<std::string>) {
     std::cout << Board::show(Board::master);
 
@@ -145,7 +158,8 @@ std::map<std::string, ProcessFunction> uciFunctions = {
     { "exit",       &exit },
     { "quit",       &exit },
     { "go",         &go },
-    { "stop",       &stop }
+    { "stop",       &stop },
+    { "test",       &test }
 };
 
 bool processCommand() {
