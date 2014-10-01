@@ -6,43 +6,50 @@
 #include "colors.hpp"
 
 namespace Eval {
-	template <Color::Type C> Score::Type material(const Board::Type &board);
+    void initTables();
 
-	template <> Score::Type material<White>(const Board::Type& board) {
-		Score::Type result = 0;
+    extern Score::Type PSTTable[Piece::usedBits][Coord::usedBits];
 
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(White, Pawn)])   * Score::Pawn;
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(White, Knight)]) * Score::Knight;
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(White, Bishop)]) * Score::Bishop;
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(White, Rook)])   * Score::Rook;
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(White, Queen)])  * Score::Queen;
+    template <Color::Type WHO> 
+    Score::Type material(const Board::Type& board) {
+        const auto OPP = WHO == White? Black: White;
+        Score::Type result = 0;
+
+        result += Bitboard::enabledCount(board.bitboards[Piece::create(WHO, Pawn)])   * Score::Pawn;
+        result += Bitboard::enabledCount(board.bitboards[Piece::create(WHO, Knight)]) * Score::Knight;
+        result += Bitboard::enabledCount(board.bitboards[Piece::create(WHO, Bishop)]) * Score::Bishop;
+        result += Bitboard::enabledCount(board.bitboards[Piece::create(WHO, Rook)])   * Score::Rook;
+        result += Bitboard::enabledCount(board.bitboards[Piece::create(WHO, Queen)])  * Score::Queen;
     
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(Black, Pawn)])   * Score::Pawn;
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(Black, Knight)]) * Score::Knight;
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(Black, Bishop)]) * Score::Bishop;
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(Black, Rook)])   * Score::Rook;
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(Black, Queen)])  * Score::Queen;
+        result -= Bitboard::enabledCount(board.bitboards[Piece::create(OPP, Pawn)])   * Score::Pawn;
+        result -= Bitboard::enabledCount(board.bitboards[Piece::create(OPP, Knight)]) * Score::Knight;
+        result -= Bitboard::enabledCount(board.bitboards[Piece::create(OPP, Bishop)]) * Score::Bishop;
+        result -= Bitboard::enabledCount(board.bitboards[Piece::create(OPP, Rook)])   * Score::Rook;
+        result -= Bitboard::enabledCount(board.bitboards[Piece::create(OPP, Queen)])  * Score::Queen;
 
-		return result;
-	}
-
-	template <> Score::Type material<Black>(const Board::Type& board) {
-		Score::Type result = 0;
+        return result;
+    }
     
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(Black, Pawn)])   * Score::Pawn;
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(Black, Knight)]) * Score::Knight;
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(Black, Bishop)]) * Score::Bishop;
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(Black, Rook)])   * Score::Rook;
-		result += Bitboard::enabledCount(board.bitboards[Piece::create(Black, Queen)])  * Score::Queen;
+    template <Color::Type WHO> 
+    Score::Type positional(const Board::Type &board) {
+        Score::Type result = 0;
 
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(White, Pawn)])   * Score::Pawn;
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(White, Knight)]) * Score::Knight;
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(White, Bishop)]) * Score::Bishop;
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(White, Rook)])   * Score::Rook;
-		result -= Bitboard::enabledCount(board.bitboards[Piece::create(White, Queen)])  * Score::Queen;
+        forCoord(x)
+        forCoord(y) {
+            const auto square = Coord::create(x, y);
+            const auto piece = board.squares[square];
 
-		return result;
-	}
+            const auto PSTValue = PSTTable[piece][square];
+
+            result += PSTValue;
+        }
+
+        if (WHO == White) {
+            return result;
+        } else {
+            return -result;
+        }
+    }
 }
 
 #endif /* EVAL_HPP */
