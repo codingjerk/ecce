@@ -14,6 +14,6 @@ std::string firsts(std::string old) {
     if (old.size() <= maxTestInfoSize) {
         return old;
     } else {
-        return old.substr(0,maxTestInfoSize) + "...";
+		return old.substr(0,maxTestInfoSize).append("...");
     }
 }
