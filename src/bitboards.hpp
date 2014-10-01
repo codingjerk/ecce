@@ -35,16 +35,20 @@ namespace Bitboard {
     }
 
     inline UNumspeed enabledCount(Type bitboard) {
-        UNumspeed result = 0;
+		#ifdef OSLINUX
+			UNumspeed result = 0;
 
-        while (bitboard != Bitboard::null) {
-            auto const bit = bitScan(bitboard);
-            bitboard ^= fromIndex(bit);
+			while (bitboard != Bitboard::null) {
+				auto const bit = bitScan(bitboard);
+				bitboard ^= fromIndex(bit);
 
-            ++result;
-        }
+				++result;
+			}
 
-        return result;
+			return result;
+		#else
+			return _popcnt64(bitboard);
+		#endif
     }
 
     extern Type upLine;
