@@ -1,6 +1,9 @@
 #ifndef PERFT_HPP
 #define PERFT_HPP
 
+#include "checker.hpp"
+#include "generator.hpp"
+
 namespace Perft {
     template <Color::Type COLOR>
     UNum64 perft_quiet(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {

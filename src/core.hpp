@@ -3,7 +3,7 @@
 
 // --- OS ---
 // Remove this for compile on windows with visual studio
-#define OSLINUX
+// #define OSLINUX
 
 // --- Arch-depended types ---
 using Boolspeed = unsigned long long;

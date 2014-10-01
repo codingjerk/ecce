@@ -7,9 +7,10 @@
 #include <map>
 
 #include "boards.hpp"
-#include "search.hpp"
 #include "colors.hpp"
 #include "tests.hpp"
+#include "moves.hpp"
+#include "mover.hpp"
 #include "perft.hpp"
 
 // @TODO: Move to info.{h,c}pp
@@ -101,23 +102,6 @@ bool position(std::list<std::string> arguments) {
     return true;
 }
 
-bool go(std::list<std::string> arguments) {
-    auto cursor = arguments.begin();
-
-    if (*cursor == "depth") {
-        ++cursor;
-        std::stringstream ss(*cursor);
-        unsigned long long depth;
-        ss >> depth;
-
-        Search::incremental(depth);
-    } else {
-        std::cout << "go depth command only supported yet.\n";
-    }
-
-    return true;
-}
-
 bool test(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
 
@@ -173,7 +157,6 @@ std::map<std::string, ProcessFunction> initUciFunctions() {
     result["board"]      = &board;
     result["exit"]       = &exit;
     result["quit"]       = &exit;
-    result["go"]         = &go;
     result["stop"]       = &stop;
     result["test"]       = &test;
     result["perft"]      = &perft;
