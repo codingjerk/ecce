@@ -20,7 +20,7 @@ namespace Dignity {
     const UNumspeed lower   = makeNumspeed(1);
     const UNumspeed highter = makeNumspeed(6);
 
-    #define forDignities(var) for (Dignity::Type dignity = Dignity::lower; dignity <= Dignity::highter; ++dignity)
+    #define forDignities(var) for (Dignity::Type var = Dignity::lower; var <= Dignity::highter; ++var)
 }
 
 using Dignity::Pawn;

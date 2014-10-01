@@ -29,7 +29,7 @@ namespace Color {
     const UNumspeed usedBitsReal = makeUNumspeed(4);
     const UNumspeed typeMask = makeUNumspeed(8);
 
-    #define forColors(var) for (Color::Type color = Black; color <= White; color += White)
+    #define forColors(var) for (Color::Type var = Black; var <= White; var += White)
 }
 
 using Color::Black;
