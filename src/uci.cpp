@@ -13,19 +13,8 @@
 #include "mover.hpp"
 #include "perft.hpp"
 
-// @TODO: Move to info.{h,c}pp
-namespace Info {
-    const std::string name    = "Ecce";
-    const std::string version = "rev. 200";
-    const std::string author  = "D. Gruzdev";
-}
-
-// @TODO: Move to options.{h,c}pp
-namespace Options {
-    void show() {
-        // Empty
-    }
-}
+#include "info.hpp"
+#include "options.hpp"
 
 bool exit(std::list<std::string>) {
     return false;
