@@ -318,6 +318,8 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     CHECK(Eval::material<White>(board) == Score::Draw);
     CHECK(Eval::material<Black>(board) == Score::Draw);
+	CHECK(Eval::positional<White>(board) == Score::Draw);
+	CHECK(Eval::positional<Black>(board) == Score::Draw);
 
     Board::removePiece(board, Coord::E2);
     CHECK(Eval::material<White>(board) == -Score::Pawn);
@@ -326,14 +328,6 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
     Board::removePiece(board, Coord::A8);
     CHECK(Eval::material<White>(board) == Score::Rook - Score::Pawn);
     CHECK(Eval::material<Black>(board) == Score::Pawn - Score::Rook);
-
-    SECTION(PST);
-	CHECK(PST::viewToModelTable[PST::viewToModel(Coord::C2)] == Coord::C2);
-	CHECK(PST::viewToModelTable[PST::viewToModel(Coord::D3)] == Coord::D3);
-	CHECK(PST::viewToModelTable[PST::viewToModel(Coord::A1)] == Coord::A1);
-	CHECK(PST::viewToModelTable[PST::viewToModel(Coord::B3)] == Coord::B3);
-	CHECK(PST::viewToModelTable[PST::viewToModel(Coord::H8)] == Coord::H8);
-	CHECK(PST::viewToModelTable[PST::viewToModel(Coord::A8)] == Coord::A8);
 
     RESULTS;
 }

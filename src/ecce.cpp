@@ -4,6 +4,7 @@
 #include "colors.hpp"
 #include "pieces.hpp"
 #include "generator.hpp"
+#include "PST.hpp"
 
 int main(int, char**) {
     Move::initTables();
@@ -11,6 +12,7 @@ int main(int, char**) {
     Color::initTables();
     Piece::initTables();
     Generator::initTables();
+    PST::initTables();
 
     Uci::cycle();
 

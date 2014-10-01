@@ -29,16 +29,17 @@ namespace Eval {
     
     template <Color::Type WHO> 
     Score::Type positional(const Board::Type &board) {
-        Score::Type result = 0;
+        Score::Type result = Score::Draw;
 
         forCoord(x)
         forCoord(y) {
             const auto square = Coord::create(x, y);
             const auto piece = board.squares[square];
+			if (piece == Piece::null) continue;
 
-            // @TODO: const auto PSTValue = PST::tables[piece][square];
+            const auto PSTValue = PST::tables[piece][square];
 
-            // @TODO: result += PSTValue;
+            result += PSTValue;
         }
 
         if (WHO == White) {
