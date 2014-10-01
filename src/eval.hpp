@@ -4,12 +4,9 @@
 #include "score.hpp"
 #include "boards.hpp"
 #include "colors.hpp"
+#include "PST.hpp"
 
 namespace Eval {
-    void initTables();
-
-    extern Score::Type PSTTable[Piece::usedBits][Coord::usedBits];
-
     template <Color::Type WHO> 
     Score::Type material(const Board::Type& board) {
         const auto OPP = WHO == White? Black: White;
@@ -39,9 +36,9 @@ namespace Eval {
             const auto square = Coord::create(x, y);
             const auto piece = board.squares[square];
 
-            const auto PSTValue = PSTTable[piece][square];
+            // @TODO: const auto PSTValue = PST::tables[piece][square];
 
-            result += PSTValue;
+            // @TODO: result += PSTValue;
         }
 
         if (WHO == White) {
