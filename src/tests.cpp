@@ -10,8 +10,9 @@
 #include "generator.hpp"
 #include "mover.hpp"
 #include "checker.hpp"
-
 #include "perft.hpp"
+#include "score.hpp"
+#include "eval.hpp"
 
 int Tests::runAll(bool COMPLEX_PERFT_TESTING) {    
     SECTION(Framework);
@@ -311,6 +312,19 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
     Color::invert(board.turn);
     Move::unmake(castleShort, board);
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
+
+    SECTION(Evaluation and Score);
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    CHECK(Eval::material<White>(board) == Score::Draw);
+    CHECK(Eval::material<Black>(board) == Score::Draw);
+
+    Board::removePiece(board, Coord::E2);
+    CHECK(Eval::material<White>(board) == -Score::Pawn);
+    CHECK(Eval::material<Black>(board) == Score::Pawn);
+
+    Board::removePiece(board, Coord::A8);
+    CHECK(Eval::material<White>(board) == Score::Rook - Score::Pawn);
+    CHECK(Eval::material<Black>(board) == Score::Pawn - Score::Rook);
 
     RESULTS;
 }
