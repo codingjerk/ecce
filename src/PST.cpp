@@ -2,6 +2,9 @@
 
 using namespace PST;
 
+// @WARNING: Rememeber, that tables for pieces are invert from top to bottom. 
+//           If tables symetric just saw on black to see white.
+
 Score::Type *PST::tables[makeUNumspeed(1) << Piece::usedBits];
 
 Score::Type whitePawnTable[makeUNumspeed(1) << Coord::usedBits] = {
