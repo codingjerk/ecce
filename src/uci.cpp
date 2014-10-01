@@ -105,7 +105,7 @@ bool position(std::list<std::string> arguments) {
 bool test(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
 
-    if (*cursor == "complex") {
+	if (cursor != arguments.end() && *cursor == "complex") {
         Tests::runAll(true);
     } else {
         Tests::runAll();
