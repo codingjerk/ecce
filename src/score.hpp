@@ -1,6 +1,8 @@
 #ifndef SCORE_HPP
 #define SCORE_HPP
 
+#include "core.hpp"
+
 namespace Score {
 	typedef UNumspeed Type;
 
