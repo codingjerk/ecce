@@ -8,7 +8,7 @@
 //    - Best Search
 //      (+) - Write Simple Search (alpha-beta)
 //      (+) - Extract PV
-//      - Write stop command
+//      (+) - Write stop command
 //      - Test search
 //      - Write quies
 
