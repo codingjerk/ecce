@@ -26,10 +26,9 @@ SRC=cstf.cpp\
 	generatorTables.cpp\
 	mover.cpp\
 	checker.cpp\
-	evaluation.cpp\
-	scores.cpp\
 	uci.cpp\
-	tests.cpp
+	tests.cpp\
+	PST.cpp
 
 MAINSRC=ecce.cpp $(SRC)
 MAINOBJ=$(MAINSRC:.cpp=.o)
