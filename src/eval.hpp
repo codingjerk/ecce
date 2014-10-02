@@ -51,7 +51,7 @@ namespace Eval {
 	
     template <Color::Type WHO>
 	Score::Type total(const Board::Type &board) {
-		return material(board) + positional(board);
+		return material<WHO>(board) + positional<WHO>(board);
 	}
 }
 
