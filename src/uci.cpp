@@ -115,6 +115,7 @@ bool perft(std::list<std::string> arguments) {
 
     Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
     Perft::perft(moves, Board::master, depth);
+	delete moves;
 
     return true;
 }
