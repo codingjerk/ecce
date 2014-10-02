@@ -12,8 +12,7 @@
 namespace Move {
     using Type = UNumspeed;
     
-    const UNumspeed BUFFER_SIZE = 256;
-    using Buffer = Type[BUFFER_SIZE];
+	using Buffer = Type[MAX_MOVES];
 
     Type fromString(const std::string);
 

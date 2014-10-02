@@ -40,5 +40,6 @@ using UNummax = unsigned long long;
 #undef DEBUGMODE
 
 const UNumspeed MAX_DEPTH = makeUNumspeed(50);
+const UNumspeed MAX_MOVES = makeUNumspeed(200);
 
 #endif /* CORE_HPP */
