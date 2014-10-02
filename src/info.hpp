@@ -4,7 +4,7 @@
 namespace Info {
     const std::string name    = "Ecce";
     const std::string version = "rev. 200";
-    const std::string author  = "D. Gruzdev";
+    const std::string author  = "D. Gruzdev, M. Melnikov";
 }
 
 #endif /* INFO_HPP */
