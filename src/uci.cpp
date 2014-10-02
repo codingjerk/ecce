@@ -141,7 +141,7 @@ bool go(std::list<std::string> arguments) {
 		ss >> depth;
 
 		auto tm = TM::depth(depth);
-		auto bm = Search::start(Board::master, tm);
+		auto bm = Search::simple(Board::master, tm);
 
 		std::cout << "bestmove " << Move::show(bm) << "\n";
 	} else {
