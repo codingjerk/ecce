@@ -6,16 +6,21 @@
 //      - Support of multipv
 
 //    - Best Search
-//      - Write Simple Search (alpha-beta)
+//      (+) - Write Simple Search (alpha-beta)
 //      - Extract PV
 //      - Write stop command
 //      - Test search
 
 //    - Best Eval
+//      (+) - Material
+//      (+) - PST
+//      - Some other positional factors
 //      - Test Eval
 
 //    - Best Time Manager
-//      - Write Simple TM
+//      (+) - Write Simple TM
+//      (+) - Use depth in TM
+//      - Use time in TM
 //      - Allow to use go *
 //      - Test TM
 
