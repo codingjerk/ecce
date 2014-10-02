@@ -65,7 +65,7 @@ namespace Search {
 		Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
 		PV pv;
 		auto score = alphaBeta<COLOR>(moves, board, -Score::Infinity, Score::Infinity, depth.maxDepth, pv);
-		delete moves;
+		delete[] moves;
 
 		std::cout << "PV: ";
 		for (auto move: pv) {
