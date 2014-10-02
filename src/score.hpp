@@ -4,7 +4,7 @@
 #include "core.hpp"
 
 namespace Score {
-    typedef UNumspeed Type;
+    typedef Numspeed Type;
 
     const Type Null     = 0;
     const Type Draw     = 0;
