@@ -59,7 +59,7 @@ bool ucinewgame(std::list<std::string>) {
 bool position(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
 
-    if (*cursor == "fen") {
+    if (cursor != arguments.end() && *cursor == "fen") {
         ++cursor;
         std::string position = *cursor;
         ++cursor;
@@ -78,12 +78,12 @@ bool position(std::list<std::string> arguments) {
                         + halfmoveClock + " " + totalMoves;
 
         Board::setFromFen(Board::master, fen);
-    } else if (*cursor == "startpos") {
+    } else if (cursor != arguments.end() && *cursor == "startpos") {
         ++cursor;
         Board::setFromFen(Board::master, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
-    if (*cursor == "moves") {
+    if (cursor != arguments.end() && *cursor == "moves") {
         for (++cursor; cursor != arguments.end(); ++cursor) {
             Move::Type move = Move::fromString(*cursor, Board::master);
             Move::make(move, Board::master);
@@ -140,7 +140,9 @@ bool go(std::list<std::string> arguments) {
 		ss >> depth;
 
 		auto tm = TM::depth(depth);
-		Search::start(Board::master, tm);
+		auto bm = Search::start(Board::master, tm);
+
+		std::cout << "bestmove " << Move::show(bm) << "\n";
 	} else {
 		std::cout << "This go command is doesn't support yet.\n";
 	}
