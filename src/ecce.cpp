@@ -7,9 +7,10 @@
 
 //    - Best Search
 //      (+) - Write Simple Search (alpha-beta)
-//      - Extract PV
+//      (+) - Extract PV
 //      - Write stop command
 //      - Test search
+//      - Write quies
 
 //    - Best Eval
 //      (+) - Material
