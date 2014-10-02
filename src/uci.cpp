@@ -8,10 +8,13 @@
 
 #include "boards.hpp"
 #include "colors.hpp"
-#include "tests.hpp"
 #include "moves.hpp"
 #include "mover.hpp"
+
+#include "tests.hpp"
 #include "perft.hpp"
+#include "tm.hpp"
+#include "search.hpp"
 
 #include "info.hpp"
 #include "options.hpp"
@@ -126,6 +129,25 @@ bool stop(std::list<std::string>) {
     return true;
 }
 
+bool go(std::list<std::string> arguments) {
+	// @TODO: Write Commander class for process arguments
+    auto cursor = arguments.begin();
+
+	if (cursor != arguments.end() && *cursor == "depth") {
+		++cursor;
+		std::stringstream ss(*cursor);
+		Numspeed depth;
+		ss >> depth;
+
+		auto tm = TM::depth(depth);
+		Search::start(Board::master, tm);
+	} else {
+		std::cout << "This go command is doesn't support yet.\n";
+	}
+
+	return true;
+}
+
 bool unknown(std::string command) {
     std::cout << "Unknown command: " << command << "\n"; 
 
@@ -149,6 +171,7 @@ std::map<std::string, ProcessFunction> initUciFunctions() {
     result["stop"]       = &stop;
     result["test"]       = &test;
     result["perft"]      = &perft;
+    result["go"]         = &go;
 
     return result;
 };
