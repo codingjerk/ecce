@@ -30,6 +30,7 @@ namespace Color {
     const UNumspeed typeMask = makeUNumspeed(8);
 
     #define forColors(var) for (Color::Type var = Black; var <= White; var += White)
+	#define MAKEOPP(var) const Color::Type OPP = var == White? Black: White; 
 }
 
 using Color::Black;
