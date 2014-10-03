@@ -312,7 +312,6 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
     Move::make(castleLong, board);
     Color::invert(board.turn);
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/2KR3R b kq - 0 1");
-    std::cout << Board::toFen(board) << "\n";
     Color::invert(board.turn);
     Move::unmake(castleLong, board);
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
@@ -323,7 +322,6 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
     Move::make(castleShort, board);
     Color::invert(board.turn);
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R4RK1 b kq - 0 1");
-    std::cout << Board::toFen(board) << "\n";
     Color::invert(board.turn);
     Move::unmake(castleShort, board);
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
