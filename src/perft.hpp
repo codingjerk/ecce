@@ -22,7 +22,7 @@ namespace Perft {
         return result;
     }
 
-    UNum64 perft_quiet(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
+    inline UNum64 perft_quiet(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
         if (board.turn == White) {
             return perft_quiet<White>(buffer, board, depth);
         } else {
@@ -54,7 +54,7 @@ namespace Perft {
         return result;
     }
 
-    UNum64 perft(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
+    inline UNum64 perft(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
         if (board.turn == White) {
             return perft<White>(buffer, board, depth);
         } else {

@@ -10,6 +10,7 @@
 #include "search.hpp"
 #include "colors.hpp"
 #include "tests.hpp"
+#include "perft.hpp"
 
 // @TODO: Move to info.{h,c}pp
 namespace Info {
@@ -129,6 +130,19 @@ bool test(std::list<std::string> arguments) {
     return true;
 }
 
+bool perft(std::list<std::string> arguments) {
+    auto cursor = arguments.begin();
+
+    std::stringstream ss(*cursor);
+    unsigned long long depth;
+    ss >> depth;
+
+    Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
+    Perft::perft(moves, Board::master, depth);
+
+    return true;
+}
+
 bool board(std::list<std::string>) {
     std::cout << Board::show(Board::master);
 
@@ -159,7 +173,8 @@ std::map<std::string, ProcessFunction> uciFunctions = {
     { "quit",       &exit },
     { "go",         &go },
     { "stop",       &stop },
-    { "test",       &test }
+    { "test",       &test },
+    { "perft",      &perft }
 };
 
 bool processCommand() {
