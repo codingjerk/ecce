@@ -59,6 +59,16 @@ namespace Search {
         return alpha;
     }
 
+    std::string showPV(PV &pv) {
+        std::string result;
+
+        for (auto move: pv) {
+            result += Move::show(move) + " ";
+        }
+
+        return result;
+    }
+
     template <Color::Type COLOR>
     Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
         stopSearch = false;
@@ -68,11 +78,7 @@ namespace Search {
         auto score = alphaBeta<COLOR>(moves, board, -Score::Infinity, Score::Infinity, depth.maxDepth, pv);
         delete[] moves;
 
-        std::cout << "PV: ";
-        for (auto move: pv) {
-            std::cout << Move::show(move) << " ";
-        }
-        std::cout << "\n";
+        std::cout << "info depth " << depth.maxDepth << " pv " << showPV(pv) << "\n" << std::flush; 
 
         if (!pv.empty()) {
             return pv[0];
@@ -100,11 +106,9 @@ namespace Search {
             PV pv;
             auto score = alphaBeta<COLOR>(moves, board, -Score::Infinity, Score::Infinity, depth, pv);
         
-            std::cout << "PV: ";
-            for (auto move: pv) {
-                std::cout << Move::show(move) << " ";
-            }
-            std::cout << "\n";
+            if (stopSearch) break;
+
+            std::cout << "info depth " << depth << " pv " << showPV(pv) << "\n" << std::flush;
 
             if (!pv.empty()) {
                 bestMove = pv[0];
