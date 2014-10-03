@@ -97,7 +97,7 @@ bool position(std::list<std::string> arguments) {
 bool test(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
 
-	if (cursor != arguments.end() && *cursor == "complex") {
+    if (cursor != arguments.end() && *cursor == "complex") {
         Tests::runAll(true);
     } else {
         Tests::runAll();
@@ -115,7 +115,7 @@ bool perft(std::list<std::string> arguments) {
 
     Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
     Perft::perft(moves, Board::master, depth);
-	delete[] moves;
+    delete[] moves;
 
     return true;
 }
@@ -131,24 +131,24 @@ bool stop(std::list<std::string>) {
 }
 
 bool go(std::list<std::string> arguments) {
-	// @TODO: Write Commander class for process arguments
+    // @TODO: Write Commander class for process arguments
     auto cursor = arguments.begin();
 
-	if (cursor != arguments.end() && *cursor == "depth") {
-		++cursor;
-		std::stringstream ss(*cursor);
-		Numspeed depth;
-		ss >> depth;
+    if (cursor != arguments.end() && *cursor == "depth") {
+        ++cursor;
+        std::stringstream ss(*cursor);
+        Numspeed depth;
+        ss >> depth;
 
-		auto tm = TM::depth(depth);
-		auto bm = Search::incremental(Board::master, tm);
+        auto tm = TM::depth(depth);
+        auto bm = Search::incremental(Board::master, tm);
 
-		std::cout << "bestmove " << Move::show(bm) << "\n";
-	} else {
-		std::cout << "This go command is doesn't support yet.\n";
-	}
+        std::cout << "bestmove " << Move::show(bm) << "\n";
+    } else {
+        std::cout << "This go command is doesn't support yet.\n";
+    }
 
-	return true;
+    return true;
 }
 
 bool unknown(std::string command) {
@@ -160,7 +160,7 @@ bool unknown(std::string command) {
 typedef bool (*ProcessFunction)(std::list<std::string>);
 
 std::map<std::string, ProcessFunction> initUciFunctions() {
-	std::map<std::string, ProcessFunction> result;
+    std::map<std::string, ProcessFunction> result;
 
     result["uci"]        = &uci;
     result["debug"]      = &debug;

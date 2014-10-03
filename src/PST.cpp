@@ -153,12 +153,12 @@ Score::Type nullTable[makeUNumspeed(1) << Coord::usedBits] = {
 #define REVERSE(table) for (auto &s: table) s = -s;
 
 void PST::initTables() {
-	REVERSE(blackPawnTable);
-	REVERSE(blackKnightTable);
-	REVERSE(blackBishopTable);
-	REVERSE(blackRookTable);
-	REVERSE(blackQueenTable);
-	REVERSE(blackKingTable);
+    REVERSE(blackPawnTable);
+    REVERSE(blackKnightTable);
+    REVERSE(blackBishopTable);
+    REVERSE(blackRookTable);
+    REVERSE(blackQueenTable);
+    REVERSE(blackKingTable);
 
     tables[Piece::create(White, Pawn)] = whitePawnTable;
     tables[Piece::create(Black, Pawn)] = blackPawnTable;
@@ -169,12 +169,12 @@ void PST::initTables() {
     tables[Piece::create(White, Bishop)] = whiteBishopTable;
     tables[Piece::create(Black, Bishop)] = blackBishopTable;
     
-	tables[Piece::create(White, Rook)] = whiteRookTable;
+    tables[Piece::create(White, Rook)] = whiteRookTable;
     tables[Piece::create(Black, Rook)] = blackRookTable;
     
-	tables[Piece::create(White, Queen)] = whiteQueenTable;
+    tables[Piece::create(White, Queen)] = whiteQueenTable;
     tables[Piece::create(Black, Queen)] = blackQueenTable;
     
-	tables[Piece::create(White, King)] = whiteKingTable;
+    tables[Piece::create(White, King)] = whiteKingTable;
     tables[Piece::create(Black, King)] = blackKingTable;
 }

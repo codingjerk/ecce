@@ -4,16 +4,16 @@
 #include "core.hpp"
 
 namespace TM {
-	struct DepthLimit {
-		Numspeed maxDepth = MAX_DEPTH;
-	};
+    struct DepthLimit {
+        Numspeed maxDepth = MAX_DEPTH;
+    };
 
-	DepthLimit depth(Numspeed aDepth) {
+    DepthLimit depth(Numspeed aDepth) {
         DepthLimit result;
 
-		result.maxDepth = aDepth;
+        result.maxDepth = aDepth;
 
-		return result;
+        return result;
     }
 }
 

@@ -62,7 +62,7 @@ std::string firsts(std::string);
     } \
     cout << "Exception Test #" \
         << setfill('0') << setw(4) << (checkCounter) \
-		<< " (" << firsts(#expr) << ")\n"; \
+        << " (" << firsts(#expr) << ")\n"; \
     outMutex.unlock(); \
 }
 

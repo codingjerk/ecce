@@ -35,7 +35,7 @@ namespace Eval {
         forCoord(y) {
             const auto square = Coord::create(x, y);
             const auto piece = board.squares[square];
-			if (piece == Piece::null) continue;
+            if (piece == Piece::null) continue;
 
             const auto PSTValue = PST::tables[piece][square];
 
@@ -48,11 +48,11 @@ namespace Eval {
             return -result;
         }
     }
-	
+    
     template <Color::Type WHO>
-	Score::Type total(const Board::Type &board) {
-		return material<WHO>(board) + positional<WHO>(board);
-	}
+    Score::Type total(const Board::Type &board) {
+        return material<WHO>(board) + positional<WHO>(board);
+    }
 }
 
 #endif /* EVAL_HPP */

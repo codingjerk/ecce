@@ -6,9 +6,9 @@
 #include "score.hpp"
 
 namespace PST {
-	void initTables();
+    void initTables();
 
-	extern Score::Type *tables[makeUNumspeed(1) << Piece::usedBits];
+    extern Score::Type *tables[makeUNumspeed(1) << Piece::usedBits];
 }
 
 #endif /* PST_HPP */

@@ -318,8 +318,8 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     CHECK(Eval::material<White>(board) == Score::Draw);
     CHECK(Eval::material<Black>(board) == Score::Draw);
-	CHECK(Eval::positional<White>(board) == Score::Draw);
-	CHECK(Eval::positional<Black>(board) == Score::Draw);
+    CHECK(Eval::positional<White>(board) == Score::Draw);
+    CHECK(Eval::positional<Black>(board) == Score::Draw);
 
     Board::removePiece(board, Coord::E2);
     CHECK(Eval::material<White>(board) == -Score::Pawn);
