@@ -88,6 +88,40 @@ namespace Search {
         }
 	}
 
+	template <Color::Type COLOR>
+	Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
+		stopSearch = false;
+
+		Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
+		Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
+
+		for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
+			PV pv;
+			auto score = alphaBeta<COLOR>(moves, board, -Score::Infinity, Score::Infinity, depth, pv);
+		
+			std::cout << "PV: ";
+			for (auto move: pv) {
+				std::cout << Move::show(move) << " ";
+			}
+			std::cout << "\n";
+
+			if (!pv.empty()) {
+				bestMove = pv[0];
+			}
+		}
+
+		delete[] moves;
+		return bestMove;
+	}
+
+	Move::Type incremental(Board::Type &board, TM::DepthLimit depth) {
+        if (board.turn == White) {
+            return incremental<White>(board, depth);
+        } else {
+            return incremental<Black>(board, depth);
+        }
+	}
+
 	bool isInputAvailable() {
 	#ifdef OSLINUX
 		int val;
