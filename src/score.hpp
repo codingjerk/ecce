@@ -12,13 +12,17 @@ namespace Score {
     const Type Null     = 0;
     const Type Draw     = 0;
 
-    const Type Pawn     = 10000;
-    const Type Bishop   = 30000;
-    const Type Knight   = 30000;
-    const Type Rook     = 50000;
-    const Type Queen    = 90000;
+    const Type Pawn     = 100;
+    const Type Bishop   = 300;
+    const Type Knight   = 300;
+    const Type Rook     = 500;
+    const Type Queen    = 900;
 
-    const Type Infinity = 100 * Queen;
+    const Type Infinity = 20 * Queen;
+
+	inline Type makeMate(UNumspeed ply) {
+		return Infinity - Type(MAX_DEPTH) + Type(ply);
+	}
 	
 	inline bool isPositiveMate(Type score) {
 		return score >= (Infinity - Type(MAX_DEPTH));
@@ -36,11 +40,11 @@ namespace Score {
 		std::stringstream ss;
 		
 		if (isPositiveMate(score)) {
-			ss << "mate " << (score - Infinity + Type(MAX_DEPTH)) / 2;
+			ss << "mate " << (score - Infinity + Type(MAX_DEPTH) + 1) / 2;
 		} else if (isNegativeMate(score)) {
-			ss << "mate " << (score + Infinity - Type(MAX_DEPTH)) / 2;
+			ss << "mate " << (score + Infinity - Type(MAX_DEPTH) - 1) / 2;
 		} else {
-			ss << "cp " << score * 100 / Pawn;
+			ss << "cp " << score;
 		}
 
 		return ss.str();
