@@ -102,8 +102,11 @@ bool test(std::list<std::string> arguments) {
 		std::stringstream ss(*cursor);
 		ss >> complexity;
     }
-
+	
+	unsigned long int start = GetTickCount();
 	Tests::runAll(complexity);
+	unsigned long int total = GetTickCount() - start;
+	std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
 
     return true;
 }
@@ -116,7 +119,11 @@ bool perft(std::list<std::string> arguments) {
     ss >> depth;
 
     Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
-    Perft::perft(moves, Board::master, depth);
+	unsigned long int start = GetTickCount();
+    UNummax nodes = Perft::perft(moves, Board::master, depth);
+	unsigned long int total = GetTickCount() - start;
+	std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
+	std::cout << "NPS: " << nodes / total << "K nodes per second.\n";
     delete[] moves;
 
     return true;
