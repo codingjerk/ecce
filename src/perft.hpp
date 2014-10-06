@@ -6,50 +6,52 @@
 
 namespace Perft {
     template <Color::Type COLOR>
-    UNum64 perft_quiet(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
+    UNum64 perft_quiet(Board::Type &board, UNumspeed depth) {
         const Color::Type OPP = COLOR == White? Black: White;
         if (Checker::isCheck<OPP>(board)) return 0;
 
         if (depth == 0) return 1;
         UNum64 result = 0;
 
-        Generator::forBoard<COLOR>(buffer[depth], board);
-        UNumspeed total = buffer[depth][0];
+		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
+        UNumspeed total = Board::currentBuffer(board)[0];
         for (UNumspeed i = 1; i <= total; ++i) {
-            if (Move::make<COLOR>(buffer[depth][i], board))
-                result += perft_quiet<OPP>(buffer, board, depth - 1);
+			const Move::Type move = Board::currentBuffer(board)[i];
+            if (Move::make<COLOR>(move, board))
+                result += perft_quiet<OPP>(board, depth - 1);
 
-            Move::unmake<COLOR>(buffer[depth][i], board);
+            Move::unmake<COLOR>(move, board);
         }
 
         return result;
     }
 
-    inline UNum64 perft_quiet(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
+    inline UNum64 perft_quiet(Board::Type &board, UNumspeed depth) {
         if (board.turn == White) {
-            return perft_quiet<White>(buffer, board, depth);
+            return perft_quiet<White>(board, depth);
         } else {
-            return perft_quiet<Black>(buffer, board, depth);
+            return perft_quiet<Black>(board, depth);
         }
     }
 
     template <Color::Type COLOR>
-    UNum64 perft(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
+    UNum64 perft(Board::Type &board, UNumspeed depth) {
         const Color::Type OPP = COLOR == White? Black: White;
 
         if (depth == 0) return 1;
         UNum64 result = 0;
-
-        Generator::forBoard<COLOR>(buffer[depth], board);
-        UNumspeed total = buffer[depth][0];
+		
+		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
+        UNumspeed total = Board::currentBuffer(board)[0];
         for (UNumspeed i = 1; i <= total; ++i) {
-            if (Move::make<COLOR>(buffer[depth][i], board)) {
-                const auto nodes = perft_quiet<OPP>(buffer, board, depth - 1);;
-                std::cout << "Move: " << Move::show(buffer[depth][i]) << " = " << nodes << "\n";
+			const Move::Type move = Board::currentBuffer(board)[i];
+            if (Move::make<COLOR>(move, board)) {
+                const auto nodes = perft_quiet<OPP>(board, depth - 1);
+                std::cout << "Move: " << Move::show(move) << " = " << nodes << "\n";
                 result += nodes;
             }
-
-            Move::unmake<COLOR>(buffer[depth][i], board);
+		
+            Move::unmake<COLOR>(move, board);
         }
         
         std::cout << "Perft at depth " << depth << " = " << result << "\n";
@@ -57,11 +59,11 @@ namespace Perft {
         return result;
     }
 
-    inline UNum64 perft(Move::Buffer *buffer, Board::Type &board, UNumspeed depth) {
+    inline UNum64 perft(Board::Type &board, UNumspeed depth) {
         if (board.turn == White) {
-            return perft<White>(buffer, board, depth);
+            return perft<White>(board, depth);
         } else {
-            return perft<Black>(buffer, board, depth);
+            return perft<Black>(board, depth);
         }
     }
 }

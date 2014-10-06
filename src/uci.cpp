@@ -162,13 +162,11 @@ bool perft(std::list<std::string> arguments) {
     unsigned long long depth;
     ss >> depth;
 
-    Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
 	unsigned long int start = GetTickCount();
-    UNummax nodes = Perft::perft(moves, Board::master, depth);
+    UNummax nodes = Perft::perft(Board::master, depth);
 	unsigned long int total = GetTickCount() - start;
 	std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
 	std::cout << "NPS: " << nodes / total << "K nodes per second.\n";
-    delete[] moves;
 
     return true;
 }

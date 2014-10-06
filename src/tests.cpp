@@ -205,49 +205,49 @@ int Tests::runAll(UNumspeed complexity) {
         Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
 
         Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        CHECK(Perft::perft_quiet(moves, board, 1) == 20);
-        CHECK(Perft::perft_quiet(moves, board, 2) == 400);
-        CHECK(Perft::perft_quiet(moves, board, 3) == 8902);
-        CHECK(Perft::perft_quiet(moves, board, 4) == 197281);
-        CHECK(Perft::perft_quiet(moves, board, 5) == 4865609);
-        CHECK(Perft::perft_quiet(moves, board, 6) == 119060324);
-		if (complexity >= 2) CHECK(Perft::perft(moves, board, 7) == 3195901860);
-        if (complexity >= 3) CHECK(Perft::perft(moves, board, 8) == 84998978956);
+        CHECK(Perft::perft_quiet(board, 1) == 20);
+        CHECK(Perft::perft_quiet(board, 2) == 400);
+        CHECK(Perft::perft_quiet(board, 3) == 8902);
+        CHECK(Perft::perft_quiet(board, 4) == 197281);
+        CHECK(Perft::perft_quiet(board, 5) == 4865609);
+        CHECK(Perft::perft_quiet(board, 6) == 119060324);
+		if (complexity >= 2) CHECK(Perft::perft(board, 7) == 3195901860);
+        if (complexity >= 3) CHECK(Perft::perft(board, 8) == 84998978956);
 
         Board::setFromFen(board, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
-        CHECK(Perft::perft_quiet(moves, board, 1) == 48);
-        CHECK(Perft::perft_quiet(moves, board, 2) == 2039);
-        CHECK(Perft::perft_quiet(moves, board, 3) == 97862);
-        CHECK(Perft::perft_quiet(moves, board, 4) == 4085603);
-        CHECK(Perft::perft_quiet(moves, board, 5) == 193690690);
+        CHECK(Perft::perft_quiet(board, 1) == 48);
+        CHECK(Perft::perft_quiet(board, 2) == 2039);
+        CHECK(Perft::perft_quiet(board, 3) == 97862);
+        CHECK(Perft::perft_quiet(board, 4) == 4085603);
+        CHECK(Perft::perft_quiet(board, 5) == 193690690);
 
         Board::setFromFen(board, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1");
-        CHECK(Perft::perft_quiet(moves, board, 1) == 14);
-        CHECK(Perft::perft_quiet(moves, board, 2) == 191);
-        CHECK(Perft::perft_quiet(moves, board, 3) == 2812);
-        CHECK(Perft::perft_quiet(moves, board, 4) == 43238);
-        CHECK(Perft::perft_quiet(moves, board, 5) == 674624);
-        CHECK(Perft::perft_quiet(moves, board, 6) == 11030083);
-        if (complexity >= 2) CHECK(Perft::perft_quiet(moves, board, 7) == 178633661);
+        CHECK(Perft::perft_quiet(board, 1) == 14);
+        CHECK(Perft::perft_quiet(board, 2) == 191);
+        CHECK(Perft::perft_quiet(board, 3) == 2812);
+        CHECK(Perft::perft_quiet(board, 4) == 43238);
+        CHECK(Perft::perft_quiet(board, 5) == 674624);
+        CHECK(Perft::perft_quiet(board, 6) == 11030083);
+        if (complexity >= 2) CHECK(Perft::perft_quiet(board, 7) == 178633661);
 
         Board::setFromFen(board, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
-        CHECK(Perft::perft_quiet(moves, board, 1) == 6);
-        CHECK(Perft::perft_quiet(moves, board, 2) == 264);
-        CHECK(Perft::perft_quiet(moves, board, 3) == 9467);
-        CHECK(Perft::perft_quiet(moves, board, 4) == 422333);
-        CHECK(Perft::perft_quiet(moves, board, 5) == 15833292);
+        CHECK(Perft::perft_quiet(board, 1) == 6);
+        CHECK(Perft::perft_quiet(board, 2) == 264);
+        CHECK(Perft::perft_quiet(board, 3) == 9467);
+        CHECK(Perft::perft_quiet(board, 4) == 422333);
+        CHECK(Perft::perft_quiet(board, 5) == 15833292);
 
         Board::setFromFen(board, "rnbqkb1r/pp1p1ppp/2p5/4P3/2B5/8/PPP1NnPP/RNBQK2R w KQkq - 0 6");
-        CHECK(Perft::perft_quiet(moves, board, 1) == 42);
-        CHECK(Perft::perft_quiet(moves, board, 2) == 1352);
-        CHECK(Perft::perft_quiet(moves, board, 3) == 53392);
+        CHECK(Perft::perft_quiet(board, 1) == 42);
+        CHECK(Perft::perft_quiet(board, 2) == 1352);
+        CHECK(Perft::perft_quiet(board, 3) == 53392);
 
         Board::setFromFen(board, "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
-        CHECK(Perft::perft_quiet(moves, board, 1) == 46);
-        CHECK(Perft::perft_quiet(moves, board, 2) == 2079);
-        CHECK(Perft::perft_quiet(moves, board, 3) == 89890);
-        CHECK(Perft::perft_quiet(moves, board, 4) == 3894594);
-        if (complexity >= 2) CHECK(Perft::perft_quiet(moves, board, 5) == 164075551);
+        CHECK(Perft::perft_quiet(board, 1) == 46);
+        CHECK(Perft::perft_quiet(board, 2) == 2079);
+        CHECK(Perft::perft_quiet(board, 3) == 89890);
+        CHECK(Perft::perft_quiet(board, 4) == 3894594);
+        if (complexity >= 2) CHECK(Perft::perft_quiet(board, 5) == 164075551);
     }
 
     SECTION(Evaluation and Score);
