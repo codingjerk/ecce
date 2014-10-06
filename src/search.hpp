@@ -25,7 +25,7 @@ namespace Search {
     template <Color::Type COLOR>
     Score::Type alphaBeta(Move::Buffer *buffer, Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, PV &pv) {
         MAKEOPP(COLOR);
-        if (Checker::isCheck<OPP>(board)) return -Score::Infinity + MAX_DEPTH - depth;
+        if (Checker::isCheck<OPP>(board)) return Score::Infinity - MAX_DEPTH + depth;
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 
