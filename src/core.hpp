@@ -3,7 +3,7 @@
 
 // --- OS ---
 // Remove this for compile on windows with visual studio
-#define OSLINUX
+// #define OSLINUX
 
 // --- Arch-depended types ---
 using Boolspeed = unsigned long long;
@@ -39,7 +39,7 @@ using UNummax = unsigned long long;
 #define DEBUGMODE
 #undef DEBUGMODE
 
-const UNumspeed MAX_DEPTH = makeUNumspeed(50);
-const UNumspeed MAX_MOVES = makeUNumspeed(200);
+const UNumspeed MAX_DEPTH = makeUNumspeed(300);
+const UNumspeed MAX_MOVES = makeUNumspeed(300);
 
 #endif /* CORE_HPP */
