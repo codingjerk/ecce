@@ -51,10 +51,10 @@ namespace Move {
         Coord::Type to = simple & Coord::typeMask;
 
         // Captures
-        simple |= (board.squares[to] << captureOffset);
+		simple |= (board.squares[to] << captureOffset);
 
         // PawnDoubles
-        if (board.squares[from] & Pawn) {
+		if (board.squares[from] == Piece::create(White, Pawn) || board.squares[from] == Piece::create(Black, Pawn)) {
             if (from - to == 16 || to - from == 16) {
                 simple |= (pawnDoubleFlag << specialOffset);
             }//v
@@ -74,10 +74,10 @@ namespace Move {
         }//v
         // v
         // Castles
-        else if (board.squares[from] & King && (from == Coord::E1 || from == Coord::E8)) {
-            if (to == Coord::C1 || to == Coord::C8) {
+        else if (board.squares[from] == Piece::create(White, King) || board.squares[from] == Piece::create(Black, King)) {
+            if ((from == Coord::E1 && to == Coord::C1) || (from == Coord::E8 && to == Coord::C8)) {
                 simple |= (castleLongFlag << specialOffset);
-            } else if (to == Coord::G1 || to == Coord::G8) {
+            } else if ((from == Coord::E1 && to == Coord::G1) || (from == Coord::E8 && to == Coord::G8)) {
                 simple |= (castleShortFlag << specialOffset);
             }
         }
