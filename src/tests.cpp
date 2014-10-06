@@ -15,7 +15,7 @@
 #include "eval.hpp"
 #include "PST.hpp"
 
-int Tests::runAll(bool COMPLEX_PERFT_TESTING) {    
+int Tests::runAll(UNumspeed complexity) {    
     SECTION(Framework);
     CHECK(true);
 
@@ -194,7 +194,7 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
         CHECK(Board::toFen(board) == Board::toFen(boardMain));
     }
 
-    if (COMPLEX_PERFT_TESTING) {
+    if (complexity >= 1) {
         Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
 
         Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -204,8 +204,8 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
         CHECK(Perft::perft_quiet(moves, board, 4) == 197281);
         CHECK(Perft::perft_quiet(moves, board, 5) == 4865609);
         CHECK(Perft::perft_quiet(moves, board, 6) == 119060324);
-        //CHECK(Perft::perft(moves, board, 7) == 3195901860);
-        //CHECK(Perft::perft(moves, board, 8) == 84998978956);
+		if (complexity >= 2) CHECK(Perft::perft(moves, board, 7) == 3195901860);
+        if (complexity >= 3) CHECK(Perft::perft(moves, board, 8) == 84998978956);
 
         Board::setFromFen(board, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
         CHECK(Perft::perft_quiet(moves, board, 1) == 48);
@@ -221,7 +221,7 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
         CHECK(Perft::perft_quiet(moves, board, 4) == 43238);
         CHECK(Perft::perft_quiet(moves, board, 5) == 674624);
         CHECK(Perft::perft_quiet(moves, board, 6) == 11030083);
-        //CHECK(Perft::perft_quiet(moves, board, 7) == 178633661);
+        if (complexity >= 2) CHECK(Perft::perft_quiet(moves, board, 7) == 178633661);
 
         Board::setFromFen(board, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
         CHECK(Perft::perft_quiet(moves, board, 1) == 6);
@@ -240,7 +240,7 @@ int Tests::runAll(bool COMPLEX_PERFT_TESTING) {
         CHECK(Perft::perft_quiet(moves, board, 2) == 2079);
         CHECK(Perft::perft_quiet(moves, board, 3) == 89890);
         CHECK(Perft::perft_quiet(moves, board, 4) == 3894594);
-        //CHECK(Perft::perft_quiet(moves, board, 5) == 164075551);
+        if (complexity >= 2) CHECK(Perft::perft_quiet(moves, board, 5) == 164075551);
     }
 
     SECTION(UCI);

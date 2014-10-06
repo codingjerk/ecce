@@ -96,12 +96,14 @@ bool position(std::list<std::string> arguments) {
 
 bool test(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
-
-    if (cursor != arguments.end() && *cursor == "complex") {
-        Tests::runAll(true);
-    } else {
-        Tests::runAll();
+	
+	UNumspeed complexity = 0;
+    if (cursor != arguments.end()) {
+		std::stringstream ss(*cursor);
+		ss >> complexity;
     }
+
+	Tests::runAll(complexity);
 
     return true;
 }
