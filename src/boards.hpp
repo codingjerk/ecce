@@ -10,11 +10,14 @@
 #include "coords.hpp"
 #include "enpassants.hpp"
 #include "castles.hpp"
+#include "moves.hpp"
 
 namespace Board {
     struct Info {
         Castle::Type castle = Castle::null;
         Enpassant::Type enpassant = Enpassant::null;
+
+		Move::Buffer buffer;
     };
 
     struct Type {
@@ -35,6 +38,10 @@ namespace Board {
 
 	inline Numspeed ply(const Type& board) {
 		return Numspeed(board.depthPtr - board.depthCounter);
+	}
+		
+	inline Move::Buffer *currentBuffer(Type& board) {
+		return &(board.info->buffer);
 	}
 
     inline Castle::Type castle(const Type& board) {
