@@ -68,6 +68,13 @@ int Tests::runAll(UNumspeed complexity) {
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
 
+	CHECK(Board::ply(board) == 0);
+	board.depthPtr++;
+	CHECK(Board::ply(board) == 1);
+	board.depthPtr++;
+	CHECK(Board::ply(board) == 2);
+	board.depthPtr -= 2;
+
     SECTION(Generator);
     Generator::initTables();
     Move::Buffer buffer;

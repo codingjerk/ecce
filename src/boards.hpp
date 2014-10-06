@@ -28,9 +28,14 @@ namespace Board {
 
         Info info[MAX_DEPTH+1];
         Info *depthPtr = info;
+		Info *depthCounter = depthPtr;
     };
 
     extern Board::Type master;
+
+	inline Numspeed ply(const Type& board) {
+		return Numspeed(board.depthPtr - board.depthCounter);
+	}
 
     inline Castle::Type castle(const Type& board) {
         return board.depthPtr->castle;
