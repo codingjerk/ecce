@@ -19,11 +19,13 @@ namespace Search {
     using PV = std::vector<Move::Type>;
 
     bool stopSearch;
+	UNumspeed totalNodes;
     bool isSearchInterrupted();
 
     // @TODO: Use COLOR as Color::Type in all templates
     template <Color::Type COLOR>
     Score::Type alphaBeta(Move::Buffer *buffer, Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, PV &pv) {
+		++totalNodes;
         MAKEOPP(COLOR);
         if (Checker::isCheck<OPP>(board)) return Score::Infinity - MAX_DEPTH + depth;
 
@@ -78,7 +80,7 @@ namespace Search {
         auto score = alphaBeta<COLOR>(moves, board, -Score::Infinity, Score::Infinity, depth.maxDepth, pv);
         delete[] moves;
 
-        std::cout << "info depth " << depth.maxDepth << " pv " << showPV(pv) << "\n" << std::flush; 
+        std::cout << "info depth " << depth.maxDepth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV(pv) << "\n" << std::flush; 
 
         if (!pv.empty()) {
             return pv[0];
@@ -104,11 +106,12 @@ namespace Search {
 
         for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
             PV pv;
+			totalNodes = 0;
             auto score = alphaBeta<COLOR>(moves, board, -Score::Infinity, Score::Infinity, depth, pv);
         
             if (stopSearch) break;
 
-            std::cout << "info depth " << depth << " pv " << showPV(pv) << "\n" << std::flush;
+			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV(pv) << "\n" << std::flush;
 
             if (!pv.empty()) {
                 bestMove = pv[0];
