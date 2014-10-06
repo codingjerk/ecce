@@ -126,6 +126,12 @@ bool board(std::list<std::string>) {
     return true;
 }
 
+bool fen(std::list<std::string>) {
+	std::cout << Board::toFen(Board::master) << "\n";
+
+    return true;
+}
+
 bool stop(std::list<std::string>) {
     return true;
 }
@@ -169,6 +175,7 @@ std::map<std::string, ProcessFunction> initUciFunctions() {
     result["ucinewgame"] = &ucinewgame;
     result["position"]   = &position;
     result["board"]      = &board;
+    result["fen"]        = &fen;
     result["exit"]       = &exit;
     result["quit"]       = &exit;
     result["stop"]       = &stop;
