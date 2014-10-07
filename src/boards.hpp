@@ -40,12 +40,8 @@ namespace Board {
 		return Numspeed(board.depthPtr - board.depthCounter);
 	}
 		
-	inline Move::Buffer *currentBuffer(Type& board) {
-		return &(board.info->buffer);
-	}
-		
 	inline Move::Buffer &currentBuffer(Type& board) {
-		return (board.depthPtr->buffer);
+		return board.depthPtr->buffer;
 	}
 
     inline Castle::Type castle(const Type& board) {
