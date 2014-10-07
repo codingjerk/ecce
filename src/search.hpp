@@ -17,13 +17,14 @@
 
 namespace Search {
     using PV = std::vector<Move::Type>;
+	typedef bool (*Interupter)();
 
     bool stopSearch;
 	UNumspeed totalNodes;
-    bool isSearchInterrupted();
+	UNumspeed endTime;
 
     // @TODO: Use COLOR as Color::Type in all templates
-    template <Color::Type COLOR>
+    template <Color::Type COLOR, Interupter isInterupt>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, PV &pv) {
 		++totalNodes;
         MAKEOPP(COLOR);
@@ -33,7 +34,7 @@ namespace Search {
 
         if (stopSearch) {
             return -Score::Infinity; 
-        } else if (isSearchInterrupted()) {
+        } else if (isInterupt()) {
             stopSearch = true;
         }
 
@@ -44,7 +45,7 @@ namespace Search {
 			const Move::Type move = Board::currentBuffer(board)[i];
 
             if (Move::make<COLOR>(move, board)) {
-                auto score = -alphaBeta<OPP>(board, -beta, -alpha, depth - 1, childPV);
+                auto score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, childPV);
 
                 if (score > alpha) {
                     alpha = score;
@@ -77,7 +78,7 @@ namespace Search {
         stopSearch = false;
 
         PV pv;
-        auto score = alphaBeta<COLOR>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, pv);
+		auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, pv);
 
         std::cout << "info depth " << depth.maxDepth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV(pv) << "\n" << std::flush; 
 
@@ -105,7 +106,7 @@ namespace Search {
         for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
             PV pv;
 			totalNodes = 0;
-            auto score = alphaBeta<COLOR>(board, -Score::Infinity, Score::Infinity, depth, pv);
+            auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, pv);
         
             if (stopSearch) break;
 
@@ -124,6 +125,38 @@ namespace Search {
             return incremental<White>(board, depth);
         } else {
             return incremental<Black>(board, depth);
+        }
+    }
+
+    template <Color::Type COLOR>
+    Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
+        stopSearch = false;
+
+        Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
+
+		endTime = GetTickCount() + timeLimit.maxTime;
+        for (Numspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
+            PV pv;
+			totalNodes = 0;
+            auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, pv);
+        
+            if (stopSearch) break;
+
+			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV(pv) << "\n" << std::flush;
+
+            if (!pv.empty()) {
+                bestMove = pv[0];
+            }
+        }
+
+        return bestMove;
+    }
+
+    Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
+        if (board.turn == White) {
+            return incremental<White>(board, timeLimit);
+        } else {
+            return incremental<Black>(board, timeLimit);
         }
     }
 
@@ -174,7 +207,7 @@ namespace Search {
     #endif
     }  
 
-    bool isSearchInterrupted()
+    bool stopInterupter()
     {
         if(isInputAvailable())
         {
@@ -184,6 +217,11 @@ namespace Search {
         }
 
         return false;
+    }
+
+    bool timeInterupter()
+    {
+		return GetTickCount() >= endTime || stopInterupter();
     }
 }
 

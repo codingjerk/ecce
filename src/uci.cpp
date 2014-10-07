@@ -196,13 +196,74 @@ bool go(std::list<std::string> arguments) {
         std::stringstream ss(*cursor);
         Numspeed depth;
         ss >> depth;
+		depth = min(depth, MAX_DEPTH);
 
         auto tm = TM::depth(depth);
         auto bm = Search::incremental(Board::master, tm);
 
         std::cout << "bestmove " << Move::show(bm) << "\n";
-    } else {
-        std::cout << "This go command is doesn't support yet.\n";
+    } else if (cursor != arguments.end() && *cursor == "infinite") {
+        auto tm = TM::depth(MAX_DEPTH);
+        auto bm = Search::incremental(Board::master, tm);
+
+        std::cout << "bestmove " << Move::show(bm) << "\n";
+	} else if (cursor != arguments.end() && *cursor == "movetime") {
+        ++cursor;
+        std::stringstream ss(*cursor);
+        Numspeed time;
+        ss >> time;
+
+        auto tm = TM::time(time);
+        auto bm = Search::incremental(Board::master, tm);
+
+        std::cout << "bestmove " << Move::show(bm) << "\n";
+	} else {
+		Numspeed wtime = 0;
+		Numspeed btime = 0;
+		Numspeed winc  = 0;
+		Numspeed binc  = 0;
+		Numspeed movestogo = 0;
+
+		while (cursor != arguments.end()) {
+			if (*cursor == "wtime") {
+				++cursor;
+				std::stringstream ss(*cursor);
+				ss >> wtime;
+			} else if (*cursor == "btime") {
+				++cursor;
+				std::stringstream ss(*cursor);
+				ss >> btime;
+			} else if (*cursor == "winc") {
+				++cursor;
+				std::stringstream ss(*cursor);
+				ss >> winc;
+			} else if (*cursor == "binc") {
+				++cursor;
+				std::stringstream ss(*cursor);
+				ss >> binc;
+			} else if (*cursor == "movestogo") {
+				++cursor;
+				std::stringstream ss(*cursor);
+				ss >> movestogo;
+			} else {
+				std::cout << "This go command is doesn't support.\n";
+				return true;
+			}
+
+			++cursor;
+		}
+
+
+		TM::TimeLimit tm; 
+		if (Board::master.turn == White) {
+			tm = TM::time(wtime, winc, movestogo);
+		} else {
+			tm = TM::time(btime, binc, movestogo);
+		}
+
+        auto bm = Search::incremental(Board::master, tm);
+
+        std::cout << "bestmove " << Move::show(bm) << "\n";
     }
 
     return true;
