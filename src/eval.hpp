@@ -3,6 +3,7 @@
 
 #include "score.hpp"
 #include "boards.hpp"
+#include "bitboards.hpp"
 #include "colors.hpp"
 #include "PST.hpp"
 
@@ -26,27 +27,40 @@ namespace Eval {
 
         return result;
     }
+
+	#define MAKE_PST_CALC(main, color, piece) {\
+		Bitboard::Type wb = board.bitboards[Piece::create(color, piece)];\
+		while (wb) {\
+			Coord::Type coord = Bitboard::bitScan(wb);\
+			wb ^= Bitboard::fromCoord(coord);\
+			if (main == White) {\
+				result += PST::tables[Piece::create(color, piece)][coord];\
+			} else {\
+				result -= PST::tables[Piece::create(color, piece)][coord];\
+			}\
+		}\
+	}
     
     template <Color::Type WHO> 
     Score::Type positional(const Board::Type &board) {
+		MAKEOPP(WHO);
         Score::Type result = Score::Draw;
+		
+		MAKE_PST_CALC(WHO, WHO, Pawn);
+		MAKE_PST_CALC(WHO, WHO, Bishop);
+		MAKE_PST_CALC(WHO, WHO, Knight);
+		MAKE_PST_CALC(WHO, WHO, Rook);
+		MAKE_PST_CALC(WHO, WHO, Queen);
+		MAKE_PST_CALC(WHO, WHO, King);
+		
+		MAKE_PST_CALC(WHO, OPP, Pawn);
+		MAKE_PST_CALC(WHO, OPP, Bishop);
+		MAKE_PST_CALC(WHO, OPP, Knight);
+		MAKE_PST_CALC(WHO, OPP, Rook);
+		MAKE_PST_CALC(WHO, OPP, Queen);
+		MAKE_PST_CALC(WHO, OPP, King);
 
-        forCoord(x)
-        forCoord(y) {
-            const auto square = Coord::create(x, y);
-            const auto piece = board.squares[square];
-            if (piece == Piece::null) continue;
-
-            const auto PSTValue = PST::tables[piece][square];
-
-            result += PSTValue;
-        }
-
-        if (WHO == White) {
-            return result;
-        } else {
-            return -result;
-        }
+		return result;
     }
     
     template <Color::Type WHO>
