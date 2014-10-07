@@ -16,15 +16,19 @@
 #endif
 
 namespace Search {
-    using PV = std::vector<Move::Type>;
 	typedef bool (*Interupter)();
 
     bool stopSearch;
 	UNumspeed totalNodes;
 	UNumspeed endTime;
+	Move::Type pvArray[(MAX_DEPTH * MAX_DEPTH + MAX_DEPTH) / 2];
+
+	void movcpy(Move::Type *pTarget, const Move::Type *pSource, int n) {
+		while (n-- && (*pTarget++ = *pSource++));
+	}
 
     template <Color::Type COLOR, Interupter isInterupt>
-    Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, PV &pv) {
+    Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, Numspeed pvIndex) {
 		++totalNodes;
         MAKEOPP(COLOR);
         if (Checker::isCheck<OPP>(board)) return Score::Infinity - MAX_DEPTH + Board::ply(board);
@@ -36,21 +40,19 @@ namespace Search {
 			return 0;
 		}
 
+		pvArray[pvIndex] = 0;
 		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
         for (UNumspeed i = 1; i <= total; ++i) {
-            PV childPV;
-
 			const Move::Type move = Board::currentBuffer(board)[i];
 
             if (Move::make<COLOR>(move, board)) {
-                auto score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, childPV);
+                auto score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
 
                 if (score > alpha) {
                     alpha = score;
-                    pv.clear();  
-                    pv.push_back(move);  
-                    std::copy(childPV.begin(), childPV.end(), back_inserter(pv));
+					pvArray[pvIndex] = move;
+					movcpy(pvArray + pvIndex + 1, pvArray + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
                 }
             }
 
@@ -62,10 +64,11 @@ namespace Search {
         return alpha;
     }
 
-    std::string showPV(PV &pv) {
+    std::string showPV() {
         std::string result;
 
-        for (auto move: pv) {
+		Move::Type move;
+		for (int i = 0; move = pvArray[i]; ++i) {
             result += Move::show(move) + " ";
         }
 
@@ -76,16 +79,11 @@ namespace Search {
     Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
         stopSearch = false;
 
-        PV pv;
-		auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, pv);
+		auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, 0);
 
-        std::cout << "info depth " << depth.maxDepth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV(pv) << "\n" << std::flush; 
+        std::cout << "info depth " << depth.maxDepth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV() << "\n" << std::flush; 
 
-        if (!pv.empty()) {
-            return pv[0];
-        } else {
-            return Move::create(Coord::A1, Coord::A1, Piece::null);
-        }
+        return pvArray[0];
     }
 
     Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
@@ -103,17 +101,14 @@ namespace Search {
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
 
         for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
-            PV pv;
 			totalNodes = 0;
-            auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, pv);
+            auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
         
             if (stopSearch) break;
+			
+			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV() << "\n" << std::flush;
 
-			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV(pv) << "\n" << std::flush;
-
-            if (!pv.empty()) {
-                bestMove = pv[0];
-            }
+            bestMove = pvArray[0];
         }
 
         return bestMove;
@@ -135,17 +130,14 @@ namespace Search {
 
 		endTime = GetTickCount() + timeLimit.maxTime;
         for (Numspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
-            PV pv;
 			totalNodes = 0;
-            auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, pv);
+            auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
         
             if (stopSearch) break;
 
-			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV(pv) << "\n" << std::flush;
+			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV() << "\n" << std::flush;
 
-            if (!pv.empty()) {
-                bestMove = pv[0];
-            }
+            bestMove = pvArray[0];
         }
 
         return bestMove;
