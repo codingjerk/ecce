@@ -39,7 +39,8 @@ namespace Search {
 		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
         for (UNumspeed i = 1; i <= total; ++i) {
-            std::vector<Move::Type> childPV;
+            PV childPV;
+
 			const Move::Type move = Board::currentBuffer(board)[i];
 
             if (Move::make<COLOR>(move, board)) {
