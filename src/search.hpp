@@ -11,16 +11,36 @@
 
 #ifdef OSLINUX
     #include <unistd.h>
+    #define min(a,b) ((a)<(b))?(a):(b)
 #else
     #include <Windows.h>
 #endif
 
 namespace Search {
-	typedef bool (*Interupter)();
+	typedef bool (*Interupter)();  
 
     bool stopSearch;
 	UNumspeed totalNodes;
 	UNumspeed endTime;
+
+    bool isInputAvailable();
+
+    bool stopInterupter()
+    {
+        if(totalNodes % 1024 == 0 && isInputAvailable())
+        {
+            std::string input;
+            std::getline(std::cin, input);
+            return (input == "stop");
+        }
+
+        return false;
+    }
+
+    bool timeInterupter()
+    {
+        return GetTickCount() >= endTime || stopInterupter();
+    }
 	
 	const UNumspeed PV_SIZE = (MAX_DEPTH * MAX_DEPTH + MAX_DEPTH) / 2;
 	Move::Type pvArray[PV_SIZE];
@@ -216,23 +236,6 @@ namespace Search {
 
         return false;
     #endif
-    }  
-
-    bool stopInterupter()
-    {
-        if(totalNodes % 1024 == 0 && isInputAvailable())
-        {
-            std::string input;
-            std::getline(std::cin, input);
-            return (input == "stop");
-        }
-
-        return false;
-    }
-
-    bool timeInterupter()
-    {
-		return GetTickCount() >= endTime || stopInterupter();
     }
 }
 
