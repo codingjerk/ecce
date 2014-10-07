@@ -37,7 +37,7 @@ namespace Search {
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 
-		if (stopSearch || isInterupt()) {
+		if (isInterupt() || stopSearch) {
 			stopSearch = true;
 			return 0;
 		}
@@ -45,11 +45,13 @@ namespace Search {
 		pvArray[pvIndex] = 0;
 		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
+		Move::Type move;
+		Score::Type score;
         for (UNumspeed i = 1; i <= total; ++i) {
-			const Move::Type move = Board::currentBuffer(board)[i];
+			move = Board::currentBuffer(board)[i];
 
             if (Move::make<COLOR>(move, board)) {
-                auto score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
 
                 if (score > alpha) {
                     alpha = score;
