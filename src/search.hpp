@@ -32,7 +32,7 @@ namespace Search {
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 
-		if (totalNodes % 100 == 0) {
+		if (!(totalNodes % 16384)) {
 			if (stopSearch || isInterupt()) {
 				stopSearch = true;
 				return 0;
