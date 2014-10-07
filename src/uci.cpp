@@ -171,6 +171,20 @@ bool perft(std::list<std::string> arguments) {
     return true;
 }
 
+bool speed(std::list<std::string>) {
+	unsigned long int start = GetTickCount();
+	Board::Type testBoard;
+    Board::setFromFen(testBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    UNummax nodes = Perft::perft_quiet(testBoard, 6);
+	unsigned long int total = GetTickCount() - start;
+	std::cout << "Perft info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << nodes << ", NPS: " << nodes / total << "K." << "\n";
+	std::cout << "Score: " << nodes / total << "\n";
+
+	Search::speed(testBoard);
+
+    return true;
+}
+
 bool board(std::list<std::string>) {
     std::cout << Board::show(Board::master);
 
@@ -294,6 +308,7 @@ std::map<std::string, ProcessFunction> initUciFunctions() {
     result["test"]       = &test;
     result["perft"]      = &perft;
     result["go"]         = &go;
+    result["speed"]      = &speed;
 
     return result;
 };

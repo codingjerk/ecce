@@ -160,6 +160,14 @@ namespace Search {
         }
     }
 
+    void speed(Board::Type &board) {
+		unsigned long int start = GetTickCount();
+		incremental<White>(board, TM::depth(6));
+		unsigned long int total = GetTickCount() - start;
+		std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+		std::cout << "Score: " << totalNodes / total << "\n";
+    }
+
     bool isInputAvailable() {
     #ifdef OSLINUX
         int val;
