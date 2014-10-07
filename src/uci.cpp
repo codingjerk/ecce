@@ -216,7 +216,7 @@ bool go(std::list<std::string> arguments) {
         auto bm = Search::incremental(Board::master, tm);
 
         std::cout << "bestmove " << Move::show(bm) << "\n";
-    } else if (cursor != arguments.end() && *cursor == "infinite") {
+    } else if (cursor == arguments.end() || *cursor == "infinite") {
         auto tm = TM::depth(MAX_DEPTH);
         auto bm = Search::incremental(Board::master, tm);
 
