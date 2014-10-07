@@ -32,11 +32,12 @@ namespace Search {
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 
-        if (stopSearch) {
-            return -Score::Infinity; 
-        } else if (isInterupt()) {
-            stopSearch = true;
-        }
+		if (totalNodes % 100 == 0) {
+			if (stopSearch || isInterupt()) {
+				stopSearch = true;
+				return 0;
+			}
+		}
 
 		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
