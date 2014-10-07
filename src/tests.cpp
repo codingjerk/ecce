@@ -77,7 +77,7 @@ int Tests::runAll(UNumspeed complexity) {
 
     SECTION(Generator);
     Generator::initTables();
-    Move::Buffer buffer;
+	auto &buffer = Board::currentBuffer(board);
 
     buffer[0] = 0;
     Generator::forKnights<Black>(buffer, board);
@@ -190,20 +190,7 @@ int Tests::runAll(UNumspeed complexity) {
     total = buffer[0];
     CHECK(total == 42);
 
-    Board::setFromFen(board, "2br2k1/2q3rn/p2NppQ1/2p1P3/Pp5R/4P3/1P3PPP/3R2K1 w - - 0 1");
-    const auto boardMain = board;
-    buffer[0] = 0;
-    Generator::forBoard(buffer, board);
-    total = buffer[0];
-    for (unsigned int i = 1; i <= total; ++i) {
-        Move::make(buffer[i], board);
-        Move::unmake(buffer[i], board);
-        CHECK(Board::toFen(board) == Board::toFen(boardMain));
-    }
-
     if (complexity >= 1) {
-        Move::Buffer *moves = new Move::Buffer[MAX_DEPTH];
-
         Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         CHECK(Perft::perft_quiet(board, 1) == 20);
         CHECK(Perft::perft_quiet(board, 2) == 400);
