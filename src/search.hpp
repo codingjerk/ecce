@@ -23,12 +23,11 @@ namespace Search {
 	UNumspeed totalNodes;
 	UNumspeed endTime;
 
-    // @TODO: Use COLOR as Color::Type in all templates
     template <Color::Type COLOR, Interupter isInterupt>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, PV &pv) {
 		++totalNodes;
         MAKEOPP(COLOR);
-        if (Checker::isCheck<OPP>(board)) return Score::Infinity - MAX_DEPTH + depth;
+        if (Checker::isCheck<OPP>(board)) return Score::Infinity - MAX_DEPTH + Board::ply(board);
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 
