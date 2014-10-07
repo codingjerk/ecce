@@ -3,9 +3,9 @@
 
 // --- OS ---
 // Remove this for compile on windows with visual studio
-// #define OSLINUX
+#define OSLINUX
 
-#ifdef
+#ifdef OSLINUX
 #include <sys/time.h>
 
 inline unsigned long GetTickCount()
