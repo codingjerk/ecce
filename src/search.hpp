@@ -21,7 +21,9 @@ namespace Search {
     bool stopSearch;
 	UNumspeed totalNodes;
 	UNumspeed endTime;
-	Move::Type pvArray[(MAX_DEPTH * MAX_DEPTH + MAX_DEPTH) / 2];
+	
+	const UNumspeed PV_SIZE = (MAX_DEPTH * MAX_DEPTH + MAX_DEPTH) / 2;
+	Move::Type pvArray[PV_SIZE];
 
 	void movcpy(Move::Type *pTarget, const Move::Type *pSource, int n) {
 		while (n-- && (*pTarget++ = *pSource++));
@@ -96,6 +98,10 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
+		for (int i = 0; i < PV_SIZE; ++i) {
+			pvArray[i] = 0;
+		}
+
         stopSearch = false;
 
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
@@ -124,6 +130,10 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
+		for (int i = 0; i < PV_SIZE; ++i) {
+			pvArray[i] = 0;
+		}
+
         stopSearch = false;
 
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
