@@ -32,11 +32,9 @@ namespace Search {
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 
-		if (totalNodes % 1024 == 0) {
-			if (stopSearch || isInterupt()) {
-				stopSearch = true;
-				return 0;
-			}
+		if (stopSearch || isInterupt()) {
+			stopSearch = true;
+			return 0;
 		}
 
 		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
@@ -203,12 +201,12 @@ namespace Search {
         }
 
         if (is_pipe) {
-            if (!PeekNamedPipe(stdin_h,NULL,0,NULL,&val ,NULL)) {
+            if (!PeekNamedPipe(stdin_h, NULL, 0, NULL, &val, NULL)) {
                 return true;
             }
             return val > 0;
         } else {
-            GetNumberOfConsoleInputEvents(stdin_h,&val);
+            GetNumberOfConsoleInputEvents(stdin_h, &val);
             return val > 1;
         }
 
@@ -218,7 +216,7 @@ namespace Search {
 
     bool stopInterupter()
     {
-        if(isInputAvailable())
+        if(totalNodes % 1024 == 0 && isInputAvailable())
         {
             std::string input;
             std::getline(std::cin, input);
