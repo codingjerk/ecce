@@ -9,7 +9,7 @@
 
 namespace Eval {
     template <Color::Type WHO> 
-    Score::Type material(const Board::Type& board) {
+    inline Score::Type material(const Board::Type& board) {
         const auto OPP = WHO == White? Black: White;
         Score::Type result = 0;
 
@@ -27,44 +27,18 @@ namespace Eval {
 
         return result;
     }
-
-	#define MAKE_PST_CALC(main, color, piece) {\
-		Bitboard::Type wb = board.bitboards[Piece::create(color, piece)];\
-		while (wb) {\
-			Coord::Type coord = Bitboard::bitScan(wb);\
-			wb ^= Bitboard::fromCoord(coord);\
-			if (main == White) {\
-				result += PST::tables[Piece::create(color, piece)][coord];\
-			} else {\
-				result -= PST::tables[Piece::create(color, piece)][coord];\
-			}\
-		}\
-	}
     
     template <Color::Type WHO> 
-    Score::Type positional(const Board::Type &board) {
-		MAKEOPP(WHO);
-        Score::Type result = Score::Draw;
-		
-		MAKE_PST_CALC(WHO, WHO, Pawn);
-		MAKE_PST_CALC(WHO, WHO, Bishop);
-		MAKE_PST_CALC(WHO, WHO, Knight);
-		MAKE_PST_CALC(WHO, WHO, Rook);
-		MAKE_PST_CALC(WHO, WHO, Queen);
-		MAKE_PST_CALC(WHO, WHO, King);
-		
-		MAKE_PST_CALC(WHO, OPP, Pawn);
-		MAKE_PST_CALC(WHO, OPP, Bishop);
-		MAKE_PST_CALC(WHO, OPP, Knight);
-		MAKE_PST_CALC(WHO, OPP, Rook);
-		MAKE_PST_CALC(WHO, OPP, Queen);
-		MAKE_PST_CALC(WHO, OPP, King);
-
-		return result;
+    inline Score::Type positional(const Board::Type &board) {
+		if (WHO == White) {
+			return board.positionalScore;
+		} else {
+			return -board.positionalScore;
+		}
     }
     
     template <Color::Type WHO>
-    Score::Type total(const Board::Type &board) {
+    inline Score::Type total(const Board::Type &board) {
         return material<WHO>(board) + positional<WHO>(board);
     }
 }

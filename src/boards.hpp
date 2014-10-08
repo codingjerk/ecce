@@ -11,6 +11,8 @@
 #include "enpassants.hpp"
 #include "castles.hpp"
 #include "moves.hpp"
+#include "score.hpp"
+#include "PST.hpp"
 
 namespace Board {
     struct Info {
@@ -28,6 +30,8 @@ namespace Board {
 
         UNumspeed halfmoveClock = makeUNumspeed(0);
         UNumspeed fullmoveNumber = makeUNumspeed(1);
+
+		Score::Type positionalScore = Score::Draw;
 
         Info info[MAX_DEPTH+1];
         Info *depthPtr = info;
@@ -63,12 +67,17 @@ namespace Board {
     inline void setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {
         board.bitboards[piece] |= Bitboard::fromCoord(coord);
         board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
+		board.positionalScore += PST::tables[piece][coord];
+
         board.squares[coord] = piece; 
     }
 
     inline void removePiece(Type &board, const Coord::Type coord) {
         board.bitboards[board.squares[coord]] ^= Bitboard::fromCoord(coord);
         board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
+
+		board.positionalScore -= PST::tables[board.squares[coord]][coord];
+
         board.squares[coord] = Piece::null; 
     }
 
