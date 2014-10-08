@@ -70,7 +70,7 @@ namespace Board {
         board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
 
 		board.positionalScore += PST::tables[piece][coord];
-		board.materialScore += Score::pieceToScoreTable[piece];
+		board.materialScore   += Score::pieceToScoreTable[piece];
 
         board.squares[coord] = piece; 
     }
@@ -80,7 +80,7 @@ namespace Board {
         board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
 
 		board.positionalScore -= PST::tables[board.squares[coord]][coord];
-		board.materialScore -= Score::pieceToScoreTable[board.squares[coord]];
+		board.materialScore   -= Score::pieceToScoreTable[board.squares[coord]];
 
         board.squares[coord] = Piece::null; 
     }
