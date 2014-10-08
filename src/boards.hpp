@@ -32,6 +32,7 @@ namespace Board {
         UNumspeed fullmoveNumber = makeUNumspeed(1);
 
 		Score::Type positionalScore = Score::Draw;
+		Score::Type materialScore   = Score::Draw;
 
         Info info[MAX_DEPTH+1];
         Info *depthPtr = info;
@@ -67,7 +68,9 @@ namespace Board {
     inline void setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {
         board.bitboards[piece] |= Bitboard::fromCoord(coord);
         board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
+
 		board.positionalScore += PST::tables[piece][coord];
+		board.materialScore += Score::pieceToScoreTable[piece];
 
         board.squares[coord] = piece; 
     }
@@ -77,6 +80,7 @@ namespace Board {
         board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
 
 		board.positionalScore -= PST::tables[board.squares[coord]][coord];
+		board.materialScore -= Score::pieceToScoreTable[board.squares[coord]];
 
         board.squares[coord] = Piece::null; 
     }

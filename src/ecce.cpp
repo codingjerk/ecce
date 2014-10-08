@@ -32,6 +32,7 @@
 #include "pieces.hpp"
 #include "generator.hpp"
 #include "PST.hpp"
+#include "score.hpp"
 
 int main(int, char**) {
     Move::initTables();
@@ -40,6 +41,7 @@ int main(int, char**) {
     Piece::initTables();
     Generator::initTables();
     PST::initTables();
+    Score::initTables();
 
     Uci::cycle();
 

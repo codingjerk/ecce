@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "core.hpp"
+#include "pieces.hpp"
 
 namespace Score {
     typedef Numspeed Type;
@@ -19,6 +20,24 @@ namespace Score {
     const Type Queen    = 900;
 
     const Type Infinity = 20 * Queen;
+
+	static Type pieceToScoreTable[makeUNumspeed(1) << Piece::usedBits];
+
+	inline void initTables() {
+		pieceToScoreTable[Piece::create(White, Pawn)]   = Pawn;
+		pieceToScoreTable[Piece::create(White, Bishop)] = Bishop;
+		pieceToScoreTable[Piece::create(White, Knight)] = Knight;
+		pieceToScoreTable[Piece::create(White, Rook)]   = Rook;
+		pieceToScoreTable[Piece::create(White, Queen)]  = Queen;
+		pieceToScoreTable[Piece::create(White, King)]   = Null;
+		
+		pieceToScoreTable[Piece::create(Black, Pawn)]   = -Pawn;
+		pieceToScoreTable[Piece::create(Black, Bishop)] = -Bishop;
+		pieceToScoreTable[Piece::create(Black, Knight)] = -Knight;
+		pieceToScoreTable[Piece::create(Black, Rook)]   = -Rook;
+		pieceToScoreTable[Piece::create(Black, Queen)]  = -Queen;
+		pieceToScoreTable[Piece::create(Black, King)]   = -Null;
+	}
 
 	inline Type makeMate(UNumspeed ply) {
 		return Infinity - Type(MAX_DEPTH) + Type(ply);
