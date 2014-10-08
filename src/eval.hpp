@@ -28,7 +28,11 @@ namespace Eval {
     
     template <Color::Type WHO>
     inline Score::Type total(const Board::Type &board) {
-        return material<WHO>(board) + positional<WHO>(board);
+		if (WHO == White) {
+			return board.materialScore + board.positionalScore;
+		} else {
+			return -(board.materialScore + board.positionalScore);
+		}
     }
 }
 
