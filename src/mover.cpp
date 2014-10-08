@@ -160,8 +160,8 @@ Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
     Board::removePiece(board, Coord::H1);
 
     if (Checker::isAttacked<White>(board, Coord::F1)) return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, Coord::G1))     return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, Coord::E1))   return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, Coord::G1)) return makeBoolspeed(0);
+    if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
 }
