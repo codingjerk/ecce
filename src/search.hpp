@@ -8,6 +8,7 @@
 #include "checker.hpp"
 #include "score.hpp"
 #include "eval.hpp"
+#include "pv.hpp"
 
 #ifdef OSLINUX
     #include <unistd.h>
@@ -41,13 +42,6 @@ namespace Search {
     {
         return GetTickCount() >= endTime || stopInterupter();
     }
-	
-	const UNumspeed PV_SIZE = (MAX_DEPTH * MAX_DEPTH + MAX_DEPTH) / 2;
-	Move::Type pvArray[PV_SIZE];
-
-	void movcpy(Move::Type *pTarget, const Move::Type *pSource, int n) {
-		while (n-- && (*pTarget++ = *pSource++));
-	}
 
     template <Color::Type COLOR, Interupter isInterupt>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, Numspeed pvIndex) {
@@ -62,7 +56,7 @@ namespace Search {
 			return 0;
 		}
 
-		pvArray[pvIndex] = 0;
+		PV::master[pvIndex] = 0;
 		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
 		Move::Type move;
@@ -75,8 +69,8 @@ namespace Search {
 
                 if (score > alpha) {
                     alpha = score;
-					pvArray[pvIndex] = move;
-					movcpy(pvArray + pvIndex + 1, pvArray + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
+					PV::master[pvIndex] = move;
+					PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
                 }
             }
 
@@ -88,26 +82,15 @@ namespace Search {
         return alpha;
     }
 
-    std::string showPV() {
-        std::string result;
-
-		Move::Type move;
-		for (int i = 0; move = pvArray[i]; ++i) {
-            result += Move::show(move) + " ";
-        }
-
-        return result;
-    }
-
     template <Color::Type COLOR>
     Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
         stopSearch = false;
 
 		auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, 0);
 
-        std::cout << "info depth " << depth.maxDepth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV() << "\n" << std::flush; 
+        std::cout << "info depth " << depth.maxDepth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush; 
 
-        return pvArray[0];
+        return PV::master[0];
     }
 
     Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
@@ -120,9 +103,7 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
-		for (int i = 0; i < PV_SIZE; ++i) {
-			pvArray[i] = 0;
-		}
+		PV::clear();
 
         stopSearch = false;
 
@@ -134,9 +115,9 @@ namespace Search {
         
             if (stopSearch) break;
 			
-			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV() << "\n" << std::flush;
+			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
-            bestMove = pvArray[0];
+            bestMove = PV::master[0];
         }
 
         return bestMove;
@@ -152,9 +133,7 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
-		for (int i = 0; i < PV_SIZE; ++i) {
-			pvArray[i] = 0;
-		}
+		PV::clear();
 
         stopSearch = false;
 
@@ -167,9 +146,9 @@ namespace Search {
         
             if (stopSearch) break;
 
-			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << showPV() << "\n" << std::flush;
+			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
-            bestMove = pvArray[0];
+            bestMove = PV::master[0];
         }
 
         return bestMove;
