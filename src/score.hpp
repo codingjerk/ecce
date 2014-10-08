@@ -41,13 +41,19 @@ namespace Score {
 		return isPositiveMate(score) || isNegativeMate(score);
 	}
 
+	inline Numspeed getMateScore(Type score) {
+		if (isPositiveMate(score)) {
+			return (score - Infinity + Type(MAX_DEPTH) + 1) / 2;
+		} else {
+			return (score + Infinity - Type(MAX_DEPTH) - 1) / 2;
+		}
+	}
+
 	inline std::string show(Type score) {
 		std::stringstream ss;
 		
-		if (isPositiveMate(score)) {
-			ss << "mate " << (score - Infinity + Type(MAX_DEPTH) + 1) / 2;
-		} else if (isNegativeMate(score)) {
-			ss << "mate " << (score + Infinity - Type(MAX_DEPTH) - 1) / 2;
+		if (isMate(score)) {
+			ss << "mate " << getMateScore(score);
 		} else {
 			ss << "cp " << score;
 		}
