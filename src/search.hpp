@@ -14,7 +14,7 @@ namespace Search {
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, Numspeed pvIndex) {
 		++totalNodes;
         MAKEOPP(COLOR);
-        if (Checker::isCheck<OPP>(board)) return Score::Infinity - Board::ply(board);
+        if (Checker::isCheck<OPP>(board)) return Score::makeMate(Board::ply(board));
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 

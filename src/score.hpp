@@ -26,7 +26,7 @@ namespace Score {
 	void initTables();
 
 	inline Type makeMate(UNumspeed ply) {
-		return Infinity - Type(MAX_DEPTH) + Type(ply);
+		return Infinity - Type(ply);
 	}
 	
 	inline bool isPositiveMate(Type score) {
@@ -43,9 +43,9 @@ namespace Score {
 
 	inline Numspeed getMateScore(Type score) {
 		if (isPositiveMate(score)) {
-			return (score - Infinity + Type(MAX_DEPTH) + 1) / 2;
+			return (Infinity - score) / 2;
 		} else {
-			return (score + Infinity - Type(MAX_DEPTH) - 1) / 2;
+			return (-score - Infinity) / 2;
 		}
 	}
 
