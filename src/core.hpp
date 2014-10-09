@@ -5,18 +5,9 @@
 // Remove this for compile on windows with visual studio
 // #define OSLINUX
 
-#ifdef OSLINUX
-#include <sys/time.h>
-
-inline unsigned long GetTickCount()
-{
-    struct timeval tv;
-    if( gettimeofday(&tv, 0) != 0 )
-        return 0;
- 
-    return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-}
-#endif
+// --- Main definitions ---
+#define DEBUGMODE
+#undef DEBUGMODE
 
 // --- Arch-depended types ---
 using Boolspeed = unsigned long long;
@@ -47,10 +38,6 @@ using UNummax = unsigned long long;
 
 #define makeNummax(num) num##ll
 #define makeUNummax(num) num##ull
-
-// --- Main definitions ---
-#define DEBUGMODE
-#undef DEBUGMODE
 
 const UNumspeed MAX_DEPTH = makeUNumspeed(300);
 const UNumspeed MAX_MOVES = makeUNumspeed(300);
