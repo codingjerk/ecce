@@ -32,6 +32,8 @@ std::string Piece::show(const Type piece) {
     return result;
 }
 
+#define UC(c) (unsigned char)(c)
+
 void Piece::initTables() {
     pieceToCharTable[null]                  = '.';
 
@@ -49,17 +51,17 @@ void Piece::initTables() {
     pieceToCharTable[create(White, Queen)]  = 'Q';
     pieceToCharTable[create(White, King)]   = 'K';
 
-    charToPieceTable['p'] = create(Black, Pawn);
-    charToPieceTable['n'] = create(Black, Knight);
-    charToPieceTable['b'] = create(Black, Bishop);
-    charToPieceTable['r'] = create(Black, Rook);
-    charToPieceTable['q'] = create(Black, Queen);
-    charToPieceTable['k'] = create(Black, King);
+    charToPieceTable[UC('p')] = create(Black, Pawn);
+    charToPieceTable[UC('n')] = create(Black, Knight);
+    charToPieceTable[UC('b')] = create(Black, Bishop);
+    charToPieceTable[UC('r')] = create(Black, Rook);
+    charToPieceTable[UC('q')] = create(Black, Queen);
+    charToPieceTable[UC('k')] = create(Black, King);
 
-    charToPieceTable['P'] = create(White, Pawn);
-    charToPieceTable['N'] = create(White, Knight);
-    charToPieceTable['B'] = create(White, Bishop);
-    charToPieceTable['R'] = create(White, Rook);
-    charToPieceTable['Q'] = create(White, Queen);
-    charToPieceTable['K'] = create(White, King);
+    charToPieceTable[UC('P')] = create(White, Pawn);
+    charToPieceTable[UC('N')] = create(White, Knight);
+    charToPieceTable[UC('B')] = create(White, Bishop);
+    charToPieceTable[UC('R')] = create(White, Rook);
+    charToPieceTable[UC('Q')] = create(White, Queen);
+    charToPieceTable[UC('K')] = create(White, King);
 }

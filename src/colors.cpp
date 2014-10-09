@@ -30,10 +30,12 @@ std::string Color::show(const Type color) {
     return result;
 }
 
+#define UC(c) (unsigned char)(c)
+
 void Color::initTables() {
     colorToCharTable[Black] = 'b';
     colorToCharTable[White] = 'w';
 
-    charToColorTable['b'] = Black;
-    charToColorTable['w'] = White;
+    charToColorTable[UC('b')] = Black;
+    charToColorTable[UC('w')] = White;
 }
