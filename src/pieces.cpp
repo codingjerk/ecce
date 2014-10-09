@@ -13,7 +13,7 @@ Type Piece::fromChar(const char c) {
     ASSERT(c == 'p' || c == 'n' || c == 'b' || c == 'r' || c == 'q' || c == 'k'
         || c == 'P' || c == 'N' || c == 'B' || c == 'R' || c == 'Q' || c == 'K');
 
-    return charToPieceTable[c];
+    return charToPieceTable[(unsigned char)(c)];
 }
 
 Type Piece::fromString(const std::string str) {

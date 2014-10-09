@@ -107,7 +107,7 @@ namespace Search {
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
 
         endTime = GetTickCount() + timeLimit.maxTime;
-        for (Numspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
+        for (UNumspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
             totalNodes = 0;
             auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
         

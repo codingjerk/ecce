@@ -3,8 +3,8 @@
 Score::Type Score::pieceToScoreTable[makeUNumspeed(1) << Piece::usedBits];
 
 void Score::initTables() {
-    for (UNumspeed i = 0; i < sizeof(pieceToScoreTable); ++i) {
-        pieceToScoreTable[i] = Score::Null;
+    for (auto &element: pieceToScoreTable) {
+        element = Score::Null;
     }
 
     pieceToScoreTable[Piece::create(White, Dignity::Pawn)]   = Score::Pawn;

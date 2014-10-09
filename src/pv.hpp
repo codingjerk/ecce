@@ -16,7 +16,7 @@ namespace PV {
         std::string result;
 
         Move::Type move;
-        for (int i = 0; move = master[i]; ++i) {
+        for (UNumspeed i = 0; (move = master[i]); ++i) {
             result += Move::show(move) + " ";
         }
 
@@ -24,7 +24,7 @@ namespace PV {
     }
 
     inline void clear() {
-        for (int i = 0; i < PV_SIZE; ++i) {
+        for (UNumspeed i = 0; i < PV_SIZE; ++i) {
             master[i] = 0;
         }
     }

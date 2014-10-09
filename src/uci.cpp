@@ -39,7 +39,7 @@ namespace Move {
             // Promotions
             else if (text.size() == 5) {
                 Color::Type we = (board.squares[from]) & Color::typeMask;
-                Piece::Type promoted = Piece::fromChar(text[4]) & Dignity::typeMask | we;
+                Piece::Type promoted = (Piece::fromChar(text[4]) & Dignity::typeMask) | we;
                 simple |= (promoted << promotionOffset)
                        |  (promotionFlag << specialOffset);
             }//v
@@ -209,7 +209,7 @@ bool go(std::list<std::string> arguments) {
     if (cursor != arguments.end() && *cursor == "depth") {
         ++cursor;
         std::stringstream ss(*cursor);
-        Numspeed depth;
+        UNumspeed depth;
         ss >> depth;
         depth = min(depth, MAX_DEPTH);
 

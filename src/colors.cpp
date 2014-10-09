@@ -12,7 +12,7 @@ char colorToCharTable[makeUNumspeed(1) << Color::usedBitsReal];
 Type Color::fromChar(const char c) {
     ASSERT(c == 'w' || c == 'b');
 
-    return charToColorTable[c];
+    return charToColorTable[(unsigned char)(c)];
 }
 
 Type Color::fromString(const std::string str) {
