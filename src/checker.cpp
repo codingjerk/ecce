@@ -21,13 +21,7 @@ template <Color::Type WHO>
 Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
     const auto OPP = WHO == White? Black: White; // Not Color::inv, because in slow with templates
 
-    // Knight attacks
-    if (board.bitboards[Piece::create(OPP, Knight)] & Tables::knightMasks[who])
-        return makeBoolspeed(1);
-
-    // Pawn atacks
-    if (Tables::pawnCaptureMasks[WHO][who] & board.bitboards[Piece::create(OPP, Pawn)]) 
-        return makeBoolspeed(2);
+    auto result = Bitboard::null;
 
     // Bishop & Queen attacks
     if (Tables::bishopFullMasks[who] & (board.bitboards[Piece::create(OPP, Bishop)] | board.bitboards[Piece::create(OPP, Queen)])) {
@@ -36,9 +30,8 @@ Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
                 + UNumspeed(((nonEmpty & Tables::bishopMasks[who]) * Magic::bishopMagics[who]) 
                     >> (Magic::bishopMaskShifts[who]));
 
-        if (Magic::bishopData[magicIndex] 
-         & (board.bitboards[Piece::create(OPP, Bishop)] | board.bitboards[Piece::create(OPP, Queen)]))
-            return makeBoolspeed(4);
+        result |= (Magic::bishopData[magicIndex] 
+         & (board.bitboards[Piece::create(OPP, Bishop)] | board.bitboards[Piece::create(OPP, Queen)]));
     }
 
     // Rook & Queen attacks
@@ -48,13 +41,19 @@ Boolspeed Checker::isAttacked(const Board::Type &board, const Coord::Type who) {
             + UNumspeed(((nonEmpty & Tables::rookMasks[who]) * Magic::rookMagics[who]) 
                 >> (Magic::rookMaskShifts[who]));
 
-        if (Magic::rookData[magicIndex] 
-         & (board.bitboards[Piece::create(OPP, Rook)] | board.bitboards[Piece::create(OPP, Queen)]))
-            return makeBoolspeed(5);
+        result |= (Magic::rookData[magicIndex] 
+         & (board.bitboards[Piece::create(OPP, Rook)] | board.bitboards[Piece::create(OPP, Queen)]));
     }
 
-    // King attacks
-    return (Tables::kingMasks[who] & board.bitboards[Piece::create(OPP, King)]);
+    result |=
+        // King attacks
+        (Tables::kingMasks[who] & board.bitboards[Piece::create(OPP, King)])
+      | // Knight attacks
+        (board.bitboards[Piece::create(OPP, Knight)] & Tables::knightMasks[who])
+      | // Pawn atacks
+        (Tables::pawnCaptureMasks[WHO][who] & board.bitboards[Piece::create(OPP, Pawn)]);
+
+    return result;
 }
 
 // Explicit template instantiations
