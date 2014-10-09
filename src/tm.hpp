@@ -12,7 +12,7 @@ namespace TM {
         Numspeed maxTime;
     };
 
-    DepthLimit depth(Numspeed aDepth) {
+    inline DepthLimit depth(Numspeed aDepth) {
         DepthLimit result;
 
         result.maxDepth = aDepth;
@@ -20,7 +20,7 @@ namespace TM {
         return result;
     }
 
-    TimeLimit time(Numspeed aTime) {
+    inline TimeLimit time(Numspeed aTime) {
         TimeLimit result;
 
         result.maxTime = aTime;
@@ -28,16 +28,12 @@ namespace TM {
         return result;
     }
 
-	TimeLimit time(Numspeed time, Numspeed inc, Numspeed moves) {
-        TimeLimit result;
-
-		if (moves != 0)
-			result.maxTime = (time + inc * moves) / moves;
-		else {
-			result.maxTime = (time + inc * 40) / 40;
+	inline TimeLimit time(Numspeed aTime, Numspeed inc, Numspeed moves) {
+		if (moves != 0) {
+			return time((aTime + inc * moves) / moves);
+        } else {
+			return time((aTime + inc * 40) / 40);
 		}
-
-        return result;
     }
 }
 
