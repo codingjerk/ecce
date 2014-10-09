@@ -36,13 +36,14 @@ namespace Board {
 
         Info info[MAX_DEPTH+1];
         Info *depthPtr = info;
+        UNumspeed depthOffset = 0;
 		Info *depthCounter = depthPtr;
     };
 
     extern Board::Type master;
 
 	inline Numspeed ply(const Type& board) {
-		return Numspeed(board.depthPtr - board.depthCounter);
+		return Numspeed(board.depthPtr - board.depthCounter - board.depthOffset);
 	}
 		
 	inline Move::Buffer &currentBuffer(Type& board) {

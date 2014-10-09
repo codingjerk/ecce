@@ -132,6 +132,7 @@ bool position(std::list<std::string> arguments) {
             Move::Type move = Move::fromString(*cursor, Board::master);
             Move::make(move, Board::master);
             Color::invert(Board::master.turn);
+            ++Board::master.depthOffset;
         }
     }
 

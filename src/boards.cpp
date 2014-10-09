@@ -71,6 +71,7 @@ void Board::setFromFen(Type &board, const std::string fen) {
     board.depthPtr = board.info;
 	board.materialScore = 0;
 	board.positionalScore = 0;
+    board.depthOffset = 0;
 
     std::string positionPart;
     fenStream >> positionPart;
