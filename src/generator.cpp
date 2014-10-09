@@ -102,13 +102,8 @@ void Generator::forKnights(Move::Buffer &buffer, const Board::Type &board) {
 template <Color::Type COLOR>
 void Generator::forKings(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, King)];
-    while(bitboard != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        forKing<COLOR>(buffer, board, Coord::Type(bitIndex));
-
-        bitboard ^= Bitboard::fromIndex(bitIndex);
-    }
+    forKing<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)));
 }
 
 template <Color::Type COLOR> 
