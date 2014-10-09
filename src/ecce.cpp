@@ -1,10 +1,8 @@
 // @TODO, GLOBAL:
 //    - Best UCI
-//      - Support of info (seldepth (extract from board), matescore
 //      - Support of options
 
 //    - Best Search
-//      - Test search
 //      - Negascout
 //      - Sort LVA/MVV
 //      - Write quies
@@ -12,14 +10,10 @@
 //      - Hash table
 
 //    - Best Eval
-//      - Some other positional factors
-//      - Test Eval
 
 //    - Best Time Manager
-//      - Test TM
 
 //    - Best Speed
-//      - Test current speed
 //      - Optimize algo
 //      - Optimize razoring
 //      - Optimize evaluation
@@ -34,7 +28,7 @@
 #include "PST.hpp"
 #include "score.hpp"
 
-int main(int, char**) {
+void initTables() {
     Move::initTables();
     Bitboard::initTables();
     Color::initTables();
@@ -42,6 +36,10 @@ int main(int, char**) {
     Generator::initTables();
     PST::initTables();
     Score::initTables();
+}
+
+int main(int, char**) {
+    initTables();
 
     Uci::cycle();
 
