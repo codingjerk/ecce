@@ -47,7 +47,7 @@ namespace Search {
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, Numspeed pvIndex) {
 		++totalNodes;
         MAKEOPP(COLOR);
-        if (Checker::isCheck<OPP>(board)) return Score::Infinity - MAX_DEPTH + Board::ply(board);
+        if (Checker::isCheck<OPP>(board)) return Score::Infinity - Board::ply(board);
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 
@@ -164,7 +164,7 @@ namespace Search {
 
     void speed(Board::Type &board) {
 		unsigned long int start = GetTickCount();
-		incremental<White>(board, TM::depth(6));
+		incremental<White>(board, TM::depth(7));
 		unsigned long int total = GetTickCount() - start;
 		std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
 		std::cout << "Score: " << totalNodes / total << "\n";
