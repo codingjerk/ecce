@@ -7,7 +7,7 @@
 namespace Perft {
     template <Color::Type COLOR>
     UNum64 perft_quiet(Board::Type &board, UNumspeed depth) {
-        const Color::Type OPP = COLOR == White? Black: White;
+        MAKEOPP(COLOR);
         if (Checker::isCheck<OPP>(board)) return 0;
 
         if (depth == 0) return 1;
@@ -36,7 +36,7 @@ namespace Perft {
 
     template <Color::Type COLOR>
     UNum64 perft(Board::Type &board, UNumspeed depth) {
-        const Color::Type OPP = COLOR == White? Black: White;
+        MAKEOPP(COLOR);
 
         if (depth == 0) return 1;
         UNum64 result = 0;
