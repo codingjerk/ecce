@@ -17,6 +17,11 @@ void setPositionFromFen(Type &board, const std::string fen) {
         square = Piece::null;
     }
 
+    board.depthPtr = board.info;
+	board.materialScore = 0;
+	board.positionalScore = 0;
+    board.depthOffset = 0;
+
     UNumspeed cursor = makeUNumspeed(0);
 
     forRawYCoords(y) {
@@ -67,11 +72,6 @@ std::string getFenPosition(const Type &board) {
 
 void Board::setFromFen(Type &board, const std::string fen) {
     std::stringstream fenStream(fen);
-
-    board.depthPtr = board.info;
-	board.materialScore = 0;
-	board.positionalScore = 0;
-    board.depthOffset = 0;
 
     std::string positionPart;
     fenStream >> positionPart;
