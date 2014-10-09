@@ -28,12 +28,12 @@ namespace TM {
         return result;
     }
 
-	inline TimeLimit time(Numspeed aTime, Numspeed inc, Numspeed moves) {
-		if (moves != 0) {
-			return time((aTime + inc * moves) / moves);
+    inline TimeLimit time(Numspeed aTime, Numspeed inc, Numspeed moves) {
+        if (moves != 0) {
+            return time((aTime + inc * moves) / moves);
         } else {
-			return time((aTime + inc * 40) / 40);
-		}
+            return time((aTime + inc * 40) / 40);
+        }
     }
 }
 

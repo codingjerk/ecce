@@ -20,7 +20,7 @@
 #include "options.hpp"
 
 namespace Move {
-	inline Type fromString(const std::string text, Board::Type &board) {
+    inline Type fromString(const std::string text, Board::Type &board) {
         Move::Type simple = fromString(text);
 
         // @TODO: Create methods Move::from and Move::to
@@ -28,10 +28,10 @@ namespace Move {
         Coord::Type to = simple & Coord::typeMask;
 
         // Captures
-		simple |= (board.squares[to] << captureOffset);
+        simple |= (board.squares[to] << captureOffset);
 
         // PawnDoubles
-		if (board.squares[from] == Piece::create(White, Pawn) || board.squares[from] == Piece::create(Black, Pawn)) {
+        if (board.squares[from] == Piece::create(White, Pawn) || board.squares[from] == Piece::create(Black, Pawn)) {
             if (from - to == 16 || to - from == 16) {
                 simple |= (pawnDoubleFlag << specialOffset);
             }//v
@@ -141,17 +141,17 @@ bool position(std::list<std::string> arguments) {
 
 bool test(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
-	
-	UNumspeed complexity = 0;
+    
+    UNumspeed complexity = 0;
     if (cursor != arguments.end()) {
-		std::stringstream ss(*cursor);
-		ss >> complexity;
+        std::stringstream ss(*cursor);
+        ss >> complexity;
     }
-	
-	unsigned long int start = GetTickCount();
-	Tests::runAll(complexity);
-	unsigned long int total = GetTickCount() - start;
-	std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
+    
+    unsigned long int start = GetTickCount();
+    Tests::runAll(complexity);
+    unsigned long int total = GetTickCount() - start;
+    std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
 
     return true;
 }
@@ -163,25 +163,25 @@ bool perft(std::list<std::string> arguments) {
     unsigned long long depth;
     ss >> depth;
 
-	unsigned long int start = GetTickCount();
+    unsigned long int start = GetTickCount();
     UNummax nodes = Perft::perft(Board::master, depth);
-	unsigned long int total = GetTickCount() - start;
-	std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
-	std::cout << "NPS: " << nodes / total << "K nodes per second.\n";
+    unsigned long int total = GetTickCount() - start;
+    std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
+    std::cout << "NPS: " << nodes / total << "K nodes per second.\n";
 
     return true;
 }
 
 bool speed(std::list<std::string>) {
-	unsigned long int start = GetTickCount();
-	Board::Type testBoard;
+    unsigned long int start = GetTickCount();
+    Board::Type testBoard;
     Board::setFromFen(testBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     UNummax nodes = Perft::perft_quiet(testBoard, 6);
-	unsigned long int total = GetTickCount() - start;
-	std::cout << "Perft info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << nodes << ", NPS: " << nodes / total << "K." << "\n";
-	std::cout << "Score: " << nodes / total << "\n";
+    unsigned long int total = GetTickCount() - start;
+    std::cout << "Perft info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << nodes << ", NPS: " << nodes / total << "K." << "\n";
+    std::cout << "Score: " << nodes / total << "\n";
 
-	Search::speed(testBoard);
+    Search::speed(testBoard);
 
     return true;
 }
@@ -193,7 +193,7 @@ bool board(std::list<std::string>) {
 }
 
 bool fen(std::list<std::string>) {
-	std::cout << Board::toFen(Board::master) << "\n";
+    std::cout << Board::toFen(Board::master) << "\n";
 
     return true;
 }
@@ -211,7 +211,7 @@ bool go(std::list<std::string> arguments) {
         std::stringstream ss(*cursor);
         Numspeed depth;
         ss >> depth;
-		depth = min(depth, MAX_DEPTH);
+        depth = min(depth, MAX_DEPTH);
 
         auto tm = TM::depth(depth);
         auto bm = Search::incremental(Board::master, tm);
@@ -222,7 +222,7 @@ bool go(std::list<std::string> arguments) {
         auto bm = Search::incremental(Board::master, tm);
 
         std::cout << "bestmove " << Move::show(bm) << "\n";
-	} else if (cursor != arguments.end() && *cursor == "movetime") {
+    } else if (cursor != arguments.end() && *cursor == "movetime") {
         ++cursor;
         std::stringstream ss(*cursor);
         Numspeed time;
@@ -232,49 +232,49 @@ bool go(std::list<std::string> arguments) {
         auto bm = Search::incremental(Board::master, tm);
 
         std::cout << "bestmove " << Move::show(bm) << "\n";
-	} else {
-		Numspeed wtime = 0;
-		Numspeed btime = 0;
-		Numspeed winc  = 0;
-		Numspeed binc  = 0;
-		Numspeed movestogo = 0;
+    } else {
+        Numspeed wtime = 0;
+        Numspeed btime = 0;
+        Numspeed winc  = 0;
+        Numspeed binc  = 0;
+        Numspeed movestogo = 0;
 
-		while (cursor != arguments.end()) {
-			if (*cursor == "wtime") {
-				++cursor;
-				std::stringstream ss(*cursor);
-				ss >> wtime;
-			} else if (*cursor == "btime") {
-				++cursor;
-				std::stringstream ss(*cursor);
-				ss >> btime;
-			} else if (*cursor == "winc") {
-				++cursor;
-				std::stringstream ss(*cursor);
-				ss >> winc;
-			} else if (*cursor == "binc") {
-				++cursor;
-				std::stringstream ss(*cursor);
-				ss >> binc;
-			} else if (*cursor == "movestogo") {
-				++cursor;
-				std::stringstream ss(*cursor);
-				ss >> movestogo;
-			} else {
-				std::cout << "This go command is doesn't support.\n";
-				return true;
-			}
+        while (cursor != arguments.end()) {
+            if (*cursor == "wtime") {
+                ++cursor;
+                std::stringstream ss(*cursor);
+                ss >> wtime;
+            } else if (*cursor == "btime") {
+                ++cursor;
+                std::stringstream ss(*cursor);
+                ss >> btime;
+            } else if (*cursor == "winc") {
+                ++cursor;
+                std::stringstream ss(*cursor);
+                ss >> winc;
+            } else if (*cursor == "binc") {
+                ++cursor;
+                std::stringstream ss(*cursor);
+                ss >> binc;
+            } else if (*cursor == "movestogo") {
+                ++cursor;
+                std::stringstream ss(*cursor);
+                ss >> movestogo;
+            } else {
+                std::cout << "This go command is doesn't support.\n";
+                return true;
+            }
 
-			++cursor;
-		}
+            ++cursor;
+        }
 
 
-		TM::TimeLimit tm; 
-		if (Board::master.turn == White) {
-			tm = TM::time(wtime, winc, movestogo);
-		} else {
-			tm = TM::time(btime, binc, movestogo);
-		}
+        TM::TimeLimit tm; 
+        if (Board::master.turn == White) {
+            tm = TM::time(wtime, winc, movestogo);
+        } else {
+            tm = TM::time(btime, binc, movestogo);
+        }
 
         auto bm = Search::incremental(Board::master, tm);
 

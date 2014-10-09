@@ -1,7 +1,6 @@
 #ifndef PST_HPP
 #define PST_HPP
 
-#include "coords.hpp"
 #include "pieces.hpp"
 #include "score.hpp"
 

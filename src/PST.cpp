@@ -1,5 +1,7 @@
 #include "PST.hpp"
 
+#include "coords.hpp"
+
 using namespace PST;
 
 // @WARNING: Rememeber, that tables for pieces are invert from top to bottom. 

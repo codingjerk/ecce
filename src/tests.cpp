@@ -68,16 +68,16 @@ int Tests::runAll(UNumspeed complexity) {
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
 
-	CHECK(Board::ply(board) == 0);
-	board.depthPtr++;
-	CHECK(Board::ply(board) == 1);
-	board.depthPtr++;
-	CHECK(Board::ply(board) == 2);
-	board.depthPtr -= 2;
+    CHECK(Board::ply(board) == 0);
+    board.depthPtr++;
+    CHECK(Board::ply(board) == 1);
+    board.depthPtr++;
+    CHECK(Board::ply(board) == 2);
+    board.depthPtr -= 2;
 
     SECTION(Generator);
     Generator::initTables();
-	auto &buffer = Board::currentBuffer(board);
+    auto &buffer = Board::currentBuffer(board);
 
     buffer[0] = 0;
     Generator::forKnights<Black>(buffer, board);
@@ -198,7 +198,7 @@ int Tests::runAll(UNumspeed complexity) {
         CHECK(Perft::perft_quiet(board, 4) == 197281);
         CHECK(Perft::perft_quiet(board, 5) == 4865609);
         CHECK(Perft::perft_quiet(board, 6) == 119060324);
-		if (complexity >= 2) CHECK(Perft::perft(board, 7) == 3195901860);
+        if (complexity >= 2) CHECK(Perft::perft(board, 7) == 3195901860);
         if (complexity >= 3) CHECK(Perft::perft(board, 8) == 84998978956);
 
         Board::setFromFen(board, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");

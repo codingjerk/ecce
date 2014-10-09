@@ -18,8 +18,8 @@ void setPositionFromFen(Type &board, const std::string fen) {
     }
 
     board.depthPtr = board.info;
-	board.materialScore = 0;
-	board.positionalScore = 0;
+    board.materialScore = 0;
+    board.positionalScore = 0;
     board.depthOffset = 0;
 
     UNumspeed cursor = makeUNumspeed(0);

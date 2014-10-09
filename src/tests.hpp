@@ -4,7 +4,7 @@
 #include "core.hpp"
 
 namespace Tests {
-	int runAll(UNumspeed complexity);
+    int runAll(UNumspeed complexity);
 }
 
 #endif /* TESTS_HPP */

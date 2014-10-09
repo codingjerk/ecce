@@ -12,32 +12,32 @@
 namespace Search {
     template <Color::Type COLOR, Interupter isInterupt>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, Numspeed depth, Numspeed pvIndex) {
-		++totalNodes;
+        ++totalNodes;
         MAKEOPP(COLOR);
         if (Checker::isCheck<OPP>(board)) return Score::makeMate(Board::ply(board));
 
         if (depth <= 0) return Eval::total<COLOR>(board);
 
-		if (isInterupt() || stopSearch) {
-			stopSearch = true;
-			return 0;
-		}
+        if (isInterupt() || stopSearch) {
+            stopSearch = true;
+            return 0;
+        }
 
-		PV::master[pvIndex] = 0;
-		Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
+        PV::master[pvIndex] = 0;
+        Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
-		Move::Type move;
-		Score::Type score;
+        Move::Type move;
+        Score::Type score;
         for (UNumspeed i = 1; i <= total; ++i) {
-			move = Board::currentBuffer(board)[i];
+            move = Board::currentBuffer(board)[i];
 
             if (Move::make<COLOR>(move, board)) {
                 score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
 
                 if (score > alpha) {
                     alpha = score;
-					PV::master[pvIndex] = move;
-					PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
+                    PV::master[pvIndex] = move;
+                    PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
                 }
             }
 
@@ -53,7 +53,7 @@ namespace Search {
     Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
         stopSearch = false;
 
-		auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, 0);
+        auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, 0);
 
         std::cout << "info depth " << depth.maxDepth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush; 
 
@@ -70,19 +70,19 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
-		PV::clear();
+        PV::clear();
 
         stopSearch = false;
 
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
 
         for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
-			totalNodes = 0;
+            totalNodes = 0;
             auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
         
             if (stopSearch) break;
-			
-			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+            
+            std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
         }
@@ -100,20 +100,20 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
-		PV::clear();
+        PV::clear();
 
         stopSearch = false;
 
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
 
-		endTime = GetTickCount() + timeLimit.maxTime;
+        endTime = GetTickCount() + timeLimit.maxTime;
         for (Numspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
-			totalNodes = 0;
+            totalNodes = 0;
             auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
         
             if (stopSearch) break;
 
-			std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+            std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
         }
@@ -130,11 +130,11 @@ namespace Search {
     }
 
     inline void speed(Board::Type &board) {
-		unsigned long int start = GetTickCount();
-		incremental<White>(board, TM::depth(7));
-		unsigned long int total = GetTickCount() - start;
-		std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
-		std::cout << "Score: " << totalNodes / total << "\n";
+        unsigned long int start = GetTickCount();
+        incremental<White>(board, TM::depth(7));
+        unsigned long int total = GetTickCount() - start;
+        std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+        std::cout << "Score: " << totalNodes / total << "\n";
     }
 }
 

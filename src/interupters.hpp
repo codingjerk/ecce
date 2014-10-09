@@ -5,11 +5,11 @@
 #include "utils.hpp"
 
 namespace Search {
-	typedef bool (*Interupter)();  
+    typedef bool (*Interupter)();  
 
     bool stopSearch;
-	UNumspeed totalNodes;
-	UNumspeed endTime;
+    UNumspeed totalNodes;
+    UNumspeed endTime;
 
     inline bool stopInterupter() {
         if(totalNodes % 1024 == 0 && isInputAvailable()) {

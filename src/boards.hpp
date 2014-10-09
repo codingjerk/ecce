@@ -19,7 +19,7 @@ namespace Board {
         Castle::Type castle = Castle::null;
         Enpassant::Type enpassant = Enpassant::null;
 
-		Move::Buffer buffer;
+        Move::Buffer buffer;
     };
 
     struct Type {
@@ -31,24 +31,24 @@ namespace Board {
         UNumspeed halfmoveClock = makeUNumspeed(0);
         UNumspeed fullmoveNumber = makeUNumspeed(1);
 
-		Score::Type positionalScore = Score::Draw;
-		Score::Type materialScore   = Score::Draw;
+        Score::Type positionalScore = Score::Draw;
+        Score::Type materialScore   = Score::Draw;
 
         Info info[MAX_DEPTH+1];
         Info *depthPtr = info;
         UNumspeed depthOffset = 0;
-		Info *depthCounter = depthPtr;
+        Info *depthCounter = depthPtr;
     };
 
     extern Board::Type master;
 
-	inline Numspeed ply(const Type& board) {
-		return Numspeed(board.depthPtr - board.depthCounter - board.depthOffset);
-	}
-		
-	inline Move::Buffer &currentBuffer(Type& board) {
-		return board.depthPtr->buffer;
-	}
+    inline Numspeed ply(const Type& board) {
+        return Numspeed(board.depthPtr - board.depthCounter - board.depthOffset);
+    }
+        
+    inline Move::Buffer &currentBuffer(Type& board) {
+        return board.depthPtr->buffer;
+    }
 
     inline Castle::Type castle(const Type& board) {
         return board.depthPtr->castle;
@@ -70,8 +70,8 @@ namespace Board {
         board.bitboards[piece] |= Bitboard::fromCoord(coord);
         board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
 
-		board.positionalScore += PST::tables[piece][coord];
-		board.materialScore   += Score::pieceToScoreTable[piece];
+        board.positionalScore += PST::tables[piece][coord];
+        board.materialScore   += Score::pieceToScoreTable[piece];
 
         board.squares[coord] = piece; 
     }
@@ -80,8 +80,8 @@ namespace Board {
         board.bitboards[board.squares[coord]] ^= Bitboard::fromCoord(coord);
         board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
 
-		board.positionalScore -= PST::tables[board.squares[coord]][coord];
-		board.materialScore   -= Score::pieceToScoreTable[board.squares[coord]];
+        board.positionalScore -= PST::tables[board.squares[coord]][coord];
+        board.materialScore   -= Score::pieceToScoreTable[board.squares[coord]];
 
         board.squares[coord] = Piece::null; 
     }
