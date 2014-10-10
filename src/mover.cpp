@@ -138,7 +138,6 @@ Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
     Board::removePiece<White|Rook>(board, Coord::A1);
 
     if (Checker::isAttacked<White>(board, Coord::D1)) return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, Coord::C1)) return makeBoolspeed(0); 
     if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
@@ -160,7 +159,6 @@ Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
     Board::removePiece<White|Rook>(board, Coord::H1);
 
     if (Checker::isAttacked<White>(board, Coord::F1)) return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, Coord::G1)) return makeBoolspeed(0);
     if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
@@ -182,7 +180,6 @@ Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
     Board::removePiece<Black|Rook>(board, Coord::A8);
 
     if (Checker::isAttacked<Black>(board, Coord::D8)) return makeBoolspeed(0);
-    if (Checker::isAttacked<Black>(board, Coord::C8)) return makeBoolspeed(0);
     if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
@@ -204,7 +201,6 @@ Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     Board::removePiece<Black|Rook>(board, Coord::H8);
 
     if (Checker::isAttacked<Black>(board, Coord::F8)) return makeBoolspeed(0);
-    if (Checker::isAttacked<Black>(board, Coord::G8)) return makeBoolspeed(0);
     if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
 
     return makeBoolspeed(1);
