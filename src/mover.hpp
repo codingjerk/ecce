@@ -11,6 +11,11 @@ namespace Move {
     extern Boolspeed (*specialMakeBlack[6])(Move::Type, Board::Type&);
     extern void (*specialUnmakeWhite[6])(Move::Type, Board::Type&);
     extern void (*specialUnmakeBlack[6])(Move::Type, Board::Type&);
+    
+    extern Boolspeed (*specialMakeCaptureWhite[6])(Move::Type, Board::Type&);
+    extern Boolspeed (*specialMakeCaptureBlack[6])(Move::Type, Board::Type&);
+    extern void (*specialUnmakeCaptureWhite[6])(Move::Type, Board::Type&);
+    extern void (*specialUnmakeCaptureBlack[6])(Move::Type, Board::Type&);
 
     void initTables();
 
@@ -42,6 +47,36 @@ namespace Move {
     inline void unmake<Black>(Type move, Board::Type& board) {
         const auto specialIndex = special(move);
         specialUnmakeBlack[specialIndex](move, board);
+    }
+
+    template <Color::Type COLOR> 
+    inline Boolspeed makeCapture(Type, Board::Type&);
+
+    template <>
+    inline Boolspeed makeCapture<White>(Type move, Board::Type& board) {
+        const auto specialIndex = special(move);
+        return specialMakeCaptureWhite[specialIndex](move, board);    
+    }
+
+    template <>
+    inline Boolspeed makeCapture<Black>(Type move, Board::Type& board) {
+        const auto specialIndex = special(move);
+        return specialMakeCaptureBlack[specialIndex](move, board);    
+    }
+
+    template <Color::Type COLOR>
+    inline void unmakeCapture(Type, Board::Type&);
+
+    template <>
+    inline void unmakeCapture<White>(Type move, Board::Type& board) {
+        const auto specialIndex = special(move);
+        specialUnmakeCaptureWhite[specialIndex](move, board);
+    }
+
+    template <>
+    inline void unmakeCapture<Black>(Type move, Board::Type& board) {
+        const auto specialIndex = special(move);
+        specialUnmakeCaptureBlack[specialIndex](move, board);
     }
 
     inline Boolspeed make(Type move, Board::Type& board) {

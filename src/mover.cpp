@@ -29,6 +29,26 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
     return makeBoolspeed(1);
 }
 
+Boolspeed makeUsualCapture(Move::Type move, Board::Type& board) {
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    ++board.depthPtr;
+
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+
+    Board::enpassant(board, Enpassant::null);
+
+    Board::removePiece(board, to);
+    
+    Board::setPiece(board, board.squares[from], to);
+
+    Board::removePiece(board, from);
+
+    return makeBoolspeed(1);
+}
+
 Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -41,6 +61,27 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     Board::enpassant(board, Enpassant::null);
 
     if (Move::isCapture(move)) Board::removePiece(board, to);
+    
+    const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
+    Board::setPiece(board, promoted, to);
+
+    Board::removePiece(board, from);
+
+    return makeBoolspeed(1);
+}
+
+Boolspeed makePromotionCapture(Move::Type move, Board::Type& board) {
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+    const auto oldCastle = Board::castle(board);
+
+    ++board.depthPtr;
+
+    Board::castle(board, oldCastle & castleChanging[from][to]);
+
+    Board::enpassant(board, Enpassant::null);
+
+    Board::removePiece(board, to);
     
     const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
     Board::setPiece(board, promoted, to);
@@ -224,6 +265,24 @@ Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
     makePromotion
 };
 
+Boolspeed (*Move::specialMakeCaptureWhite[6])(Move::Type, Board::Type&) = {
+    makeUsualCapture,
+    makeEnpassantWhite,
+    nullptr,
+    nullptr,
+    nullptr,
+    makePromotionCapture
+};
+
+Boolspeed (*Move::specialMakeCaptureBlack[6])(Move::Type, Board::Type&) = {
+    makeUsualCapture,
+    makeEnpassantBlack,
+    nullptr,
+    nullptr,
+    nullptr,
+    makePromotionCapture
+};
+
 void unmakeUsual(Move::Type move, Board::Type& board) {
     --board.depthPtr;
 
@@ -234,6 +293,18 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
     Board::removePiece(board, to);
     
     if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
+}
+
+void unmakeUsualCapture(Move::Type move, Board::Type& board) {
+    --board.depthPtr;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece(board, board.squares[to], from);
+    Board::removePiece(board, to);
+    
+    Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
 void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
@@ -312,6 +383,32 @@ void unmakePromotionBlack(Move::Type move, Board::Type& board) {
     if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
+void unmakePromotionCaptureWhite(Move::Type move, Board::Type& board) {
+    --board.depthPtr;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece<White|Pawn>(board, from);
+
+    Board::removePiece(board, to);
+
+    Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
+}
+
+void unmakePromotionCaptureBlack(Move::Type move, Board::Type& board) {
+    --board.depthPtr;
+
+    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
+    const Coord::Type to = move & Coord::typeMask;
+
+    Board::setPiece<Black|Pawn>(board, from);
+
+    Board::removePiece(board, to);
+
+    Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
+}
+
 void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
     --board.depthPtr;
 
@@ -350,6 +447,24 @@ void (*Move::specialUnmakeBlack[6])(Move::Type, Board::Type&) = {
     unmakeCastleBlackShort,
     unmakePawnDouble,
     unmakePromotionBlack
+};
+
+void (*Move::specialUnmakeCaptureWhite[6])(Move::Type, Board::Type&) = {
+    unmakeUsualCapture,
+    unmakeEnpassantWhite,
+    nullptr,
+    nullptr,
+    nullptr,
+    unmakePromotionCaptureWhite
+};
+
+void (*Move::specialUnmakeCaptureBlack[6])(Move::Type, Board::Type&) = {
+    unmakeUsualCapture,
+    unmakeEnpassantBlack,
+    nullptr,
+    nullptr,
+    nullptr,
+    unmakePromotionCaptureBlack
 };
 
 void Move::initTables() {

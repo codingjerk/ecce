@@ -25,13 +25,13 @@ namespace Search {
         for (UNumspeed i = 1; i <= total; ++i) {
             move = Board::currentBuffer(board)[i];
 
-            if (Move::make<COLOR>(move, board)) {
+            if (Move::makeCapture<COLOR>(move, board)) {
                 score = -quiesce<OPP>(board, -beta, -alpha);
 
                 alpha = max(alpha, score);
             }
 
-            Move::unmake<COLOR>(move, board);
+            Move::unmakeCapture<COLOR>(move, board);
 
             if (alpha >= beta) break;
         }
