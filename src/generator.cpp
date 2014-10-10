@@ -1,8 +1,3 @@
-//@TODO(TRY): Try use precalculated move buffers for knights, kings and pawns
-            // knightMovingIndex = ... magic ...
-            // additionalBuffer = knightMoves[from][knightMovingIndex];
-            // Buffer::add(buffer, additionalBuffer)
-
 #include "generator.hpp"
 
 #include "bitboards.hpp"
@@ -146,7 +141,7 @@ void Generator::forQueens(Move::Buffer &buffer, const Board::Type &board) {
 namespace Generator {
 template <> 
 void forPawns<White>(Move::Buffer &buffer, const Board::Type &board) {
-    //@TODO(low): Refactoring using tables?
+    //@TODO(low): Refactoring?
     const Bitboard::Type legalSquares = ~(board.bitboards[White] | board.bitboards[Black]);
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
     const auto onestep = (pawns << makeUNum64(8)) & legalSquares;
@@ -249,7 +244,7 @@ void forPawns<White>(Move::Buffer &buffer, const Board::Type &board) {
 
 template <> 
 void forPawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
-    //@TODO: Refactoring using tables?
+    //@TODO: Refactoring?
     const Bitboard::Type legalSquares = ~(board.bitboards[Black] | board.bitboards[White]);
     const auto pawns = board.bitboards[Piece::create(Black, Pawn)];
     const auto onestep = (pawns >> makeUNum64(8)) & legalSquares;
@@ -355,7 +350,6 @@ void forPawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 }
 }
 
-//@TODO(low): After debugging inline all generator's parts in this function
 template <Color::Type COLOR> 
 void Generator::forBoard(Move::Buffer &buffer, const Board::Type &board) {
     buffer[0] = 0;

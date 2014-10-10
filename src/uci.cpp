@@ -159,7 +159,6 @@ bool stop(std::list<std::string>) {
 }
 
 bool go(std::list<std::string> arguments) {
-    // @TODO: Write Commander class for process arguments
     auto cursor = arguments.begin();
 
     if (cursor != arguments.end() && *cursor == "depth") {
