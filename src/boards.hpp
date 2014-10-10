@@ -86,6 +86,28 @@ namespace Board {
         board.squares[coord] = Piece::null; 
     }
 
+    template <Piece::Type PIECE>
+    inline void setPiece(Type &board, const Coord::Type coord) {
+        board.bitboards[PIECE] |= Bitboard::fromCoord(coord);
+        board.bitboards[PIECE & Color::typeMask] |= Bitboard::fromCoord(coord);
+
+        board.positionalScore += PST::tables[PIECE][coord];
+        board.materialScore   += Score::pieceToScoreTable[PIECE];
+
+        board.squares[coord] = PIECE; 
+    }
+
+    template <Piece::Type PIECE>
+    inline void removePiece(Type &board, const Coord::Type coord) {
+        board.bitboards[PIECE] ^= Bitboard::fromCoord(coord);
+        board.bitboards[PIECE & Color::typeMask] ^= Bitboard::fromCoord(coord);
+
+        board.positionalScore -= PST::tables[PIECE][coord];
+        board.materialScore   -= Score::pieceToScoreTable[PIECE];
+
+        board.squares[coord] = Piece::null;
+    }
+
     void setFromFen(Type&, const std::string);
     std::string toFen(const Type&);
 
