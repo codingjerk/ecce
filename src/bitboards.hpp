@@ -36,16 +36,7 @@ namespace Bitboard {
 
     inline UNumspeed enabledCount(Type bitboard) {
         #ifdef OSLINUX
-            UNumspeed result = 0;
-
-            while (bitboard != Bitboard::null) {
-                auto const bit = bitScan(bitboard);
-                bitboard ^= fromIndex(bit);
-
-                ++result;
-            }
-
-            return result;
+            return (bitboard * 0x0101010101010101ull) >> 56ull;
         #else
             return _popcnt64(bitboard);
         #endif
