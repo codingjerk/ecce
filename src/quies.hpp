@@ -13,7 +13,7 @@ namespace Search {
     template <Color::Type COLOR>
     Score::Type quiesce(Board::Type &board, Score::Type alpha, Score::Type beta) {
         MAKEOPP(COLOR);
-        if (Checker::isCheck<OPP>(board)) return -Score::makeMate(Board::ply(board));
+        if (Checker::isCheck<OPP>(board)) return Score::makeMate(Board::ply(board));
 
         alpha = max(alpha, Eval::total<COLOR>(board));
         if(alpha >= beta) return beta;
