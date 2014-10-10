@@ -34,7 +34,7 @@ namespace Score {
     }
     
     inline bool isNegativeMate(Type score) {
-        return score <= (-Infinity + Type(MAX_DEPTH));
+        return score <= (Type(MAX_DEPTH) - Infinity);
     }
 
     inline bool isMate(Type score) {
