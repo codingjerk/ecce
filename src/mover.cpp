@@ -137,7 +137,6 @@ Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
     Board::setPiece<White|Rook>(board, Coord::D1);
     Board::removePiece<White|Rook>(board, Coord::A1);
 
-    // @TODO: nonif
     if (Checker::isAttacked<White>(board, Coord::D1)) return makeBoolspeed(0);
     if (Checker::isAttacked<White>(board, Coord::C1)) return makeBoolspeed(0); 
     if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
@@ -299,7 +298,7 @@ void unmakePromotionWhite(Move::Type move, Board::Type& board) {
 
     Board::setPiece<White|Pawn>(board, from);
 
-    Board::removePiece<White|Pawn>(board, to);
+    Board::removePiece(board, to);
 
     if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
@@ -312,7 +311,7 @@ void unmakePromotionBlack(Move::Type move, Board::Type& board) {
 
     Board::setPiece<Black|Pawn>(board, from);
 
-    Board::removePiece<Black|Pawn>(board, to);
+    Board::removePiece(board, to);
 
     if (Move::isCapture(move)) Board::setPiece(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
