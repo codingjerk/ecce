@@ -4,8 +4,6 @@
 #include "generatorTables.hpp"
 #include "magics.hpp"
 
-using namespace Generator;
-
 inline void addLegals(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
     while(legals != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(legals);
