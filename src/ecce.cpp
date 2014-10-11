@@ -5,7 +5,6 @@
 //    - Best Search
 //      - Negascout
 //      - Sort LVA/MVV
-//      - Write quies
 //      - Triple replies
 //      - Hash table
 
@@ -27,6 +26,7 @@
 #include "generator.hpp"
 #include "PST.hpp"
 #include "score.hpp"
+#include "zobrist.hpp"
 
 void initTables() {
     Move::initTables();
@@ -36,6 +36,7 @@ void initTables() {
     Generator::initTables();
     PST::initTables();
     Score::initTables();
+    Zobrist::initTables();
 }
 
 int main(int, char**) {
