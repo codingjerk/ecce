@@ -13,6 +13,7 @@
 #include "moves.hpp"
 #include "score.hpp"
 #include "PST.hpp"
+#include "zobrist.hpp"
 
 namespace Board {
     struct Info {
@@ -20,6 +21,8 @@ namespace Board {
         Enpassant::Type enpassant = Enpassant::null;
 
         Move::Buffer buffer;
+
+        Zobrist::Type zobrist = 0;
     };
 
     struct Type {
@@ -33,6 +36,8 @@ namespace Board {
 
         Score::Type positionalScore = Score::Draw;
         Score::Type materialScore   = Score::Draw;
+
+        Zobrist::Type zobrist = 0;
 
         Info info[MAX_DEPTH+1];
         Info *depthPtr = info;
@@ -73,6 +78,8 @@ namespace Board {
         board.positionalScore += PST::tables[piece][coord];
         board.materialScore   += Score::pieceToScoreTable[piece];
 
+        board.zobrist ^= Zobrist::table[piece][coord];
+
         board.squares[coord] = piece; 
     }
 
@@ -82,6 +89,8 @@ namespace Board {
 
         board.positionalScore -= PST::tables[board.squares[coord]][coord];
         board.materialScore   -= Score::pieceToScoreTable[board.squares[coord]];
+
+        board.zobrist ^= Zobrist::table[board.squares[coord]][coord];
 
         board.squares[coord] = Piece::null; 
     }
@@ -94,6 +103,8 @@ namespace Board {
         board.positionalScore += PST::tables[PIECE][coord];
         board.materialScore   += Score::pieceToScoreTable[PIECE];
 
+        board.zobrist ^= Zobrist::table[PIECE][coord];
+
         board.squares[coord] = PIECE; 
     }
 
@@ -104,6 +115,8 @@ namespace Board {
 
         board.positionalScore -= PST::tables[PIECE][coord];
         board.materialScore   -= Score::pieceToScoreTable[PIECE];
+
+        board.zobrist ^= Zobrist::table[PIECE][coord];
 
         board.squares[coord] = Piece::null;
     }
