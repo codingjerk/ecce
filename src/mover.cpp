@@ -14,6 +14,7 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
@@ -34,6 +35,7 @@ Boolspeed makeUsualCapture(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
@@ -54,6 +56,7 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
@@ -75,6 +78,7 @@ Boolspeed makePromotionCapture(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
@@ -96,6 +100,7 @@ Boolspeed makePawnDoubleWhite(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -114,6 +119,7 @@ Boolspeed makePawnDoubleBlack(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -132,6 +138,7 @@ Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -150,6 +157,7 @@ Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -166,6 +174,7 @@ Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
 Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~(Castle::whiteKing | Castle::whiteQueen));
@@ -187,6 +196,7 @@ Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
 Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::white);
@@ -208,6 +218,7 @@ Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
 Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::black);
@@ -229,6 +240,7 @@ Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
 Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
+    board.zobrist ^= Zobrist::turnKey;
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::black);
@@ -284,6 +296,7 @@ Boolspeed (*Move::specialMakeCaptureBlack[6])(Move::Type, Board::Type&) = {
 };
 
 void unmakeUsual(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -296,6 +309,7 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
 }
 
 void unmakeUsualCapture(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -308,6 +322,7 @@ void unmakeUsualCapture(Move::Type move, Board::Type& board) {
 }
 
 void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     Board::setPiece<White|King>(board, Coord::E1);
@@ -318,6 +333,7 @@ void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
 }
 
 void unmakeCastleWhiteLong(Move::Type, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     Board::setPiece<White|King>(board, Coord::E1);
@@ -328,6 +344,7 @@ void unmakeCastleWhiteLong(Move::Type, Board::Type& board) {
 }
 
 void unmakeCastleBlackShort(Move::Type, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     Board::setPiece<Black|King>(board, Coord::E8);
@@ -338,6 +355,7 @@ void unmakeCastleBlackShort(Move::Type, Board::Type& board) {
 }
 
 void unmakeCastleBlackLong(Move::Type, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     Board::setPiece<Black|King>(board, Coord::E8);
@@ -348,6 +366,7 @@ void unmakeCastleBlackLong(Move::Type, Board::Type& board) {
 }
 
 void unmakePawnDouble(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -358,6 +377,7 @@ void unmakePawnDouble(Move::Type move, Board::Type& board) {
 }
 
 void unmakePromotionWhite(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -371,6 +391,7 @@ void unmakePromotionWhite(Move::Type move, Board::Type& board) {
 }
 
 void unmakePromotionBlack(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -384,6 +405,7 @@ void unmakePromotionBlack(Move::Type move, Board::Type& board) {
 }
 
 void unmakePromotionCaptureWhite(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -397,6 +419,7 @@ void unmakePromotionCaptureWhite(Move::Type move, Board::Type& board) {
 }
 
 void unmakePromotionCaptureBlack(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -410,6 +433,7 @@ void unmakePromotionCaptureBlack(Move::Type move, Board::Type& board) {
 }
 
 void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -421,6 +445,7 @@ void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
 }
 
 void unmakeEnpassantBlack(Move::Type move, Board::Type& board) {
+    board.zobrist ^= Zobrist::turnKey;
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
