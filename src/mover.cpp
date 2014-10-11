@@ -33,7 +33,7 @@ Boolspeed makeUsualCapture(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
@@ -53,7 +53,7 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
@@ -74,7 +74,7 @@ Boolspeed makePromotionCapture(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & castleChanging[from][to]);
@@ -95,7 +95,7 @@ Boolspeed makePawnDoubleWhite(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -113,7 +113,7 @@ Boolspeed makePawnDoubleBlack(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -131,7 +131,7 @@ Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -149,7 +149,7 @@ Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -165,7 +165,7 @@ Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
 
 Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~(Castle::whiteKing | Castle::whiteQueen));
@@ -186,7 +186,7 @@ Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
 
 Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::white);
@@ -207,7 +207,7 @@ Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
 
 Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::black);
@@ -228,7 +228,7 @@ Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
 
 Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
-
+    
     ++board.depthPtr;
 
     Board::castle(board, oldCastle & ~Castle::black);

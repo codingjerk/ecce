@@ -21,7 +21,7 @@ void setPositionFromFen(Type &board, const std::string fen) {
     board.materialScore = 0;
     board.positionalScore = 0;
     board.depthOffset = 0;
-    Board::zobrist(board, 0);
+    board.zobrist = 0;
 
     UNumspeed cursor = makeUNumspeed(0);
 

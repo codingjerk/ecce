@@ -15,6 +15,8 @@
 #include "PST.hpp"
 #include "zobrist.hpp"
 
+#include <iostream>
+
 namespace Board {
     struct Info {
         Castle::Type castle = Castle::null;
@@ -36,6 +38,8 @@ namespace Board {
 
         Score::Type positionalScore = Score::Draw;
         Score::Type materialScore   = Score::Draw;
+
+        Zobrist::Type zobrist;
 
         Info info[MAX_DEPTH+1];
         Info *depthPtr = info;
@@ -68,17 +72,16 @@ namespace Board {
     inline void enpassant(Type& board, const Enpassant::Type enpassant) {
         board.depthPtr->enpassant = enpassant;
     }
-    
-    inline Zobrist::Type zobrist(const Type& board) {
-        return board.depthPtr->zobrist;
-    }
-    
-    inline void zobrist(Type& board, const Zobrist::Type zobrist) {
-        board.depthPtr->zobrist = zobrist;
-    }
-    
-    inline void xorzobrist(Type& board, const Zobrist::Type delta) {
-        board.depthPtr->zobrist ^= delta;
+
+    inline bool isRepeat(const Type &board) {
+        for (auto depth = board.info; depth < board.depthPtr; ++depth) {
+            if (depth->zobrist == board.zobrist) {
+                std::cout << "FUCK!!!\n";
+                return true;
+            }
+        }
+
+        return false;
     }
 
     inline void setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {
@@ -87,6 +90,8 @@ namespace Board {
 
         board.positionalScore += PST::tables[piece][coord];
         board.materialScore   += Score::pieceToScoreTable[piece];
+
+        board.zobrist ^= Zobrist::table[piece][coord];
 
         board.squares[coord] = piece; 
     }
@@ -97,6 +102,8 @@ namespace Board {
 
         board.positionalScore -= PST::tables[board.squares[coord]][coord];
         board.materialScore   -= Score::pieceToScoreTable[board.squares[coord]];
+
+        board.zobrist ^= Zobrist::table[board.squares[coord]][coord];
 
         board.squares[coord] = Piece::null; 
     }
@@ -109,6 +116,8 @@ namespace Board {
         board.positionalScore += PST::tables[PIECE][coord];
         board.materialScore   += Score::pieceToScoreTable[PIECE];
 
+        board.zobrist ^= Zobrist::table[PIECE][coord];
+
         board.squares[coord] = PIECE; 
     }
 
@@ -119,6 +128,8 @@ namespace Board {
 
         board.positionalScore -= PST::tables[PIECE][coord];
         board.materialScore   -= Score::pieceToScoreTable[PIECE];
+
+        board.zobrist ^= Zobrist::table[PIECE][coord];
 
         board.squares[coord] = Piece::null;
     }
