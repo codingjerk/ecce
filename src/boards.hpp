@@ -76,7 +76,6 @@ namespace Board {
     inline bool isRepeat(const Type &board) {
         for (auto depth = board.info; depth < board.depthPtr; ++depth) {
             if (depth->zobrist == board.zobrist) {
-                std::cout << "FUCK!!!\n";
                 return true;
             }
         }
