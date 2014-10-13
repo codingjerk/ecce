@@ -5,7 +5,9 @@
 #include "captures.hpp"
 
 namespace Generator {
-    typedef void (*Phase)(Move::Buffer&, const Board::Type&);
+	typedef void(*Phase)(Move::Buffer&, const Board::Type&);
+	// @TODO: Make and Unmake for every phase: typedef void(*Maker)(Move::Type, Board::Type&);
+	//										   typedef void(*Unmaker)(Move::Type, Board::Type&);
 	const UNumspeed phaseCount = 2;
     using Phases = Phase[phaseCount];
 

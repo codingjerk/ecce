@@ -22,6 +22,8 @@ namespace Board {
         Castle::Type castle = Castle::null;
         Enpassant::Type enpassant = Enpassant::null;
 
+		Zobrist::Type zobrist;
+
         Move::Buffer buffer;
     };
 
@@ -67,8 +69,27 @@ namespace Board {
     
     inline void enpassant(Type& board, const Enpassant::Type enpassant) {
         board.depthPtr->enpassant = enpassant;
-    }
+	}
 
+	inline void xorzobrist(const Type& board, Zobrist::Type delta) {
+		board.depthPtr->zobrist ^= delta;
+	}
+
+	inline void copyzobrist(const Type& board) {
+		(board.depthPtr + 1)->zobrist = board.depthPtr->zobrist ^ Zobrist::turnKey;
+	}
+
+	inline bool isRepeat(const Type& board) {
+		for (auto depth = board.depthPtr - 2; depth >= board.info; depth -= 2) {
+			if (depth->zobrist == board.depthPtr->zobrist) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	template <bool CHANGE_ZOBRIST>
     inline void setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {
         board.bitboards[piece] |= Bitboard::fromCoord(coord);
         board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
@@ -76,37 +97,46 @@ namespace Board {
         board.positionalScore += PST::tables[piece][coord];
         board.materialScore   += Score::pieceToScoreTable[piece];
 
+		if (CHANGE_ZOBRIST) xorzobrist(board, Zobrist::table[piece][coord]);
+
         board.squares[coord] = piece; 
     }
 
+	template <bool CHANGE_ZOBRIST>
     inline void removePiece(Type &board, const Coord::Type coord) {
         board.bitboards[board.squares[coord]] ^= Bitboard::fromCoord(coord);
         board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
 
         board.positionalScore -= PST::tables[board.squares[coord]][coord];
-        board.materialScore   -= Score::pieceToScoreTable[board.squares[coord]];
+		board.materialScore   -= Score::pieceToScoreTable[board.squares[coord]];
+
+		if (CHANGE_ZOBRIST) xorzobrist(board, Zobrist::table[board.squares[coord]][coord]);
 
         board.squares[coord] = Piece::null; 
     }
 
-    template <Piece::Type PIECE>
+	template <Piece::Type PIECE, bool CHANGE_ZOBRIST>
     inline void setPiece(Type &board, const Coord::Type coord) {
         board.bitboards[PIECE] |= Bitboard::fromCoord(coord);
         board.bitboards[PIECE & Color::typeMask] |= Bitboard::fromCoord(coord);
 
         board.positionalScore += PST::tables[PIECE][coord];
-        board.materialScore   += Score::pieceToScoreTable[PIECE];
+		board.materialScore   += Score::pieceToScoreTable[PIECE];
+
+		if (CHANGE_ZOBRIST) xorzobrist(board, Zobrist::table[PIECE][coord]);
 
         board.squares[coord] = PIECE; 
     }
 
-    template <Piece::Type PIECE>
+	template <Piece::Type PIECE, bool CHANGE_ZOBRIST>
     inline void removePiece(Type &board, const Coord::Type coord) {
         board.bitboards[PIECE] ^= Bitboard::fromCoord(coord);
         board.bitboards[PIECE & Color::typeMask] ^= Bitboard::fromCoord(coord);
 
         board.positionalScore -= PST::tables[PIECE][coord];
-        board.materialScore   -= Score::pieceToScoreTable[PIECE];
+		board.materialScore   -= Score::pieceToScoreTable[PIECE];
+
+		if (CHANGE_ZOBRIST) xorzobrist(board, Zobrist::table[PIECE][coord]);
 
         board.squares[coord] = Piece::null;
     }
