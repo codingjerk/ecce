@@ -272,16 +272,36 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 }
 }
 
+void msort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+    for (auto i = start + 1; i <= end; ++i) {
+        for (auto j = start + 1; j <= end - i; ++j) {
+            if (buffer[i] < buffer[j+1]) {
+                auto tmp = buffer[i];
+                buffer[i] = buffer[j+1];
+                buffer[j+1] = tmp;
+            }
+        }
+    }
+}
+
+#define SORTED(command) \
+    start = buffer[0]; \
+    command<COLOR>(buffer, board); \
+    end = buffer[0]; \
+    msort(buffer, start, end);
+
 template <Color::Type COLOR> 
 void Captures::phase(Move::Buffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
     
-    kings<COLOR>(buffer, board);
-    pawns<COLOR>(buffer, board);
-    knights<COLOR>(buffer, board);
-    bishops<COLOR>(buffer, board);
-    rooks<COLOR>(buffer, board);
-    queens<COLOR>(buffer, board);
+    Move::Type start, end;
+    
+    SORTED(kings);
+    SORTED(pawns);
+    SORTED(knights);
+    SORTED(bishops);
+    SORTED(rooks);
+    SORTED(queens);
 }
 
 // Explicit template instantiations
