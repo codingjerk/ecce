@@ -9,6 +9,7 @@
 #include "pv.hpp"
 #include "interupters.hpp"
 #include "quies.hpp"
+#include "generatorPhases.hpp"
 
 namespace Search {
     template <Color::Type COLOR, Interupter isInterupt>
@@ -25,26 +26,28 @@ namespace Search {
         }
 
         PV::master[pvIndex] = 0;
-        Generator::phase<COLOR>(Board::currentBuffer(board), board);
-        UNumspeed total = Board::currentBuffer(board)[0];
         Move::Type move;
         Score::Type score;
-        for (UNumspeed i = 1; i <= total; ++i) {
-            move = Board::currentBuffer(board)[i];
+        forPhases(phase, Generator::phases<COLOR>()) {
+            phase(Board::currentBuffer(board), board);
+            UNumspeed total = Board::currentBuffer(board)[0];
+            for (UNumspeed i = 1; i <= total; ++i) {
+                move = Board::currentBuffer(board)[i];
 
-            if (Move::make<COLOR>(move, board)) {
-                score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                if (Move::make<COLOR>(move, board)) {
+                    score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
 
-                if (score > alpha) {
-                    alpha = score;
-                    PV::master[pvIndex] = move;
-                    PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
+                    if (score > alpha) {
+                        alpha = score;
+                        PV::master[pvIndex] = move;
+                        PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
+                    }
                 }
+
+                Move::unmake<COLOR>(move, board);
+
+                if (alpha >= beta) return alpha;
             }
-
-            Move::unmake<COLOR>(move, board);
-
-            if (alpha >= beta) break;
         }
 
         return alpha;

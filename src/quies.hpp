@@ -6,7 +6,7 @@
 #include "eval.hpp"
 #include "boards.hpp"
 #include "mover.hpp"
-#include "captures.hpp"
+#include "generatorPhases.hpp"
 #include "moves.hpp"
 
 namespace Search {
