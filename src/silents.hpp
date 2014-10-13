@@ -1,5 +1,5 @@
-#ifndef CAPTURES_HPP
-#define CAPTURES_HPP
+#ifndef SILENTS_HPP
+#define SILENTS_HPP
 
 #include <string>
 
@@ -8,7 +8,7 @@
 #include "boards.hpp"
 #include "moves.hpp"
 
-namespace Captures {
+namespace Silents {
     template <Color::Type COLOR> void pawns(Move::Buffer&, const Board::Type&);
     template <Color::Type COLOR> void knights(Move::Buffer&, const Board::Type&);
     template <Color::Type COLOR> void kings(Move::Buffer&, const Board::Type&);
@@ -19,4 +19,4 @@ namespace Captures {
     template <Color::Type COLOR> void phase(Move::Buffer&, const Board::Type&);
 }
 
-#endif /* CAPTURES_HPP */
+#endif /* SILENTS_HPP */
