@@ -13,7 +13,7 @@ namespace Perft {
         if (depth == 0) return 1;
         UNum64 result = 0;
 
-        Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
+        Generator::phase<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
         for (UNumspeed i = 1; i <= total; ++i) {
             const Move::Type move = Board::currentBuffer(board)[i];
@@ -41,7 +41,7 @@ namespace Perft {
         if (depth == 0) return 1;
         UNum64 result = 0;
         
-        Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
+        Generator::phase<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
         for (UNumspeed i = 1; i <= total; ++i) {
             const Move::Type move = Board::currentBuffer(board)[i];

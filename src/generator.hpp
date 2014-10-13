@@ -11,15 +11,15 @@
 namespace Generator {
     void initTables();
 
-    template <Color::Type COLOR> void forPawns(Move::Buffer&, const Board::Type&);
-    template <Color::Type COLOR> void forKnights(Move::Buffer&, const Board::Type&);
-    template <Color::Type COLOR> void forKings(Move::Buffer&, const Board::Type&);
-    template <Color::Type COLOR> void forBishops(Move::Buffer&, const Board::Type&);
-    template <Color::Type COLOR> void forRooks(Move::Buffer&, const Board::Type&);
-    template <Color::Type COLOR> void forQueens(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void pawns(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void knights(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void kings(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void bishops(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void rooks(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void queens(Move::Buffer&, const Board::Type&);
 
-    void forBoard(Move::Buffer&, const Board::Type&);
-    template <Color::Type COLOR> void forBoard(Move::Buffer&, const Board::Type&);
+    void phase(Move::Buffer&, const Board::Type&);
+    template <Color::Type COLOR> void phase(Move::Buffer&, const Board::Type&);
 }
 
 #endif /* GENERATOR_HPP */

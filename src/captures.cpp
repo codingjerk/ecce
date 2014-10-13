@@ -273,7 +273,7 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 }
 
 template <Color::Type COLOR> 
-void Captures::board(Move::Buffer &buffer, const Board::Type &board) {
+void Captures::phase(Move::Buffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
 
     pawns<COLOR>(buffer, board);
@@ -300,5 +300,5 @@ template void Captures::rooks<Black>(Move::Buffer&, const Board::Type&);
 template void Captures::queens<White>(Move::Buffer&, const Board::Type&);
 template void Captures::queens<Black>(Move::Buffer&, const Board::Type&);
 
-template void Captures::board<White>(Move::Buffer&, const Board::Type&);
-template void Captures::board<Black>(Move::Buffer&, const Board::Type&);
+template void Captures::phase<White>(Move::Buffer&, const Board::Type&);
+template void Captures::phase<Black>(Move::Buffer&, const Board::Type&);

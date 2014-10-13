@@ -19,7 +19,7 @@ namespace Search {
         alpha = max(alpha, Eval::total<COLOR>(board));
         if(alpha >= beta) return beta;
         
-        Captures::board<COLOR>(Board::currentBuffer(board), board);
+        Captures::phase<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
         Move::Type move;
         Score::Type score;

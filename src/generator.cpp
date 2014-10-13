@@ -81,7 +81,7 @@ void forQueen(Move::Buffer &buffer, const Board::Type &board, const Coord::Type 
 }
 
 template <Color::Type COLOR>
-void Generator::forKnights(Move::Buffer &buffer, const Board::Type &board) {
+void Generator::knights(Move::Buffer &buffer, const Board::Type &board) {
     auto knights = board.bitboards[Piece::create(COLOR, Knight)];
     while(knights != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(knights);
@@ -93,14 +93,14 @@ void Generator::forKnights(Move::Buffer &buffer, const Board::Type &board) {
 }
 
 template <Color::Type COLOR>
-void Generator::forKings(Move::Buffer &buffer, const Board::Type &board) {
+void Generator::kings(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, King)];
 
     forKing<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)));
 }
 
 template <Color::Type COLOR> 
-void Generator::forBishops(Move::Buffer &buffer, const Board::Type &board) {
+void Generator::bishops(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Bishop)];
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
@@ -112,7 +112,7 @@ void Generator::forBishops(Move::Buffer &buffer, const Board::Type &board) {
 }
 
 template <Color::Type COLOR> 
-void Generator::forRooks(Move::Buffer &buffer, const Board::Type &board) {
+void Generator::rooks(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Rook)];
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
@@ -124,7 +124,7 @@ void Generator::forRooks(Move::Buffer &buffer, const Board::Type &board) {
 }
 
 template <Color::Type COLOR> 
-void Generator::forQueens(Move::Buffer &buffer, const Board::Type &board) {
+void Generator::queens(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Queen)];
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
@@ -138,7 +138,7 @@ void Generator::forQueens(Move::Buffer &buffer, const Board::Type &board) {
 // Temporary solution, because gcc is stupid dick
 namespace Generator {
 template <> 
-void forPawns<White>(Move::Buffer &buffer, const Board::Type &board) {
+void pawns<White>(Move::Buffer &buffer, const Board::Type &board) {
     //@TODO(low): Refactoring?
     const Bitboard::Type legalSquares = ~(board.bitboards[White] | board.bitboards[Black]);
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
@@ -241,7 +241,7 @@ void forPawns<White>(Move::Buffer &buffer, const Board::Type &board) {
 }
 
 template <> 
-void forPawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
+void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
     //@TODO: Refactoring?
     const Bitboard::Type legalSquares = ~(board.bitboards[Black] | board.bitboards[White]);
     const auto pawns = board.bitboards[Piece::create(Black, Pawn)];
@@ -349,43 +349,43 @@ void forPawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 }
 
 template <Color::Type COLOR> 
-void Generator::forBoard(Move::Buffer &buffer, const Board::Type &board) {
+void Generator::phase(Move::Buffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
 
-    forPawns<COLOR>(buffer, board);
-    forKnights<COLOR>(buffer, board);
-    forBishops<COLOR>(buffer, board);
-    forRooks<COLOR>(buffer, board);
-    forKings<COLOR>(buffer, board);
-    forQueens<COLOR>(buffer, board);
+    pawns<COLOR>(buffer, board);
+    knights<COLOR>(buffer, board);
+    bishops<COLOR>(buffer, board);
+    rooks<COLOR>(buffer, board);
+    kings<COLOR>(buffer, board);
+    queens<COLOR>(buffer, board);
 }
 
-void Generator::forBoard(Move::Buffer &buffer, const Board::Type &board) {
+void Generator::phase(Move::Buffer &buffer, const Board::Type &board) {
     if (board.turn == White) {
-        forBoard<White>(buffer, board);
+        phase<White>(buffer, board);
     } else {
-        forBoard<Black>(buffer, board);
+        phase<Black>(buffer, board);
     }
 }
 
 // Explicit template instantiations
-template void Generator::forKnights<White>(Move::Buffer&, const Board::Type&);
-template void Generator::forKnights<Black>(Move::Buffer&, const Board::Type&);
+template void Generator::knights<White>(Move::Buffer&, const Board::Type&);
+template void Generator::knights<Black>(Move::Buffer&, const Board::Type&);
 
-template void Generator::forKings<White>(Move::Buffer&, const Board::Type&);
-template void Generator::forKings<Black>(Move::Buffer&, const Board::Type&);
+template void Generator::kings<White>(Move::Buffer&, const Board::Type&);
+template void Generator::kings<Black>(Move::Buffer&, const Board::Type&);
 
-template void Generator::forBishops<White>(Move::Buffer&, const Board::Type&);
-template void Generator::forBishops<Black>(Move::Buffer&, const Board::Type&);
+template void Generator::bishops<White>(Move::Buffer&, const Board::Type&);
+template void Generator::bishops<Black>(Move::Buffer&, const Board::Type&);
 
-template void Generator::forRooks<White>(Move::Buffer&, const Board::Type&);
-template void Generator::forRooks<Black>(Move::Buffer&, const Board::Type&);
+template void Generator::rooks<White>(Move::Buffer&, const Board::Type&);
+template void Generator::rooks<Black>(Move::Buffer&, const Board::Type&);
 
-template void Generator::forQueens<White>(Move::Buffer&, const Board::Type&);
-template void Generator::forQueens<Black>(Move::Buffer&, const Board::Type&);
+template void Generator::queens<White>(Move::Buffer&, const Board::Type&);
+template void Generator::queens<Black>(Move::Buffer&, const Board::Type&);
 
-template void Generator::forBoard<White>(Move::Buffer&, const Board::Type&);
-template void Generator::forBoard<Black>(Move::Buffer&, const Board::Type&);
+template void Generator::phase<White>(Move::Buffer&, const Board::Type&);
+template void Generator::phase<Black>(Move::Buffer&, const Board::Type&);
 
 void Generator::initTables() {
     Tables::initTables();

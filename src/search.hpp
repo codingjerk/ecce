@@ -25,7 +25,7 @@ namespace Search {
         }
 
         PV::master[pvIndex] = 0;
-        Generator::forBoard<COLOR>(Board::currentBuffer(board), board);
+        Generator::phase<COLOR>(Board::currentBuffer(board), board);
         UNumspeed total = Board::currentBuffer(board)[0];
         Move::Type move;
         Score::Type score;
