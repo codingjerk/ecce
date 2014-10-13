@@ -6,31 +6,23 @@
 
 namespace Generator {
     typedef void (*Phase)(Move::Buffer&, const Board::Type&);
-    using Phases = Phase[2];
-
-    static const Phases whitePhases = {
-        Captures::phase<White>,
-        Silents::phase<White>
-    };
-
-    static const Phases blackPhases = {
-        Captures::phase<Black>,
-        Silents::phase<Black>
-    };
+	const UNumspeed phaseCount = 2;
+    using Phases = Phase[phaseCount];
 
     template <Color::Type COLOR>
-    inline Phase* phases() {
-        if (COLOR == White) {
-            return (Phase*)whitePhases;
-        } else {
-            return (Phase*)blackPhases;
-        }
+	inline Phase* phases() {
+		static const Phases result = {
+			Captures::phase<COLOR>,
+			Silents::phase<COLOR>
+		};
+
+		return (Phase*)result;
     }
 
     #define forPhases(PHASE, PHASES) \
         UNumspeed G_M_I = 0; \
         auto PHASE = PHASES[G_M_I]; \
-        for (; G_M_I < 2; ++G_M_I, PHASE = PHASES[G_M_I])
+		for (; G_M_I < Generator::phaseCount; ++G_M_I, PHASE = PHASES[G_M_I])
 }
 
 #endif /* GENERATOR_PHASES_HPP */
