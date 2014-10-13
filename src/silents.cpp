@@ -222,13 +222,13 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 template <Color::Type COLOR> 
 void Silents::phase(Move::Buffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
-
-    pawns<COLOR>(buffer, board);
+    
+    queens<COLOR>(buffer, board);
+    rooks<COLOR>(buffer, board);
     knights<COLOR>(buffer, board);
     bishops<COLOR>(buffer, board);
-    rooks<COLOR>(buffer, board);
+    pawns<COLOR>(buffer, board);
     kings<COLOR>(buffer, board);
-    queens<COLOR>(buffer, board);
 }
 
 // Explicit template instantiations
