@@ -14,8 +14,6 @@ namespace Search {
     Score::Type quiesce(Board::Type &board, Score::Type alpha, Score::Type beta) {
         MAKEOPP(COLOR);
 
-        board.depthPtr->zobrist = board.zobrist;
-        if (Board::isRepeat(board)) return Score::Draw;
         if (Checker::isCheck<OPP>(board)) return Score::makeMate(Board::ply(board));
 
         alpha = max(alpha, Eval::total<COLOR>(board));
