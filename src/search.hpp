@@ -28,6 +28,7 @@ namespace Search {
         PV::master[pvIndex] = 0;
         Move::Type move;
         Score::Type score;
+        bool noLegalMoves = true;
         forPhases(phase, Generator::phases<COLOR>()) {
             phase(Board::currentBuffer(board), board);
             UNumspeed total = Board::currentBuffer(board)[0];
@@ -36,6 +37,8 @@ namespace Search {
 
                 if (Move::make<COLOR>(move, board)) {
                     score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+
+                    noLegalMoves = false;
 
                     if (score > alpha) {
                         alpha = score;
@@ -47,6 +50,14 @@ namespace Search {
                 Move::unmake<COLOR>(move, board);
 
                 if (alpha >= beta) return alpha;
+            }
+        }
+
+        if (noLegalMoves) {
+            if (Checker::isCheck<COLOR>(board)) {
+                return -Score::makeMate(Board::ply(board));
+            } else {
+                return Score::Draw;
             }
         }
 
