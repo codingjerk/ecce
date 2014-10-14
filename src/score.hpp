@@ -45,7 +45,7 @@ namespace Score {
         if (isPositiveMate(score)) {
             return (Infinity - score) / 2;
         } else {
-            return (-score - Infinity) / 2;
+            return (-score - Infinity - 1) / 2;
         }
     }
 
