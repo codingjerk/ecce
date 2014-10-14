@@ -9,6 +9,7 @@
 //                         [from coord] [to coord]
 Castle::Type castleChanging[makeUNumspeed(1) << Coord::usedBits][makeUNumspeed(1) << Coord::usedBits];
 
+template <Color::Type COLOR>
 Boolspeed makeUsual(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -27,9 +28,10 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
 
 	Board::removePiece<true>(board, from);
 
-    return makeBoolspeed(1);
+    return !(Checker::isCheck<COLOR>(board));
 }
 
+template <Color::Type COLOR>
 Boolspeed makeUsualCapture(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -47,10 +49,11 @@ Boolspeed makeUsualCapture(Move::Type move, Board::Type& board) {
 	Board::setPiece<true>(board, board.squares[from], to);
 
 	Board::removePiece<true>(board, from);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<COLOR>(board));
 }
 
+template <Color::Type COLOR>
 Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -69,10 +72,11 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
 	Board::setPiece<true>(board, promoted, to);
 
 	Board::removePiece<true>(board, from);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<COLOR>(board));
 }
 
+template <Color::Type COLOR>
 Boolspeed makePromotionCapture(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -91,8 +95,8 @@ Boolspeed makePromotionCapture(Move::Type move, Board::Type& board) {
 	Board::setPiece<true>(board, promoted, to);
 
 	Board::removePiece<true>(board, from);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<COLOR>(board));
 }
 
 Boolspeed makePawnDoubleWhite(Move::Type move, Board::Type& board) {
@@ -110,8 +114,8 @@ Boolspeed makePawnDoubleWhite(Move::Type move, Board::Type& board) {
     Board::setPiece<White|Pawn, true>(board, to);
 
     Board::removePiece<White|Pawn, true>(board, from);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<White>(board));
 }
 
 Boolspeed makePawnDoubleBlack(Move::Type move, Board::Type& board) {
@@ -129,8 +133,8 @@ Boolspeed makePawnDoubleBlack(Move::Type move, Board::Type& board) {
     Board::setPiece<Black|Pawn, true>(board, to);
 
     Board::removePiece<Black|Pawn, true>(board, from);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<Black>(board));
 }
 
 Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
@@ -148,8 +152,8 @@ Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
     Board::removePiece<Black|Pawn, true>(board, to - 8ull);
     Board::setPiece<White|Pawn, true>(board, to);
     Board::removePiece<White|Pawn, true>(board, from);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<White>(board));
 }
 
 Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
@@ -167,8 +171,8 @@ Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
     Board::removePiece<White|Pawn, true>(board, to + 8ull);
     Board::setPiece<Black|Pawn, true>(board, to);
     Board::removePiece<Black|Pawn, true>(board, from);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<Black>(board));
 }
 
 Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
@@ -189,8 +193,8 @@ Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
 
     if (Checker::isAttacked<White>(board, Coord::D1)) return makeBoolspeed(0);
     if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<White>(board));
 }
 
 Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
@@ -211,8 +215,8 @@ Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
 
     if (Checker::isAttacked<White>(board, Coord::F1)) return makeBoolspeed(0);
     if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<White>(board));
 }
 
 Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
@@ -233,8 +237,8 @@ Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
 
     if (Checker::isAttacked<Black>(board, Coord::D8)) return makeBoolspeed(0);
     if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
-
-    return makeBoolspeed(1);
+    
+    return !(Checker::isCheck<Black>(board));
 }
 
 Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
@@ -256,43 +260,43 @@ Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
     if (Checker::isAttacked<Black>(board, Coord::F8)) return makeBoolspeed(0);
     if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
 
-    return makeBoolspeed(1);
+    return !(Checker::isCheck<Black>(board));
 }
 
 Boolspeed (*Move::specialMakeWhite[6])(Move::Type, Board::Type&) = {
-    makeUsual,
+    makeUsual<White>,
     makeEnpassantWhite,
     makeCastleWhiteLong,
     makeCastleWhiteShort,
     makePawnDoubleWhite,
-    makePromotion
+    makePromotion<White>
 };
 
 Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
-    makeUsual,
+    makeUsual<Black>,
     makeEnpassantBlack,
     makeCastleBlackLong,
     makeCastleBlackShort,
     makePawnDoubleBlack,
-    makePromotion
+    makePromotion<Black>
 };
 
 Boolspeed (*Move::specialMakeCaptureWhite[6])(Move::Type, Board::Type&) = {
-    makeUsualCapture,
+    makeUsualCapture<White>,
     makeEnpassantWhite,
     nullptr,
     nullptr,
     nullptr,
-    makePromotionCapture
+    makePromotionCapture<White>
 };
 
 Boolspeed (*Move::specialMakeCaptureBlack[6])(Move::Type, Board::Type&) = {
-    makeUsualCapture,
+    makeUsualCapture<Black>,
     makeEnpassantBlack,
     nullptr,
     nullptr,
     nullptr,
-    makePromotionCapture
+    makePromotionCapture<Black>
 };
 
 void unmakeUsual(Move::Type move, Board::Type& board) {

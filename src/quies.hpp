@@ -15,7 +15,6 @@ namespace Search {
         MAKEOPP(COLOR);
 
 		if (Board::isRepeat(board)) return Score::Draw;
-        if (Checker::isCheck<OPP>(board)) return Score::makeMate(Board::ply(board));
 
         alpha = max(alpha, Eval::total<COLOR>(board));
         if(alpha >= beta) return beta;

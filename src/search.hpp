@@ -19,7 +19,6 @@ namespace Search {
 
 		if (Board::isRepeat(board)) return Score::Draw;
         if (depth == 0) return quiesce<COLOR>(board, alpha, beta);
-        if (Checker::isCheck<OPP>(board)) return Score::makeMate(Board::ply(board));
 
         if (isInterupt() || stopSearch) {
             stopSearch = true;

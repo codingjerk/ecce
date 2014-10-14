@@ -8,7 +8,6 @@ namespace Perft {
     template <Color::Type COLOR>
     UNum64 perft_quiet(Board::Type &board, UNumspeed depth) {
         MAKEOPP(COLOR);
-        if (Checker::isCheck<OPP>(board)) return 0;
 
         if (depth == 0) return 1;
         UNum64 result = 0;
