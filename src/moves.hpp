@@ -50,6 +50,10 @@ namespace Move {
         return move & captureMask;
     }
 
+    inline Boolspeed isPromotion(const Type move) {
+        return move & promotionMask;
+    }
+
     inline Type create(const Coord::Type from, const Coord::Type to, const Piece::Type captured = Piece::null) {
         return (captured << captureOffset) | (from << Coord::usedBits) | to;
     }
