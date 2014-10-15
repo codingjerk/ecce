@@ -12,18 +12,22 @@
 #include "generatorPhases.hpp"
 
 namespace Search {
-    template <Color::Type COLOR, Interupter isInterupt>
+    template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {
         ++totalNodes;
         MAKEOPP(COLOR);
+        
+        if (!ROOT) {
+            if (Board::isRepeat(board) || Board::isFifty(board)) return Score::Draw;
+        }
 
-        if (Board::isRepeat(board) && Board::ply(board) != 0) return Score::Draw;
         if (depth == 0) return quiesce<COLOR>(board, alpha, beta);
-        if (Board::isFifty(board) && Board::ply(board) != 0) return Score::Draw;
-
-        if (Board::ply(board) >= 2 && isInterupt() || stopSearch) {
-            stopSearch = true;
-            return 0;
+        
+        if (!ROOT) {
+            if (isInterupt() || stopSearch) {
+                stopSearch = true;
+                return 0;
+            }
         }
 
         PV::master[pvIndex] = 0;
@@ -37,7 +41,7 @@ namespace Search {
                 move = Board::currentBuffer(board)[i];
 
                 if (Move::make<COLOR>(move, board)) {
-                    score = -alphaBeta<OPP, isInterupt>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                    score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
 
                     noLegalMoves = false;
 
