@@ -19,6 +19,7 @@ namespace Search {
 
 		if (Board::isRepeat(board)) return Score::Draw;
         if (depth == 0) return quiesce<COLOR>(board, alpha, beta);
+        if (Board::isFifty(board)) return Score::Draw;
 
         if (isInterupt() || stopSearch) {
             stopSearch = true;
