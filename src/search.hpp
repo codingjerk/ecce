@@ -17,11 +17,11 @@ namespace Search {
         ++totalNodes;
         MAKEOPP(COLOR);
 
-		if (Board::isRepeat(board)) return Score::Draw;
+        if (Board::isRepeat(board) && Board::ply(board) != 0) return Score::Draw;
         if (depth == 0) return quiesce<COLOR>(board, alpha, beta);
-        if (Board::isFifty(board)) return Score::Draw;
+        if (Board::isFifty(board) && Board::ply(board) != 0) return Score::Draw;
 
-        if (isInterupt() || stopSearch) {
+        if (Board::ply(board) >= 2 && isInterupt() || stopSearch) {
             stopSearch = true;
             return 0;
         }
