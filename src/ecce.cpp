@@ -4,8 +4,6 @@
 
 //    - Best Search
 //      - Negascout
-//      - Sort LVA/MVV
-//      - Triple replies
 //      - Hash table
 
 //    - Best Eval
