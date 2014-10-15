@@ -23,6 +23,7 @@ namespace Board {
         Enpassant::Type enpassant = Enpassant::null;
 
 		Zobrist::Type zobrist;
+        UNumspeed halfmoveClock;
 
         Move::Buffer buffer;
     };
@@ -33,7 +34,6 @@ namespace Board {
         
         Color::Type turn = Black;
 
-        UNumspeed halfmoveClock = makeUNumspeed(0);
         UNumspeed fullmoveNumber = makeUNumspeed(1);
 
         Score::Type positionalScore = Score::Draw;
@@ -79,8 +79,16 @@ namespace Board {
 		(board.depthPtr + 1)->zobrist = board.depthPtr->zobrist ^ Zobrist::turnKey;
 	}
 
+	inline void copyclock(const Type& board) {
+        (board.depthPtr + 1)->halfmoveClock = board.depthPtr->halfmoveClock + 1;
+	}
+
+	inline void resetclock(const Type& board) {
+        (board.depthPtr + 1)->halfmoveClock = 0;
+	}
+
 	inline bool isRepeat(const Type& board) {
-		for (auto depth = board.depthPtr - 2; depth >= board.info; depth -= 2) {
+        for (auto depth = board.depthPtr - 4; depth >= (board.depthPtr - board.depthPtr->halfmoveClock); depth -= 2) {
 			if (depth->zobrist == board.depthPtr->zobrist) {
 				return true;
 			}
@@ -88,6 +96,10 @@ namespace Board {
 
 		return false;
 	}
+
+    inline bool isFifty(const Type& board) {
+        return (board.depthPtr->halfmoveClock > 50);
+    }
 
 	template <bool CHANGE_ZOBRIST>
     inline void setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {

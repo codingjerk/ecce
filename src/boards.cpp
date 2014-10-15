@@ -92,7 +92,7 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
     UNumspeed halfmoveClockPart;
     fenStream >> halfmoveClockPart;
-    board.halfmoveClock = halfmoveClockPart;
+    board.depthPtr->halfmoveClock = halfmoveClockPart;
 
     UNumspeed fullmoveNumberPart;
     fenStream >> fullmoveNumberPart;
@@ -106,7 +106,7 @@ std::string Board::toFen(const Type &board) {
     resultStream << Color::show(board.turn) << " ";
     resultStream << Castle::show(Board::castle(board)) << " ";
     resultStream << Enpassant::show(Board::enpassant(board)) << " ";
-    resultStream << board.halfmoveClock << " ";
+    resultStream << board.depthPtr->halfmoveClock << " ";
     resultStream << board.fullmoveNumber;
 
     return resultStream.str();
