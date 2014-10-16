@@ -5,7 +5,7 @@
 #include "magics.hpp"
 
 // @TODO: Move to generator as public
-inline void addLegals(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
+inline void addLegalsSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
     while(legals != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(legals);
         const auto to = Coord::Type(bitIndex);
@@ -18,19 +18,19 @@ inline void addLegals(Move::Buffer &buffer, const Board::Type &board, const Coor
 }
 
 template <Color::Type COLOR>
-void forKnight(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+void forKnightSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     const Bitboard::Type legalSquares = (~(board.bitboards[White] | board.bitboards[Black])) & Tables::knightMasks[from];
 
-    addLegals(buffer, board, from, legalSquares);
+    addLegalsSilent(buffer, board, from, legalSquares);
 }
 
 template <Color::Type COLOR>
-void forKing(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+void forKingSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     MAKEOPP(COLOR);
     const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
     const Bitboard::Type legalSquares = (legal) & Tables::kingMasks[from];
 
-    addLegals(buffer, board, from, legalSquares);
+    addLegalsSilent(buffer, board, from, legalSquares);
 
     if (Castle::is<COLOR, King>(Board::castle(board))) {
         if ((Tables::castleNeeded[COLOR][King] & legal) == Tables::castleNeeded[COLOR][King]) {
@@ -48,33 +48,27 @@ void forKing(Move::Buffer &buffer, const Board::Type &board, const Coord::Type f
 }
 
 template <Color::Type COLOR>
-void forBishop(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
-    MAKEOPP(COLOR);
-
+void forBishopSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = Magic::bishopOffsets[from] 
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) * Magic::bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegals(buffer, board, from, Magic::bishopData[magicIndex] & (~board.bitboards[OPP]));
+    addLegalsSilent(buffer, board, from, Magic::bishopData[magicIndex] & (~nonEmpty));
 }
 
 template <Color::Type COLOR>
-void forRook(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
-    MAKEOPP(COLOR);
-
+void forRookSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = Magic::rookOffsets[from] 
         + UNumspeed(((nonEmpty & Tables::rookMasks[from]) * Magic::rookMagics[from]) 
             >> (Magic::rookMaskShifts[from]));
 
-    addLegals(buffer, board, from, Magic::rookData[magicIndex] & (~board.bitboards[OPP]));
+    addLegalsSilent(buffer, board, from, Magic::rookData[magicIndex] & (~nonEmpty));
 }
 
 template <Color::Type COLOR>
-void forQueen(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
-    MAKEOPP(COLOR);
-
+void forQueenSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed rookMagicIndex = Magic::rookOffsets[from] 
         + UNumspeed(((nonEmpty & Tables::rookMasks[from]) * Magic::rookMagics[from]) 
@@ -84,7 +78,7 @@ void forQueen(Move::Buffer &buffer, const Board::Type &board, const Coord::Type 
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) *Magic:: bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegals(buffer, board, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~board.bitboards[OPP]));
+    addLegalsSilent(buffer, board, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~nonEmpty));
 }
 
 template <Color::Type COLOR>
@@ -93,7 +87,7 @@ void Silents::knights(Move::Buffer &buffer, const Board::Type &board) {
     while(knights != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(knights);
 
-        forKnight<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forKnightSilent<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         knights ^= Bitboard::fromIndex(bitIndex);
     }
@@ -103,7 +97,7 @@ template <Color::Type COLOR>
 void Silents::kings(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, King)];
 
-    forKing<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)));
+    forKingSilent<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)));
 }
 
 template <Color::Type COLOR> 
@@ -112,8 +106,8 @@ void Silents::bishops(Move::Buffer &buffer, const Board::Type &board) {
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        forBishop<COLOR>(buffer, board, Coord::Type(bitIndex));
-
+        forBishopSilent<COLOR>(buffer, board, Coord::Type(bitIndex));
+        
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
 }
@@ -124,7 +118,7 @@ void Silents::rooks(Move::Buffer &buffer, const Board::Type &board) {
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        forRook<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forRookSilent<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
@@ -136,7 +130,7 @@ void Silents::queens(Move::Buffer &buffer, const Board::Type &board) {
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        forQueen<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forQueenSilent<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }

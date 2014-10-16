@@ -17,7 +17,7 @@ inline void addLegalCaptures(Move::Buffer &buffer, const Board::Type &board, con
 }
 
 template <Color::Type COLOR>
-void knight(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+void forKnightCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     MAKEOPP(COLOR);
     const Bitboard::Type legalSquares = (board.bitboards[OPP]) & Tables::knightMasks[from];
 
@@ -25,7 +25,7 @@ void knight(Move::Buffer &buffer, const Board::Type &board, const Coord::Type fr
 }
 
 template <Color::Type COLOR>
-void king(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+void forKingCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     MAKEOPP(COLOR);
     const Bitboard::Type legalSquares = (board.bitboards[OPP]) & Tables::kingMasks[from];
 
@@ -33,7 +33,7 @@ void king(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from
 }
 
 template <Color::Type COLOR>
-void bishop(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+void forBishopCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     MAKEOPP(COLOR);
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = Magic::bishopOffsets[from] 
@@ -44,7 +44,7 @@ void bishop(Move::Buffer &buffer, const Board::Type &board, const Coord::Type fr
 }
 
 template <Color::Type COLOR>
-void rook(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+void forRookCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     MAKEOPP(COLOR);
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = Magic::rookOffsets[from] 
@@ -55,7 +55,7 @@ void rook(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from
 }
 
 template <Color::Type COLOR>
-void queen(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+void forQueenCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     MAKEOPP(COLOR);
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed rookMagicIndex = Magic::rookOffsets[from] 
@@ -75,7 +75,7 @@ void Captures::knights(Move::Buffer &buffer, const Board::Type &board) {
     while(knights != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(knights);
 
-        knight<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forKnightCapture<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         knights ^= Bitboard::fromIndex(bitIndex);
     }
@@ -85,7 +85,7 @@ template <Color::Type COLOR>
 void Captures::kings(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, King)];
 
-    king<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)));
+    forKingCapture<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)));
 }
 
 template <Color::Type COLOR> 
@@ -94,7 +94,7 @@ void Captures::bishops(Move::Buffer &buffer, const Board::Type &board) {
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        bishop<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forBishopCapture<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
@@ -106,7 +106,7 @@ void Captures::rooks(Move::Buffer &buffer, const Board::Type &board) {
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        rook<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forRookCapture<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
@@ -118,7 +118,7 @@ void Captures::queens(Move::Buffer &buffer, const Board::Type &board) {
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        queen<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forQueenCapture<COLOR>(buffer, board, Coord::Type(bitIndex));
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
