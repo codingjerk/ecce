@@ -19,8 +19,12 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
 
 	Board::copyzobrist(board);
     ++board.depthPtr;
-
-    Board::castle(board, oldCastle & castleChanging[from][to]);
+    
+    if (IS_CAPTURE == TFalse) {
+        Board::castle(board, oldCastle);
+    } else {
+        Board::castle(board, oldCastle & castleChanging[from][to]);
+    }
 
     Board::enpassant(board, Enpassant::null);
 
@@ -45,8 +49,12 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
 
 	Board::copyzobrist(board);
     ++board.depthPtr;
-
-    Board::castle(board, oldCastle & castleChanging[from][to]);
+    
+    if (IS_CAPTURE == TFalse) {
+        Board::castle(board, oldCastle);
+    } else {
+        Board::castle(board, oldCastle & castleChanging[from][to]);
+    }
 
     Board::enpassant(board, Enpassant::null);
     
@@ -225,6 +233,24 @@ Boolspeed (*Move::specialMakeCaptureBlack[6])(Move::Type, Board::Type&) = {
     makePromotion<Black, TTrue>
 };
 
+Boolspeed (*Move::specialMakeSilentWhite[6])(Move::Type, Board::Type&) = {
+    makeUsual<White, TFalse>,
+    nullptr,
+    makeCastleLong<White>,
+    makeCastleShort<White>,
+    makePawnDouble<White>,
+    makePromotion<White, TFalse>
+};
+
+Boolspeed (*Move::specialMakeSilentBlack[6])(Move::Type, Board::Type&) = {
+    makeUsual<Black, TFalse>,
+    nullptr,
+    makeCastleLong<Black>,
+    makeCastleShort<Black>,
+    makePawnDouble<Black>,
+    makePromotion<Black, TFalse>
+};
+
 template <Triple IS_CAPTURE>
 void unmakeUsual(Move::Type move, Board::Type& board) {
     --board.depthPtr;
@@ -359,6 +385,24 @@ void (*Move::specialUnmakeCaptureBlack[6])(Move::Type, Board::Type&) = {
     nullptr,
     nullptr,
     unmakePromotion<Black, TTrue>
+};
+
+void (*Move::specialUnmakeSilentWhite[6])(Move::Type, Board::Type&) = {
+    unmakeUsual<TFalse>,
+    nullptr,
+    unmakeCastleLong<White>,
+    unmakeCastleShort<White>,
+    unmakePawnDouble,
+    unmakePromotion<White, TFalse>
+};
+
+void (*Move::specialUnmakeSilentBlack[6])(Move::Type, Board::Type&) = {
+    unmakeUsual<TFalse>,
+    nullptr,
+    unmakeCastleLong<Black>,
+    unmakeCastleShort<Black>,
+    unmakePawnDouble,
+    unmakePromotion<Black, TFalse>
 };
 
 void Move::initTables() {
