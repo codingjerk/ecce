@@ -5,20 +5,31 @@
 #include "captures.hpp"
 
 namespace Generator {
-	typedef void(*Phase)(Move::Buffer&, const Board::Type&);
-	// @TODO: Make and Unmake for every phase: typedef void(*Maker)(Move::Type, Board::Type&);
-	//										   typedef void(*Unmaker)(Move::Type, Board::Type&);
+	typedef void(*Generate)(Move::Buffer&, const Board::Type&);
+	typedef Boolspeed(*Maker)(Move::Type, Board::Type&);
+	typedef void(*Unmaker)(Move::Type, Board::Type&);
+
+    struct PhaseStruct {
+        Generate generate;
+        Maker make;
+        Unmaker unmake;
+
+        PhaseStruct(Generate generate, Maker make, Unmaker unmake):
+            generate(generate), make(make), unmake(unmake)
+        {}
+    };
+
 	const UNumspeed phaseCount = 2;
-    using Phases = Phase[phaseCount];
+    using Phases = PhaseStruct[phaseCount];
 
     template <Color::Type COLOR>
-	inline Phase* phases() {
+	inline PhaseStruct* phases() {
 		static const Phases result = {
-			Captures::phase<COLOR>,
-			Silents::phase<COLOR>
+            PhaseStruct(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
+            PhaseStruct(Silents::phase<COLOR>,  Move::makeSilent<COLOR>,  Move::unmakeSilent<COLOR>)
 		};
 
-		return (Phase*)result;
+		return (PhaseStruct*)result;
     }
 
     #define forPhases(PHASE, PHASES) \

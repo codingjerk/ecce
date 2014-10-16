@@ -35,12 +35,12 @@ namespace Search {
         Score::Type score;
         bool noLegalMoves = true;
         forPhases(phase, Generator::phases<COLOR>()) {
-            phase(Board::currentBuffer(board), board);
+            phase.generate(Board::currentBuffer(board), board);
             UNumspeed total = Board::currentBuffer(board)[0];
             for (UNumspeed i = 1; i <= total; ++i) {
                 move = Board::currentBuffer(board)[i];
 
-                if (Move::make<COLOR>(move, board)) {
+                if (phase.make(move, board)) {
                     score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
 
                     noLegalMoves = false;
@@ -52,7 +52,7 @@ namespace Search {
                     }
                 }
 
-                Move::unmake<COLOR>(move, board);
+                phase.unmake(move, board);
 
                 if (alpha >= beta) return alpha;
             }
