@@ -225,6 +225,7 @@ Boolspeed (*Move::specialMakeCaptureBlack[6])(Move::Type, Board::Type&) = {
     makePromotion<Black, TTrue>
 };
 
+template <Triple IS_CAPTURE>
 void unmakeUsual(Move::Type move, Board::Type& board) {
     --board.depthPtr;
 
@@ -234,19 +235,11 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
     Board::setPiece<false>(board, board.squares[to], from);
 	Board::removePiece<false>(board, to);
     
-	if (Move::isCapture(move)) Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
-}
-
-void unmakeUsualCapture(Move::Type move, Board::Type& board) {
-    --board.depthPtr;
-
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-
-	Board::setPiece<false>(board, board.squares[to], from);
-	Board::removePiece<false>(board, to);
-    
-	Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    if (IS_CAPTURE == TUnknown) {
+	    if (Move::isCapture(move)) Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    } else if (IS_CAPTURE == TTrue) {
+	    Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    }
 }
 
 void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
@@ -299,56 +292,22 @@ void unmakePawnDouble(Move::Type move, Board::Type& board) {
 	Board::removePiece<false>(board, to);
 }
 
-void unmakePromotionWhite(Move::Type move, Board::Type& board) {
+template <Color::Type COLOR, Triple IS_CAPTURE>
+void unmakePromotion(Move::Type move, Board::Type& board) {
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    Board::setPiece<White|Pawn, false>(board, from);
+    Board::setPiece<COLOR|Pawn, false>(board, from);
 
 	Board::removePiece<false>(board, to);
-
-	if (Move::isCapture(move)) Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
-}
-
-void unmakePromotionBlack(Move::Type move, Board::Type& board) {
-    --board.depthPtr;
-
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-
-    Board::setPiece<Black|Pawn, false>(board, from);
-
-	Board::removePiece<false>(board, to);
-
-	if (Move::isCapture(move)) Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
-}
-
-void unmakePromotionCaptureWhite(Move::Type move, Board::Type& board) {
-    --board.depthPtr;
-
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-
-    Board::setPiece<White|Pawn, false>(board, from);
-
-	Board::removePiece<false>(board, to);
-
-	Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
-}
-
-void unmakePromotionCaptureBlack(Move::Type move, Board::Type& board) {
-    --board.depthPtr;
-
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-
-    Board::setPiece<Black|Pawn, false>(board, from);
-
-	Board::removePiece<false>(board, to);
-
-	Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    
+    if (IS_CAPTURE == TUnknown) {
+	    if (Move::isCapture(move)) Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    } else if (IS_CAPTURE == TTrue) {
+	    Board::setPiece<false>(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    }
 }
 
 void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
@@ -374,39 +333,39 @@ void unmakeEnpassantBlack(Move::Type move, Board::Type& board) {
 }
 
 void (*Move::specialUnmakeWhite[6])(Move::Type, Board::Type&) = {
-    unmakeUsual,
+    unmakeUsual<TUnknown>,
     unmakeEnpassantWhite,
     unmakeCastleWhiteLong,
     unmakeCastleWhiteShort,
     unmakePawnDouble,
-    unmakePromotionWhite
+    unmakePromotion<White, TUnknown>
 };
 
 void (*Move::specialUnmakeBlack[6])(Move::Type, Board::Type&) = {
-    unmakeUsual,
+    unmakeUsual<TUnknown>,
     unmakeEnpassantBlack,
     unmakeCastleBlackLong,
     unmakeCastleBlackShort,
     unmakePawnDouble,
-    unmakePromotionBlack
+    unmakePromotion<Black, TUnknown>
 };
 
 void (*Move::specialUnmakeCaptureWhite[6])(Move::Type, Board::Type&) = {
-    unmakeUsualCapture,
+    unmakeUsual<TTrue>,
     unmakeEnpassantWhite,
     nullptr,
     nullptr,
     nullptr,
-    unmakePromotionCaptureWhite
+    unmakePromotion<White, TTrue>
 };
 
 void (*Move::specialUnmakeCaptureBlack[6])(Move::Type, Board::Type&) = {
-    unmakeUsualCapture,
+    unmakeUsual<TTrue>,
     unmakeEnpassantBlack,
     nullptr,
     nullptr,
     nullptr,
-    unmakePromotionCaptureBlack
+    unmakePromotion<Black, TTrue>
 };
 
 void Move::initTables() {
