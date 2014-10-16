@@ -242,44 +242,42 @@ void unmakeUsual(Move::Type move, Board::Type& board) {
     }
 }
 
-void unmakeCastleWhiteShort(Move::Type, Board::Type& board) {
+template <Color::Type COLOR>
+void unmakeCastleShort(Move::Type, Board::Type& board) {
     --board.depthPtr;
 
-    Board::setPiece<White|King, false>(board, Coord::E1);
-    Board::removePiece<White|King, false>(board, Coord::G1);
+    if (COLOR == White) {
+        Board::setPiece<White|King, false>(board, Coord::E1);
+        Board::removePiece<White|King, false>(board, Coord::G1);
 
-    Board::setPiece<White|Rook, false>(board, Coord::H1);
-    Board::removePiece<White|Rook, false>(board, Coord::F1);
+        Board::setPiece<White|Rook, false>(board, Coord::H1);
+        Board::removePiece<White|Rook, false>(board, Coord::F1);
+    } else {
+        Board::setPiece<Black|King, false>(board, Coord::E8);
+        Board::removePiece<Black|King, false>(board, Coord::G8);
+
+        Board::setPiece<Black|Rook, false>(board, Coord::H8);
+        Board::removePiece<Black|Rook, false>(board, Coord::F8);
+    }
 }
 
-void unmakeCastleWhiteLong(Move::Type, Board::Type& board) {
+template <Color::Type COLOR>
+void unmakeCastleLong(Move::Type, Board::Type& board) {
     --board.depthPtr;
 
-    Board::setPiece<White|King, false>(board, Coord::E1);
-    Board::removePiece<White|King, false>(board, Coord::C1);
+    if (COLOR == White) {
+        Board::setPiece<White|King, false>(board, Coord::E1);
+        Board::removePiece<White|King, false>(board, Coord::C1);
 
-    Board::setPiece<White|Rook, false>(board, Coord::A1);
-    Board::removePiece<White|Rook, false>(board, Coord::D1);
-}
+        Board::setPiece<White|Rook, false>(board, Coord::A1);
+        Board::removePiece<White|Rook, false>(board, Coord::D1);
+    } else {
+        Board::setPiece<Black|King, false>(board, Coord::E8);
+        Board::removePiece<Black|King, false>(board, Coord::C8);
 
-void unmakeCastleBlackShort(Move::Type, Board::Type& board) {
-    --board.depthPtr;
-
-    Board::setPiece<Black|King, false>(board, Coord::E8);
-    Board::removePiece<Black|King, false>(board, Coord::G8);
-
-    Board::setPiece<Black|Rook, false>(board, Coord::H8);
-    Board::removePiece<Black|Rook, false>(board, Coord::F8);
-}
-
-void unmakeCastleBlackLong(Move::Type, Board::Type& board) {
-    --board.depthPtr;
-
-    Board::setPiece<Black|King, false>(board, Coord::E8);
-    Board::removePiece<Black|King, false>(board, Coord::C8);
-
-    Board::setPiece<Black|Rook, false>(board, Coord::A8);
-    Board::removePiece<Black|Rook, false>(board, Coord::D8);
+        Board::setPiece<Black|Rook, false>(board, Coord::A8);
+        Board::removePiece<Black|Rook, false>(board, Coord::D8);
+    }
 }
 
 void unmakePawnDouble(Move::Type move, Board::Type& board) {
@@ -330,8 +328,8 @@ void unmakeEnpassant(Move::Type move, Board::Type& board) {
 void (*Move::specialUnmakeWhite[6])(Move::Type, Board::Type&) = {
     unmakeUsual<TUnknown>,
     unmakeEnpassant<White>,
-    unmakeCastleWhiteLong,
-    unmakeCastleWhiteShort,
+    unmakeCastleLong<White>,
+    unmakeCastleShort<White>,
     unmakePawnDouble,
     unmakePromotion<White, TUnknown>
 };
@@ -339,8 +337,8 @@ void (*Move::specialUnmakeWhite[6])(Move::Type, Board::Type&) = {
 void (*Move::specialUnmakeBlack[6])(Move::Type, Board::Type&) = {
     unmakeUsual<TUnknown>,
     unmakeEnpassant<Black>,
-    unmakeCastleBlackLong,
-    unmakeCastleBlackShort,
+    unmakeCastleLong<Black>,
+    unmakeCastleShort<Black>,
     unmakePawnDouble,
     unmakePromotion<Black, TUnknown>
 };
