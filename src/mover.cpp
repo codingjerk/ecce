@@ -20,11 +20,7 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
 	Board::copyzobrist(board);
     ++board.depthPtr;
     
-    if (IS_CAPTURE == TFalse) {
-        Board::castle(board, oldCastle);
-    } else {
-        Board::castle(board, oldCastle & castleChanging[from][to]);
-    }
+    Board::castle(board, oldCastle & castleChanging[from][to]);
 
     Board::enpassant(board, Enpassant::null);
 
