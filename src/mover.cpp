@@ -113,26 +113,42 @@ Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
     return !(Checker::isCheck<COLOR>(board));
 }
 
-Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
+template <Color::Type COLOR>
+Boolspeed makeCastleLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
 	Board::copyzobrist(board);
     ++board.depthPtr;
 
-    Board::castle(board, oldCastle & ~(Castle::whiteKing | Castle::whiteQueen));
+    if (COLOR == White) {
+        Board::castle(board, oldCastle & ~Castle::white);
+    } else {
+        Board::castle(board, oldCastle & ~Castle::black);
+    }
 
     Board::enpassant(board, Enpassant::null);
 
-    Board::setPiece<White|King, true>(board, Coord::C1);
-    Board::removePiece<White|King, true>(board, Coord::E1);
+    if (COLOR == White) {
+        Board::setPiece<White|King, true>(board, Coord::C1);
+        Board::removePiece<White|King, true>(board, Coord::E1);
 
-    Board::setPiece<White|Rook, true>(board, Coord::D1);
-    Board::removePiece<White|Rook, true>(board, Coord::A1);
+        Board::setPiece<White|Rook, true>(board, Coord::D1);
+        Board::removePiece<White|Rook, true>(board, Coord::A1);
 
-    if (Checker::isAttacked<White>(board, Coord::D1)) return makeBoolspeed(0);
-    if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
+        if (Checker::isAttacked<White>(board, Coord::D1)) return makeBoolspeed(0);
+        if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
+    } else {
+        Board::setPiece<Black|King, true>(board, Coord::C8);
+        Board::removePiece<Black|King, true>(board, Coord::E8);
+
+        Board::setPiece<Black|Rook, true>(board, Coord::D8);
+        Board::removePiece<Black|Rook, true>(board, Coord::A8);
+
+        if (Checker::isAttacked<Black>(board, Coord::D8)) return makeBoolspeed(0);
+        if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
+    }
     
-    return !(Checker::isCheck<White>(board));
+    return !(Checker::isCheck<COLOR>(board));
 }
 
 Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
@@ -155,28 +171,6 @@ Boolspeed makeCastleWhiteShort(Move::Type, Board::Type& board) {
     if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
     
     return !(Checker::isCheck<White>(board));
-}
-
-Boolspeed makeCastleBlackLong(Move::Type, Board::Type& board) {
-    const auto oldCastle = Board::castle(board);
-
-	Board::copyzobrist(board);
-    ++board.depthPtr;
-
-    Board::castle(board, oldCastle & ~Castle::black);
-
-    Board::enpassant(board, Enpassant::null);
-
-    Board::setPiece<Black|King, true>(board, Coord::C8);
-    Board::removePiece<Black|King, true>(board, Coord::E8);
-
-    Board::setPiece<Black|Rook, true>(board, Coord::D8);
-    Board::removePiece<Black|Rook, true>(board, Coord::A8);
-
-    if (Checker::isAttacked<Black>(board, Coord::D8)) return makeBoolspeed(0);
-    if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
-    
-    return !(Checker::isCheck<Black>(board));
 }
 
 Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
@@ -204,7 +198,7 @@ Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
 Boolspeed (*Move::specialMakeWhite[6])(Move::Type, Board::Type&) = {
     makeUsual<White, TUnknown>,
     makeEnpassant<White>,
-    makeCastleWhiteLong,
+    makeCastleLong<White>,
     makeCastleWhiteShort,
     makePawnDouble<White>,
     makePromotion<White, TUnknown>
@@ -213,7 +207,7 @@ Boolspeed (*Move::specialMakeWhite[6])(Move::Type, Board::Type&) = {
 Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
     makeUsual<Black, TUnknown>,
     makeEnpassant<Black>,
-    makeCastleBlackLong,
+    makeCastleLong<Black>,
     makeCastleBlackShort,
     makePawnDouble<Black>,
     makePromotion<Black, TUnknown>
