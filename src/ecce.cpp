@@ -4,17 +4,23 @@
 
 //    - Best Search
 //      - Negascout
+//      - Null move
 //      - Hash table
 
 //    - Best Eval
+//      - Use genetic algos to optimize evaluation factors
+//      - Use some hard-to-calc positional factorors as mobility
 
 //    - Best Time Manager
+//      - Increase or decrease time by static position score
+//      - Increase or decrease time by dynamic delta score of last searches
+//      - Every new depth checks
+//      - Use some dirty hacks to cheating with time
 
 //    - Best Speed
-//      - Optimize algo
+//      - Optimize generation
 //      - Optimize razoring
 //      - Optimize evaluation
-//      - Optimize parallel
 
 #include "uci.hpp"
 #include "mover.hpp"
