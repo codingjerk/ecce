@@ -9,7 +9,9 @@
 //                         [from coord] [to coord]
 Castle::Type castleChanging[makeUNumspeed(1) << Coord::usedBits][makeUNumspeed(1) << Coord::usedBits];
 
-template <Color::Type COLOR>
+enum Triple {TFalse, TUnknown, TTrue};
+
+template <Color::Type COLOR, Triple IS_CAPTURE>
 Boolspeed makeUsual(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -22,7 +24,11 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
 
     Board::enpassant(board, Enpassant::null);
 
-    if (Move::isCapture(move)) Board::removePiece<true>(board, to);
+    if (IS_CAPTURE == TUnknown) {
+        if (Move::isCapture(move)) Board::removePiece<true>(board, to);
+    } else if (IS_CAPTURE == TTrue) {
+        Board::removePiece<true>(board, to);
+    }
     
 	Board::setPiece<true>(board, board.squares[from], to);
 
@@ -31,29 +37,7 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
     return !(Checker::isCheck<COLOR>(board));
 }
 
-template <Color::Type COLOR>
-Boolspeed makeUsualCapture(Move::Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-    const auto oldCastle = Board::castle(board);
-
-	Board::copyzobrist(board);
-    ++board.depthPtr;
-
-    Board::castle(board, oldCastle & castleChanging[from][to]);
-
-    Board::enpassant(board, Enpassant::null);
-
-	Board::removePiece<true>(board, to);
-    
-	Board::setPiece<true>(board, board.squares[from], to);
-
-	Board::removePiece<true>(board, from);
-    
-    return !(Checker::isCheck<COLOR>(board));
-}
-
-template <Color::Type COLOR>
+template <Color::Type COLOR, Triple IS_CAPTURE>
 Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
@@ -65,8 +49,12 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     Board::castle(board, oldCastle & castleChanging[from][to]);
 
     Board::enpassant(board, Enpassant::null);
-
-	if (Move::isCapture(move)) Board::removePiece<true>(board, to);
+    
+    if (IS_CAPTURE == TUnknown) {
+	    if (Move::isCapture(move)) Board::removePiece<true>(board, to);
+    } else if (IS_CAPTURE == TTrue) {
+        Board::removePiece<true>(board, to);
+    }
     
     const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
 	Board::setPiece<true>(board, promoted, to);
@@ -77,7 +65,7 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
 }
 
 template <Color::Type COLOR>
-Boolspeed makePromotionCapture(Move::Type move, Board::Type& board) {
+Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
@@ -85,56 +73,19 @@ Boolspeed makePromotionCapture(Move::Type move, Board::Type& board) {
 	Board::copyzobrist(board);
     ++board.depthPtr;
 
-    Board::castle(board, oldCastle & castleChanging[from][to]);
+    Board::castle(board, oldCastle);
 
-    Board::enpassant(board, Enpassant::null);
+    if (COLOR == White) {
+        Board::enpassant(board, to - 8ull);
+    } else {
+        Board::enpassant(board, to + 8ull);
+    }
 
-	Board::removePiece<true>(board, to);
-    
-    const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
-	Board::setPiece<true>(board, promoted, to);
+    Board::setPiece<COLOR|Pawn, true>(board, to);
 
-	Board::removePiece<true>(board, from);
+    Board::removePiece<COLOR|Pawn, true>(board, from);
     
     return !(Checker::isCheck<COLOR>(board));
-}
-
-Boolspeed makePawnDoubleWhite(Move::Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-    const auto oldCastle = Board::castle(board);
-
-	Board::copyzobrist(board);
-    ++board.depthPtr;
-
-    Board::castle(board, oldCastle);
-
-    Board::enpassant(board, to - 8ull);
-
-    Board::setPiece<White|Pawn, true>(board, to);
-
-    Board::removePiece<White|Pawn, true>(board, from);
-    
-    return !(Checker::isCheck<White>(board));
-}
-
-Boolspeed makePawnDoubleBlack(Move::Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-    const auto oldCastle = Board::castle(board);
-
-	Board::copyzobrist(board);
-    ++board.depthPtr;
-
-    Board::castle(board, oldCastle);
-
-    Board::enpassant(board, to + 8ull);
-
-    Board::setPiece<Black|Pawn, true>(board, to);
-
-    Board::removePiece<Black|Pawn, true>(board, from);
-    
-    return !(Checker::isCheck<Black>(board));
 }
 
 Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
@@ -264,39 +215,39 @@ Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
 }
 
 Boolspeed (*Move::specialMakeWhite[6])(Move::Type, Board::Type&) = {
-    makeUsual<White>,
+    makeUsual<White, TUnknown>,
     makeEnpassantWhite,
     makeCastleWhiteLong,
     makeCastleWhiteShort,
-    makePawnDoubleWhite,
-    makePromotion<White>
+    makePawnDouble<White>,
+    makePromotion<White, TUnknown>
 };
 
 Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
-    makeUsual<Black>,
+    makeUsual<Black, TUnknown>,
     makeEnpassantBlack,
     makeCastleBlackLong,
     makeCastleBlackShort,
-    makePawnDoubleBlack,
-    makePromotion<Black>
+    makePawnDouble<Black>,
+    makePromotion<Black, TUnknown>
 };
 
 Boolspeed (*Move::specialMakeCaptureWhite[6])(Move::Type, Board::Type&) = {
-    makeUsualCapture<White>,
+    makeUsual<White, TTrue>,
     makeEnpassantWhite,
     nullptr,
     nullptr,
     nullptr,
-    makePromotionCapture<White>
+    makePromotion<White, TTrue>
 };
 
 Boolspeed (*Move::specialMakeCaptureBlack[6])(Move::Type, Board::Type&) = {
-    makeUsualCapture<Black>,
+    makeUsual<Black, TTrue>,
     makeEnpassantBlack,
     nullptr,
     nullptr,
     nullptr,
-    makePromotionCapture<Black>
+    makePromotion<Black, TTrue>
 };
 
 void unmakeUsual(Move::Type move, Board::Type& board) {
