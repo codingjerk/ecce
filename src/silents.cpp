@@ -49,26 +49,32 @@ void forKing(Move::Buffer &buffer, const Board::Type &board, const Coord::Type f
 
 template <Color::Type COLOR>
 void forBishop(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+    MAKEOPP(COLOR);
+
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = Magic::bishopOffsets[from] 
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) * Magic::bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegals(buffer, board, from, Magic::bishopData[magicIndex] & (~nonEmpty));
+    addLegals(buffer, board, from, Magic::bishopData[magicIndex] & (~board.bitboards[OPP]));
 }
 
 template <Color::Type COLOR>
 void forRook(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+    MAKEOPP(COLOR);
+
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = Magic::rookOffsets[from] 
         + UNumspeed(((nonEmpty & Tables::rookMasks[from]) * Magic::rookMagics[from]) 
             >> (Magic::rookMaskShifts[from]));
 
-    addLegals(buffer, board, from, Magic::rookData[magicIndex] & (~nonEmpty));
+    addLegals(buffer, board, from, Magic::rookData[magicIndex] & (~board.bitboards[OPP]));
 }
 
 template <Color::Type COLOR>
 void forQueen(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
+    MAKEOPP(COLOR);
+
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed rookMagicIndex = Magic::rookOffsets[from] 
         + UNumspeed(((nonEmpty & Tables::rookMasks[from]) * Magic::rookMagics[from]) 
@@ -78,7 +84,7 @@ void forQueen(Move::Buffer &buffer, const Board::Type &board, const Coord::Type 
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) *Magic:: bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegals(buffer, board, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~nonEmpty));
+    addLegals(buffer, board, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~board.bitboards[OPP]));
 }
 
 template <Color::Type COLOR>
