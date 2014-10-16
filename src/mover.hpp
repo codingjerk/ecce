@@ -71,7 +71,6 @@ namespace Move {
 
     template <>
     inline Boolspeed makeCapture<White>(Type move, Board::Type& board) {
-        if (!Move::isCapture(move)) std::cout << "!!!FUCK mw!\n" << Move::show(move) << "\n\n" << Board::show(board);
         Board::resetclock(board);
         const auto specialIndex = special(move);
         return specialMakeCaptureWhite[specialIndex](move, board);    
@@ -79,7 +78,6 @@ namespace Move {
 
     template <>
     inline Boolspeed makeCapture<Black>(Type move, Board::Type& board) {
-        if (!Move::isCapture(move)) std::cout << "!!!FUCK mb!\n" << Move::show(move) << "\n\n" << Board::show(board);
         Board::resetclock(board);
         const auto specialIndex = special(move);
         return specialMakeCaptureBlack[specialIndex](move, board);    
@@ -90,14 +88,12 @@ namespace Move {
 
     template <>
     inline void unmakeCapture<White>(Type move, Board::Type& board) {
-        if (!Move::isCapture(move)) std::cout << "!!!FUCK uw!\n" << Move::show(move) << "\n\n" << Board::show(board);
         const auto specialIndex = special(move);
         specialUnmakeCaptureWhite[specialIndex](move, board);
     }
 
     template <>
     inline void unmakeCapture<Black>(Type move, Board::Type& board) {
-        if (!Move::isCapture(move)) std::cout << "!!!FUCK ub!\n" << Move::show(move) << "\n\n" << Board::show(board);
         const auto specialIndex = special(move);
         specialUnmakeCaptureBlack[specialIndex](move, board);
     }
@@ -108,7 +104,6 @@ namespace Move {
 
     template <>
     inline Boolspeed makeSilent<White>(Type move, Board::Type& board) {
-        if (Move::isCapture(move)) std::cout << "FUCK mw!\n" << Move::show(move) << "\n\n" << Board::show(board);
         if (Move::isPromotion(move) || (board.squares[((move >> Coord::usedBits) & Coord::typeMask)] == Piece::create(White, Pawn))) {
             Board::resetclock(board);
         } else {
@@ -120,7 +115,6 @@ namespace Move {
 
     template <>
     inline Boolspeed makeSilent<Black>(Type move, Board::Type& board) {
-        if (Move::isCapture(move)) std::cout << "FUCK mb!\n" << Move::show(move) << "\n\n" << Board::show(board);
         if (Move::isPromotion(move) || (board.squares[((move >> Coord::usedBits) & Coord::typeMask)] == Piece::create(Black, Pawn))) {
             Board::resetclock(board);
         } else {
@@ -135,14 +129,12 @@ namespace Move {
 
     template <>
     inline void unmakeSilent<White>(Type move, Board::Type& board) {
-        if (Move::isCapture(move)) std::cout << "FUCK uw!\n" << Move::show(move) << "\n\n" << Board::show(board);
         const auto specialIndex = special(move);
         specialUnmakeSilentWhite[specialIndex](move, board);
     }
 
     template <>
     inline void unmakeSilent<Black>(Type move, Board::Type& board) {
-        if (Move::isCapture(move)) std::cout << "FUCK ub!\n" << Move::show(move) << "\n\n" << Board::show(board);
         const auto specialIndex = special(move);
         specialUnmakeSilentBlack[specialIndex](move, board);
     }
