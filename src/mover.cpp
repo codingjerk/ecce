@@ -88,7 +88,8 @@ Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
     return !(Checker::isCheck<COLOR>(board));
 }
 
-Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
+template <Color::Type COLOR>
+Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
@@ -100,30 +101,16 @@ Boolspeed makeEnpassantWhite(Move::Type move, Board::Type& board) {
 
     Board::enpassant(board, Enpassant::null);
 
-    Board::removePiece<Black|Pawn, true>(board, to - 8ull);
-    Board::setPiece<White|Pawn, true>(board, to);
-    Board::removePiece<White|Pawn, true>(board, from);
+    if (COLOR == White) {
+        Board::removePiece<Black|Pawn, true>(board, to - 8ull);
+    } else {
+        Board::removePiece<White|Pawn, true>(board, to + 8ull);
+    }
+
+    Board::setPiece<COLOR|Pawn, true>(board, to);
+    Board::removePiece<COLOR|Pawn, true>(board, from);
     
-    return !(Checker::isCheck<White>(board));
-}
-
-Boolspeed makeEnpassantBlack(Move::Type move, Board::Type& board) {
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-    const auto oldCastle = Board::castle(board);
-
-	Board::copyzobrist(board);
-    ++board.depthPtr;
-
-    Board::castle(board, oldCastle);
-
-    Board::enpassant(board, Enpassant::null);
-
-    Board::removePiece<White|Pawn, true>(board, to + 8ull);
-    Board::setPiece<Black|Pawn, true>(board, to);
-    Board::removePiece<Black|Pawn, true>(board, from);
-    
-    return !(Checker::isCheck<Black>(board));
+    return !(Checker::isCheck<COLOR>(board));
 }
 
 Boolspeed makeCastleWhiteLong(Move::Type, Board::Type& board) {
@@ -216,7 +203,7 @@ Boolspeed makeCastleBlackShort(Move::Type, Board::Type& board) {
 
 Boolspeed (*Move::specialMakeWhite[6])(Move::Type, Board::Type&) = {
     makeUsual<White, TUnknown>,
-    makeEnpassantWhite,
+    makeEnpassant<White>,
     makeCastleWhiteLong,
     makeCastleWhiteShort,
     makePawnDouble<White>,
@@ -225,7 +212,7 @@ Boolspeed (*Move::specialMakeWhite[6])(Move::Type, Board::Type&) = {
 
 Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
     makeUsual<Black, TUnknown>,
-    makeEnpassantBlack,
+    makeEnpassant<Black>,
     makeCastleBlackLong,
     makeCastleBlackShort,
     makePawnDouble<Black>,
@@ -234,7 +221,7 @@ Boolspeed (*Move::specialMakeBlack[6])(Move::Type, Board::Type&) = {
 
 Boolspeed (*Move::specialMakeCaptureWhite[6])(Move::Type, Board::Type&) = {
     makeUsual<White, TTrue>,
-    makeEnpassantWhite,
+    makeEnpassant<White>,
     nullptr,
     nullptr,
     nullptr,
@@ -243,7 +230,7 @@ Boolspeed (*Move::specialMakeCaptureWhite[6])(Move::Type, Board::Type&) = {
 
 Boolspeed (*Move::specialMakeCaptureBlack[6])(Move::Type, Board::Type&) = {
     makeUsual<Black, TTrue>,
-    makeEnpassantBlack,
+    makeEnpassant<Black>,
     nullptr,
     nullptr,
     nullptr,
