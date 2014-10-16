@@ -310,31 +310,26 @@ void unmakePromotion(Move::Type move, Board::Type& board) {
     }
 }
 
-void unmakeEnpassantWhite(Move::Type move, Board::Type& board) {
+template <Color::Type COLOR>
+void unmakeEnpassant(Move::Type move, Board::Type& board) {
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    Board::setPiece<White|Pawn, false>(board, from);
-    Board::removePiece<White|Pawn, false>(board, to);
-    Board::setPiece<Black|Pawn, false>(board, to - 8ull);
-}
-
-void unmakeEnpassantBlack(Move::Type move, Board::Type& board) {
-    --board.depthPtr;
-
-    const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
-    const Coord::Type to = move & Coord::typeMask;
-
-    Board::setPiece<Black|Pawn, false>(board, from);
-    Board::removePiece<Black|Pawn, false>(board, to);
-    Board::setPiece<White|Pawn, false>(board, to + 8ull);
+    Board::setPiece<COLOR|Pawn, false>(board, from);
+    Board::removePiece<COLOR|Pawn, false>(board, to);
+    
+    if (COLOR == White) {
+        Board::setPiece<Black|Pawn, false>(board, to - 8ull);
+    } else {
+        Board::setPiece<White|Pawn, false>(board, to + 8ull);
+    }
 }
 
 void (*Move::specialUnmakeWhite[6])(Move::Type, Board::Type&) = {
     unmakeUsual<TUnknown>,
-    unmakeEnpassantWhite,
+    unmakeEnpassant<White>,
     unmakeCastleWhiteLong,
     unmakeCastleWhiteShort,
     unmakePawnDouble,
@@ -343,7 +338,7 @@ void (*Move::specialUnmakeWhite[6])(Move::Type, Board::Type&) = {
 
 void (*Move::specialUnmakeBlack[6])(Move::Type, Board::Type&) = {
     unmakeUsual<TUnknown>,
-    unmakeEnpassantBlack,
+    unmakeEnpassant<Black>,
     unmakeCastleBlackLong,
     unmakeCastleBlackShort,
     unmakePawnDouble,
@@ -352,7 +347,7 @@ void (*Move::specialUnmakeBlack[6])(Move::Type, Board::Type&) = {
 
 void (*Move::specialUnmakeCaptureWhite[6])(Move::Type, Board::Type&) = {
     unmakeUsual<TTrue>,
-    unmakeEnpassantWhite,
+    unmakeEnpassant<White>,
     nullptr,
     nullptr,
     nullptr,
@@ -361,7 +356,7 @@ void (*Move::specialUnmakeCaptureWhite[6])(Move::Type, Board::Type&) = {
 
 void (*Move::specialUnmakeCaptureBlack[6])(Move::Type, Board::Type&) = {
     unmakeUsual<TTrue>,
-    unmakeEnpassantBlack,
+    unmakeEnpassant<Black>,
     nullptr,
     nullptr,
     nullptr,
