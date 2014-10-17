@@ -34,7 +34,7 @@ namespace Board {
         
         Color::Type turn = Black;
 
-        UNumspeed fullmoveNumber = makeUNumspeed(1);
+        UNumspeed initialFullmoveNumber = makeUNumspeed(1);
 
         Score::Type positionalScore = Score::Draw;
         Score::Type materialScore   = Score::Draw;
@@ -86,6 +86,10 @@ namespace Board {
 	inline void resetclock(const Type& board) {
         (board.depthPtr + 1)->halfmoveClock = 0;
 	}
+
+    inline UNumspeed fullMoveNumber(const Type& board) {
+        return board.initialFullmoveNumber + (board.depthPtr - board.info) / 2;
+    }
 
 	inline bool isRepeat(const Type& board) {
         for (auto depth = board.depthPtr - 4; depth >= (board.depthPtr - board.depthPtr->halfmoveClock); depth -= 2) {

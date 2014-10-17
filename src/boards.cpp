@@ -96,7 +96,7 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
     UNumspeed fullmoveNumberPart;
     fenStream >> fullmoveNumberPart;
-    board.fullmoveNumber = fullmoveNumberPart;
+    board.initialFullmoveNumber = fullmoveNumberPart;
 }
 
 std::string Board::toFen(const Type &board) {
@@ -107,7 +107,7 @@ std::string Board::toFen(const Type &board) {
     resultStream << Castle::show(Board::castle(board)) << " ";
     resultStream << Enpassant::show(Board::enpassant(board)) << " ";
     resultStream << board.depthPtr->halfmoveClock << " ";
-    resultStream << board.fullmoveNumber;
+    resultStream << Board::fullMoveNumber(board);
 
     return resultStream.str();
 }
