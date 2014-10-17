@@ -43,7 +43,7 @@ namespace Score {
 
     inline Numspeed getMateScore(Type score) {
         if (isPositiveMate(score)) {
-            return (Infinity - score) / 2;
+            return (Infinity - score + 1) / 2;
         } else {
             return (-score - Infinity - 1) / 2;
         }
