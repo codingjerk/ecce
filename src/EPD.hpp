@@ -61,7 +61,7 @@ namespace EPD {
         return result;
     }
 
-    inline void checkFile(std::string epdContent) {
+    inline void checkFile(std::string epdContent, UNumspeed time) {
         EPD::Record record;
         auto cursor = epdContent.begin();
 
@@ -82,7 +82,7 @@ namespace EPD {
 
             EPD::loadRecord(record, epdRecordAsText);
             ++total;
-            if (EPD::checkRecord(record, TM::time(200))) {
+            if (EPD::checkRecord(record, TM::time(time))) {
                 ++succes;
                 std::cout << "Succes\n";
             } else {
