@@ -20,7 +20,10 @@ namespace Search {
         MAKEOPP(COLOR);
         
         if (!ROOT) {
-            if (Board::isRepeat(board) || Board::isFifty(board)) return Score::Draw;
+            if (Board::isRepeat(board) || Board::isFifty(board)) {
+                Statistic::repeatPruned();
+                return Score::Draw;
+            }
         }
 
         if (depth == 0) return quiesce<COLOR>(board, alpha, beta);

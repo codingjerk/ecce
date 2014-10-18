@@ -19,6 +19,7 @@ namespace Statistic {
         UNummax goingToNextPhase;
         UNummax noLegalMoves;
         UNummax returnedAlpha;
+        UNummax repeatPruned;
         UNummax totalNodes;
     };
 
@@ -60,6 +61,12 @@ namespace Statistic {
         #endif
     }
 
+    inline void repeatPruned() {
+        #ifdef STATISTIC
+            ++master.repeatPruned;
+        #endif
+    }
+
     inline void increaseNodes() {
         #ifdef STATISTIC
             ++master.totalNodes;
@@ -74,6 +81,7 @@ namespace Statistic {
             data.goingToNextPhase = 0;
             data.noLegalMoves     = 0;
             data.returnedAlpha    = 0;
+            data.repeatPruned     = 0;
             data.totalNodes       = 0;
         #endif
     }
@@ -89,6 +97,7 @@ namespace Statistic {
             INFOPERCENT(goingToNextPhase);
             INFOPERCENT(noLegalMoves);
             INFOPERCENT(returnedAlpha);
+            INFOPERCENT(repeatPruned);
             INFO(totalNodes);
         #endif
     }
