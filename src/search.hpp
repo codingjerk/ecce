@@ -10,11 +10,13 @@
 #include "interupters.hpp"
 #include "quies.hpp"
 #include "generatorPhases.hpp"
+#include "statistic.hpp"
 
 namespace Search {
     template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {
         ++totalNodes;
+        Statistic::increaseNodes();
         MAKEOPP(COLOR);
         
         if (!ROOT) {
@@ -46,19 +48,28 @@ namespace Search {
                     noLegalMoves = false;
 
                     if (score > alpha) {
+                        Statistic::alphaUpped();
                         alpha = score;
                         PV::master[pvIndex] = move;
                         PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
+                    } else {
+                        Statistic::alphaPruned();
                     }
                 }
 
                 phase.unmake(move, board);
 
-                if (alpha >= beta) return alpha;
+                if (alpha >= beta) {
+                    Statistic::betaPruned();
+                    return alpha;
+                }
             }
+
+            Statistic::goingToNextPhase();
         }
 
         if (noLegalMoves) {
+            Statistic::noLegalMoves();
             if (Checker::isCheck<COLOR>(board)) {
                 return -Score::makeMate(Board::ply(board));
             } else {
@@ -66,6 +77,7 @@ namespace Search {
             }
         }
 
+        Statistic::returnedAlpha();
         return alpha;
     }
 

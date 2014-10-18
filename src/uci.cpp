@@ -19,6 +19,8 @@
 #include "info.hpp"
 #include "options.hpp"
 
+#include "statistic.hpp"
+
 bool exit(std::list<std::string>) {
     return false;
 }
@@ -159,6 +161,8 @@ bool stop(std::list<std::string>) {
 }
 
 bool go(std::list<std::string> arguments) {
+    Statistic::flush;
+
     auto cursor = arguments.begin();
 
     if (cursor != arguments.end() && *cursor == "depth") {
@@ -235,6 +239,8 @@ bool go(std::list<std::string> arguments) {
 
         std::cout << "bestmove " << Move::show(bm) << "\n";
     }
+
+    Statistic::print(Statistic::master);
 
     return true;
 }
