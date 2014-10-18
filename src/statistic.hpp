@@ -4,7 +4,7 @@
 #include "core.hpp"
 
 #define STATISTIC
-// #undef STATISTIC
+#undef STATISTIC
 
 #ifdef STATISTIC
     #include <iostream>
