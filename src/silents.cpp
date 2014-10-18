@@ -11,7 +11,7 @@ inline void addLegalsSilent(Move::Buffer &buffer, const Board::Type &board, cons
         const auto to = Coord::Type(bitIndex);
 
         ++buffer[0];
-        buffer[buffer[0]] = Move::create(from, to, board.squares[to]);
+        buffer[buffer[0]] = Move::create(from, to);
 
         legals ^= Bitboard::fromIndex(bitIndex);
     }
