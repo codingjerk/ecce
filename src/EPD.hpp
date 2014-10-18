@@ -4,6 +4,7 @@
 #include "core.hpp"
 
 #include <sstream>
+#include <string>
 
 #include "boards.hpp"
 #include "search.hpp"
@@ -53,11 +54,44 @@ namespace EPD {
         }
     }
 
-    inline bool checkRecord(Record& record) {
-        auto tm = TM::time(2000);
+    inline bool checkRecord(Record& record, TM::TimeLimit tm) {
         auto bestmove = Search::incremental(record.board, tm);
+        auto result = (bestmove == record.bestmove);
 
-        return bestmove == record.bestmove;
+        return result;
+    }
+
+    inline void checkFile(std::string epdContent) {
+        EPD::Record record;
+        auto cursor = epdContent.begin();
+
+        UNummax total = 0;
+        UNummax succes = 0;
+        UNummax failed = 0;
+        while (cursor != epdContent.end()) {
+            std::string epdRecordAsText;
+
+            while (cursor != epdContent.end()) {
+                epdRecordAsText.push_back(*cursor);
+                ++cursor;
+                if (*cursor == '\n') {
+                    ++cursor; 
+                    break;
+                }
+            }
+
+            EPD::loadRecord(record, epdRecordAsText);
+            ++total;
+            if (EPD::checkRecord(record, TM::time(200))) {
+                ++succes;
+                std::cout << "Succes\n";
+            } else {
+                ++failed;
+                std::cout << "Failed\n";
+            }
+        }
+
+        std::cout << "\nTotal: " << total << ", Succes: " << succes << "/" << total << "\n";
     }
 }
 
