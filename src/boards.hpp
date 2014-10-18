@@ -102,7 +102,7 @@ namespace Board {
 	}
 
     inline bool isFifty(const Type& board) {
-        return (board.depthPtr->halfmoveClock > 50);
+        return (board.depthPtr->halfmoveClock >= 50);
     }
 
 	template <bool CHANGE_ZOBRIST>
