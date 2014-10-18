@@ -78,7 +78,7 @@ namespace Move {
         Coord::Type to = simple & Coord::typeMask;
 
         // Captures
-        simple |= (board.squares[to] << captureOffset);
+        simple |= board.squares[to] << captureOffset;
 
         // PawnDoubles
         if (board.squares[from] == Piece::create(White, Pawn) || board.squares[from] == Piece::create(Black, Pawn)) {
@@ -150,7 +150,7 @@ namespace Move {
             
             if (checkedTo == to && board.squares[checkedFrom] == piece) {
                 std::string moveString = Coord::show(checkedFrom) + Coord::show(checkedTo);
-                return fromString(moveString);
+                return fromString(moveString, board);
             }
         }
 
