@@ -7,9 +7,9 @@
 namespace Search {
     typedef bool (*Interupter)();  
 
-    bool stopSearch;
-    UNumspeed totalNodes;
-    UNumspeed endTime;
+    static bool stopSearch;
+    static UNumspeed totalNodes;
+    static UNumspeed endTime;
 
     inline bool stopInterupter() {
         if(totalNodes % 1024 == 0 && isInputAvailable()) {

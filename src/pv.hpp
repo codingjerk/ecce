@@ -6,7 +6,7 @@
 
 namespace PV {
     const UNumspeed PV_SIZE = (MAX_DEPTH * MAX_DEPTH + MAX_DEPTH) / 2;
-    Move::Type master[PV_SIZE];
+    static Move::Type master[PV_SIZE];
 
     inline void copy(Move::Type *dst, const Move::Type *src, UNumspeed n) {
         while (n-- && (*dst++ = *src++));

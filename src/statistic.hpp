@@ -23,7 +23,7 @@ namespace Statistic {
         UNummax totalNodes;
     };
 
-    Data master;
+    static Data master;
 
     inline void alphaUpped() {
         #ifdef STATISTIC
