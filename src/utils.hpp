@@ -150,7 +150,6 @@ namespace Move {
             
             if (checkedTo == to && board.squares[checkedFrom] == piece) {
                 std::string moveString = Coord::show(checkedFrom) + Coord::show(checkedTo);
-                std::cout << moveString << "\n";
                 return fromString(moveString);
             }
         }
