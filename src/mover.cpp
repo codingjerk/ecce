@@ -18,6 +18,23 @@ Boolspeed makeUsual(Move::Type move, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
 	Board::copyzobrist(board);
+    
+    if (IS_CAPTURE == TUnknown) {
+        if (Move::isCapture(move) || (board.squares[((move >> Coord::usedBits) & Coord::typeMask)] == Piece::create(COLOR, Pawn))) {
+            Board::resetclock(board);
+        } else {
+            Board::copyclock(board);
+        }
+    } else if (IS_CAPTURE == TTrue) {
+        Board::resetclock(board);
+    } else {
+        if (board.squares[((move >> Coord::usedBits) & Coord::typeMask)] == Piece::create(COLOR, Pawn)) {
+            Board::resetclock(board);
+        } else {
+            Board::copyclock(board);
+        }
+    }
+
     ++board.depthPtr;
     
     Board::castle(board, oldCastle & castleChanging[from][to]);
@@ -44,6 +61,8 @@ Boolspeed makePromotion(Move::Type move, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
 	Board::copyzobrist(board);
+    Board::resetclock(board);
+
     ++board.depthPtr;
     
     if (IS_CAPTURE == TFalse) {
@@ -75,6 +94,8 @@ Boolspeed makePawnDouble(Move::Type move, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
 	Board::copyzobrist(board);
+    Board::resetclock(board);
+
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -99,6 +120,8 @@ Boolspeed makeEnpassant(Move::Type move, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
 	Board::copyzobrist(board);
+    Board::resetclock(board);
+
     ++board.depthPtr;
 
     Board::castle(board, oldCastle);
@@ -122,6 +145,8 @@ Boolspeed makeCastleLong(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
 	Board::copyzobrist(board);
+    Board::copyclock(board);
+
     ++board.depthPtr;
 
     if (COLOR == White) {
@@ -159,7 +184,9 @@ template <Color::Type COLOR>
 Boolspeed makeCastleShort(Move::Type, Board::Type& board) {
     const auto oldCastle = Board::castle(board);
 
-	Board::copyzobrist(board);
+    Board::copyzobrist(board);
+    Board::copyclock(board);
+
     ++board.depthPtr;
 
     if (COLOR == White) {

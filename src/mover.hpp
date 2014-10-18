@@ -30,22 +30,12 @@ namespace Move {
 
     template <>
     inline Boolspeed make<White>(Type move, Board::Type& board) {
-        if (Move::isCapture(move) || (board.squares[((move >> Coord::usedBits) & Coord::typeMask)] == Piece::create(White, Pawn))) {
-            Board::resetclock(board);
-        } else {
-            Board::copyclock(board);
-        }
         const auto specialIndex = special(move);
         return specialMakeWhite[specialIndex](move, board);    
     }
 
     template <>
     inline Boolspeed make<Black>(Type move, Board::Type& board) {
-        if (Move::isCapture(move) || (board.squares[((move >> Coord::usedBits) & Coord::typeMask)] == Piece::create(Black, Pawn))) {
-            Board::resetclock(board);
-        } else {
-            Board::copyclock(board);
-        }
         const auto specialIndex = special(move);
         return specialMakeBlack[specialIndex](move, board);    
     }
@@ -71,14 +61,12 @@ namespace Move {
 
     template <>
     inline Boolspeed makeCapture<White>(Type move, Board::Type& board) {
-        Board::resetclock(board);
         const auto specialIndex = special(move);
         return specialMakeCaptureWhite[specialIndex](move, board);    
     }
 
     template <>
     inline Boolspeed makeCapture<Black>(Type move, Board::Type& board) {
-        Board::resetclock(board);
         const auto specialIndex = special(move);
         return specialMakeCaptureBlack[specialIndex](move, board);    
     }
@@ -104,22 +92,12 @@ namespace Move {
 
     template <>
     inline Boolspeed makeSilent<White>(Type move, Board::Type& board) {
-        if (board.squares[((move >> Coord::usedBits) & Coord::typeMask)] == Piece::create(White, Pawn)) {
-            Board::resetclock(board);
-        } else {
-            Board::copyclock(board);
-        }
         const auto specialIndex = special(move);
         return specialMakeSilentWhite[specialIndex](move, board);    
     }
 
     template <>
     inline Boolspeed makeSilent<Black>(Type move, Board::Type& board) {
-        if (board.squares[((move >> Coord::usedBits) & Coord::typeMask)] == Piece::create(Black, Pawn)) {
-            Board::resetclock(board);
-        } else {
-            Board::copyclock(board);
-        }
         const auto specialIndex = special(move);
         return specialMakeSilentBlack[specialIndex](move, board);    
     }
