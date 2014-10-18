@@ -14,6 +14,7 @@
 #include "score.hpp"
 #include "eval.hpp"
 #include "PST.hpp"
+#include "utils.hpp"
 
 void framework(UNumspeed complexity) {
     SECTION(Framework);
@@ -38,6 +39,23 @@ void moves(UNumspeed complexity) {
     CHECK(Move::isCapture(Move::create(1, 2)) == false);
 
     CHECK(Move::isCapture(Move::promotion(1, 2, Piece::create(Black, Knight), Piece::create(White, Pawn))));
+
+    Board::Type board;
+    Board::setFromFen(board, "1k1r4/pp1b1R2/3q2pp/4p3/2B5/4Q3/PPP2B2/2K5 b - - 0 0");
+    CHECK(Move::fromShortString<Black>("Qd1+", board) == Move::fromString("d6d1", board));
+
+    Board::setFromFen(board, "3r1k2/4npp1/1ppr3p/p6P/P2PPPP1/1NR5/5K2/2R5 w - - 0 0");
+    CHECK(Move::fromShortString<White>("d5", board) == Move::fromString("d4d5", board));
+
+    Board::setFromFen(board, "2q1rr1k/3bbnnp/p2p1pp1/2pPp3/PpP1P1P1/1P2BNNP/2BQ1PRK/7R b - - 0 0");
+    CHECK(Move::fromShortString<Black>("f5", board) == Move::fromString("f6f5", board));
+
+    Board::setFromFen(board, "rnbqkb1r/p3pppp/1p6/2ppP3/3N4/2P5/PPP1QPPP/R1B1KB1R w KQkq - 0 0");
+    CHECK(Move::fromShortString<White>("e6", board) == Move::fromString("e5e6", board));
+
+    Board::setFromFen(board, "r1b2rk1/2q1b1pp/p2ppn2/1p6/3QP3/1BN1B3/PPP3PP/R4RK1 w - - 0 0");
+    CHECK(Move::fromShortString<White>("Nd5", board) == Move::fromString("c3d5", board));
+    CHECK(Move::fromShortString<White>("Na4", board) == Move::fromString("c3a4", board));
 }
 
 void bitboards(UNumspeed complexity) {

@@ -22,7 +22,7 @@ inline unsigned long GetTickCount()
     #include <Windows.h>
 #endif
 
-bool isInputAvailable() {
+inline bool isInputAvailable() {
 #ifdef OSLINUX
     int val;
     fd_set set[1];
@@ -74,7 +74,7 @@ namespace Move {
         Move::Type simple = fromString(text);
 
         // @TODO: Create methods Move::from and Move::to
-        Coord::Type from = (simple >> Coord::usedBits) & Coord::typeMask; 
+        Coord::Type from = (simple >> Coord::usedBits) & Coord::typeMask;
         Coord::Type to = simple & Coord::typeMask;
 
         // Captures
@@ -91,7 +91,7 @@ namespace Move {
                 Color::Type we = (board.squares[from]) & Color::typeMask;
                 Piece::Type promoted = (Piece::fromChar(text[4]) & Dignity::typeMask) | we;
                 simple |= (promoted << promotionOffset)
-                       |  (promotionFlag << specialOffset);
+                    | (promotionFlag << specialOffset);
             }//v
             // v
             // Enpassants
@@ -104,12 +104,58 @@ namespace Move {
         else if (board.squares[from] == Piece::create(White, King) || board.squares[from] == Piece::create(Black, King)) {
             if ((from == Coord::E1 && to == Coord::C1) || (from == Coord::E8 && to == Coord::C8)) {
                 simple |= (castleLongFlag << specialOffset);
-            } else if ((from == Coord::E1 && to == Coord::G1) || (from == Coord::E8 && to == Coord::G8)) {
+            }
+            else if ((from == Coord::E1 && to == Coord::G1) || (from == Coord::E8 && to == Coord::G8)) {
                 simple |= (castleShortFlag << specialOffset);
             }
         }
 
         return simple;
+    }
+
+    template <Color::Type COLOR>
+    inline Type fromShortString(const std::string text, Board::Type &board) {
+        auto cursor = text.rbegin();
+        
+        if (*cursor == '+') ++cursor;
+
+        char digit = *cursor;
+        ++cursor;
+
+        char alpha = *cursor;
+        ++cursor;
+
+        auto to = Coord::fromChars(alpha, digit);
+
+        Piece::Type piece = Piece::create(White, Pawn);
+        if (cursor != text.rend()) {
+            if (*cursor == 'x') ++cursor;
+
+            piece = Piece::fromChar(*cursor);
+            ++cursor;
+        }
+
+        if (COLOR == Black) {
+            piece ^= Color::White;
+        }
+
+        Move::Buffer buffer;
+        Generator::phase<COLOR>(buffer, board);
+
+        auto total = buffer[0];
+        for (Move::Type i = 1; i <= total; ++i) {
+            const auto move = buffer[i];
+            const auto checkedTo = move & Coord::typeMask;
+            const auto checkedFrom = (move >> Coord::usedBits) & Coord::typeMask;
+            
+            if (checkedTo == to && board.squares[checkedFrom] == piece) {
+                std::string moveString = Coord::show(checkedFrom) + Coord::show(checkedTo);
+                std::cout << moveString << "\n";
+                return fromString(moveString);
+            }
+        }
+
+        return 0;
     }
 }
 
