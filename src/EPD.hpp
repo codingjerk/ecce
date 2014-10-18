@@ -58,6 +58,10 @@ namespace EPD {
         auto bestmove = Search::incremental(record.board, tm);
         auto result = (bestmove == record.bestmove);
 
+        if (!result) {
+            std::cout << "Needed " << Move::show(record.bestmove) << ", but result is " << Move::show(bestmove) << "\n";
+        }
+
         return result;
     }
 
