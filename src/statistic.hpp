@@ -80,7 +80,7 @@ namespace Statistic {
 
     inline void print(Data& data) {
         #ifdef STATISTIC
-            #define INFOPERCENT(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << data.PARAM << " (" << (double(data.alphaUpped * 100) / data.totalNodes) << "%)\n";
+            #define INFOPERCENT(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << data.PARAM << " (" << (double(data.PARAM * 100) / data.totalNodes) << "%)\n";
             #define INFO(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << data.PARAM << "\n";
 
             INFOPERCENT(alphaUpped);
