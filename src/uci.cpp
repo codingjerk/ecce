@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <fstream>
 
 #include "boards.hpp"
 #include "colors.hpp"
@@ -20,6 +21,8 @@
 #include "options.hpp"
 
 #include "statistic.hpp"
+
+#include "EPD.hpp"
 
 bool exit(std::list<std::string>) {
     return false;
@@ -140,6 +143,23 @@ bool speed(std::list<std::string>) {
     std::cout << "Score: " << nodes / total << "\n";
 
     Search::speed(testBoard);
+
+    return true;
+}
+
+bool epd(std::list<std::string> arguments) {
+    auto cursor = arguments.begin();
+    std::string fileName = *cursor; ++cursor;
+    std::stringstream ss(*cursor); ++cursor;
+    UNumspeed time;
+    ss >> time;
+
+    std::ifstream fs(fileName, std::ios_base::in);
+    std::string fileContent;
+    fileContent.assign((std::istreambuf_iterator<char>(fs)),
+        (std::istreambuf_iterator<char>()));
+
+    EPD::checkFile(fileContent, time);
 
     return true;
 }
@@ -271,6 +291,7 @@ std::map<std::string, ProcessFunction> initUciFunctions() {
     result["perft"]      = &perft;
     result["go"]         = &go;
     result["speed"]      = &speed;
+    result["epd"]        = &epd;
 
     return result;
 };
