@@ -15,53 +15,65 @@
 #include "eval.hpp"
 #include "PST.hpp"
 
-int Tests::runAll(UNumspeed complexity) {    
+void framework(UNumspeed complexity) {
     SECTION(Framework);
     CHECK(true);
+}
 
+void coords(UNumspeed complexity) {
     SECTION(Coords);
     CHECK(Coord::fromString("a1") == 0);
     CHECK(Coord::show(0ull) == "a1");
     CHECK(Coord::show(Coord::fromString("h8")) == "h8");
-    CHECK(Coord::show(Coord::fromRaw(7,56)) == "h8");
-    CHECK(Coord::show(Coord::fromRaw(1,0)) == "b1");
+    CHECK(Coord::show(Coord::fromRaw(7, 56)) == "h8");
+    CHECK(Coord::show(Coord::fromRaw(1, 0)) == "b1");
+}
 
+void moves(UNumspeed complexity) {
     SECTION(Moves);
-    Move::initTables();
     CHECK(Move::fromString("a1a1") == 0);
     CHECK(Move::show(0) == "a1a1");
     CHECK(Move::show(Move::fromString("a8h1")) == "a8h1");
 
-    CHECK(Move::isCapture(Move::create(1,2)) == false);
+    CHECK(Move::isCapture(Move::create(1, 2)) == false);
 
-    CHECK(Move::isCapture(Move::promotion(1,2, Piece::create(Black, Knight), Piece::create(White, Pawn))));
+    CHECK(Move::isCapture(Move::promotion(1, 2, Piece::create(Black, Knight), Piece::create(White, Pawn))));
+}
 
+void bitboards(UNumspeed complexity) {
     SECTION(Bitboards);
-    Bitboard::initTables();
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n00000000\n");
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("a1"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n10000000\n");
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("h8"))) == "00000001\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n");
+}
 
+void colors(UNumspeed complexity) {
     SECTION(Colors);
-    Color::initTables();
     CHECK(Color::fromString("w") == White);
     CHECK(Color::show(Black) == "b");
+}
 
+void pieces(UNumspeed complexity) {
     SECTION(Pieces);
-    Piece::initTables();
     CHECK(Piece::fromString("Q") == Piece::create(White, Queen));
     CHECK(Piece::show(Piece::fromString("p")) == "p");
+}
 
+void enpassants(UNumspeed complexity) {
     SECTION(Enpassants);
     CHECK(Enpassant::fromString("-") == Enpassant::null);
     CHECK(Enpassant::fromString("f4") == Coord::fromString("f4"));
+}
 
+void castles(UNumspeed complexity) {
     SECTION(Castles);
     CHECK(Castle::fromString("-") == Castle::null);
     CHECK(Castle::fromString("KQ") == (Castle::whiteKing | Castle::whiteQueen));
+}
 
+void boards(UNumspeed complexity) {
     SECTION(Boards);
-    Board::Type board; 
+    Board::Type board;
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     CHECK(Board::toFen(board) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
@@ -74,14 +86,17 @@ int Tests::runAll(UNumspeed complexity) {
     board.depthPtr++;
     CHECK(Board::ply(board) == 2);
     board.depthPtr -= 2;
+}
 
+void generator(UNumspeed complexity) {
     SECTION(Generator);
-    Generator::initTables();
+    Board::Type board;
+    Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
     auto &buffer = Board::currentBuffer(board);
 
     buffer[0] = 0;
     Generator::knights<Black>(buffer, board);
-    auto total = buffer[0]; 
+    auto total = buffer[0];
     CHECK(total == 4);
 
     buffer[0] = 0;
@@ -198,8 +213,8 @@ int Tests::runAll(UNumspeed complexity) {
         CHECK(Perft::perft_quiet(board, 4) == 197281);
         CHECK(Perft::perft_quiet(board, 5) == 4865609);
         CHECK(Perft::perft_quiet(board, 6) == 119060324);
-        if (complexity >= 2) CHECK(Perft::perft(board, 7) == 3195901860);
-        if (complexity >= 3) CHECK(Perft::perft(board, 8) == 84998978956);
+        if (complexity >= 2) CHECK(Perft::perft_quiet(board, 7) == 3195901860);
+        if (complexity >= 3) CHECK(Perft::perft_quiet(board, 8) == 84998978956);
 
         Board::setFromFen(board, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
         CHECK(Perft::perft_quiet(board, 1) == 48);
@@ -236,21 +251,38 @@ int Tests::runAll(UNumspeed complexity) {
         CHECK(Perft::perft_quiet(board, 4) == 3894594);
         if (complexity >= 2) CHECK(Perft::perft_quiet(board, 5) == 164075551);
     }
+}
 
-    SECTION(Evaluation and Score);
+void evaluation(UNumspeed complexity) {
+    SECTION(Evaluation);
+    Board::Type board;
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     CHECK(Eval::material<White>(board) == Score::Draw);
     CHECK(Eval::material<Black>(board) == Score::Draw);
     CHECK(Eval::positional<White>(board) == Score::Draw);
     CHECK(Eval::positional<Black>(board) == Score::Draw);
 
-	Board::removePiece<false>(board, Coord::E2);
+    Board::removePiece<false>(board, Coord::E2);
     CHECK(Eval::material<White>(board) == -Score::Pawn);
     CHECK(Eval::material<Black>(board) == Score::Pawn);
 
-	Board::removePiece<false>(board, Coord::A8);
+    Board::removePiece<false>(board, Coord::A8);
     CHECK(Eval::material<White>(board) == Score::Rook - Score::Pawn);
     CHECK(Eval::material<Black>(board) == Score::Pawn - Score::Rook);
+}
+
+int Tests::runAll(UNumspeed complexity) {
+    framework(complexity);
+    coords(complexity);
+    moves(complexity);
+    bitboards(complexity);
+    colors(complexity);
+    pieces(complexity);
+    enpassants(complexity);
+    castles(complexity);
+    boards(complexity);
+    generator(complexity);
+    evaluation(complexity);
 
     RESULTS;
 }
