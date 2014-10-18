@@ -9,18 +9,13 @@ using namespace Board;
 Board::Type Board::master;
 
 void setPositionFromFen(Type &board, const std::string fen) {
-    for (auto& bitboard: board.bitboards) {
-        bitboard = Bitboard::null;
-    }
-
-    for (auto& square: board.squares) {
-        square = Piece::null;
-    }
+    for (auto& bitboard: board.bitboards) bitboard = Bitboard::null;
+    for (auto& square: board.squares) square = Piece::null;
 
     board.depthPtr = board.info;
-    board.materialScore = 0;
-    board.positionalScore = 0;
-    board.depthOffset = 0;
+    board.materialScore     = 0;
+    board.positionalScore   = 0;
+    board.depthOffset       = 0;
 	board.depthPtr->zobrist = 0;
 
     UNumspeed cursor = makeUNumspeed(0);
@@ -74,29 +69,20 @@ std::string getFenPosition(const Type &board) {
 void Board::setFromFen(Type &board, const std::string fen) {
     std::stringstream fenStream(fen);
 
-    std::string positionPart;
-    fenStream >> positionPart;
+	std::string positionPart, turnPart, castlePart, enapassantPart;
+
+	fenStream >> positionPart;
+	fenStream >> turnPart;
+	fenStream >> castlePart;
+	fenStream >> enapassantPart;
+
     setPositionFromFen(board, positionPart);
-
-    std::string turnPart;
-    fenStream >> turnPart;
     board.turn = Color::fromString(turnPart);
-
-    std::string castlePart;
-    fenStream >> castlePart;
     castle(board, Castle::fromString(castlePart));
-
-    std::string enapassantPart;
-    fenStream >> enapassantPart;
     enpassant(board, Enpassant::fromString(enapassantPart));
 
-    UNumspeed halfmoveClockPart;
-    fenStream >> halfmoveClockPart;
-    board.depthPtr->halfmoveClock = halfmoveClockPart;
-
-    UNumspeed fullmoveNumberPart;
-    fenStream >> fullmoveNumberPart;
-    board.initialFullmoveNumber = fullmoveNumberPart;
+    fenStream >> board.depthPtr->halfmoveClock;
+    fenStream >> board.initialFullmoveNumber;
 }
 
 std::string Board::toFen(const Type &board) {
