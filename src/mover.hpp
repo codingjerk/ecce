@@ -117,6 +117,10 @@ namespace Move {
         specialUnmakeSilentBlack[specialIndex](move, board);
     }
 
+    // Null
+    void makeNull(Board::Type&);
+    void unmakeNull(Board::Type&);
+
     // Untemplated functions
     inline Boolspeed make(Type move, Board::Type& board) {
         if (board.turn == White) {

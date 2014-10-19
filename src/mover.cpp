@@ -274,6 +274,17 @@ Boolspeed (*Move::specialMakeSilentBlack[6])(Move::Type, Board::Type&) = {
     makePromotion<Black, TFalse>
 };
 
+void Move::makeNull(Board::Type& board) {
+    const auto oldCastle = Board::castle(board);
+    Board::copyzobrist(board);
+    Board::resetclock(board);
+
+    ++board.depthPtr;
+
+    Board::castle(board, oldCastle);
+    Board::enpassant(board, Enpassant::null);
+}
+
 template <Triple IS_CAPTURE>
 void unmakeUsual(Move::Type move, Board::Type& board) {
     --board.depthPtr;
@@ -427,6 +438,10 @@ void (*Move::specialUnmakeSilentBlack[6])(Move::Type, Board::Type&) = {
     unmakePawnDouble,
     unmakePromotion<Black, TFalse>
 };
+
+void Move::unmakeNull(Board::Type& board) {
+    --board.depthPtr;
+}
 
 void Move::initTables() {
     forCoord(x)
