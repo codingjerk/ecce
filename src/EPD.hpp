@@ -62,13 +62,13 @@ namespace EPD {
 
         bool result = false;
         if (record.avoidMode) {
-            auto result = (bestmove != record.move);
+            result = (bestmove != record.move);
 
             if (!result) {
                 std::cout << "Needed not " << Move::show(record.move) << ", but result is " << Move::show(bestmove) << "\n";
             }
         } else {
-            auto result = (bestmove == record.move);
+            result = (bestmove == record.move);
 
             if (!result) {
                 std::cout << "Needed " << Move::show(record.move) << ", but result is " << Move::show(bestmove) << "\n";
