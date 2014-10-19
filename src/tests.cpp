@@ -56,6 +56,18 @@ void moves(UNumspeed complexity) {
     Board::setFromFen(board, "r1b2rk1/2q1b1pp/p2ppn2/1p6/3QP3/1BN1B3/PPP3PP/R4RK1 w - - 0 0");
     CHECK(Move::fromShortString<White>("Nd5", board) == Move::fromString("c3d5", board));
     CHECK(Move::fromShortString<White>("Na4", board) == Move::fromString("c3a4", board));
+
+    Board::setFromFen(board, "rnbq1rk1/pppp1ppp/4pn2/8/1bPP4/P1N5/1PQ1PPPP/R1B1KBNR b KQ - 1 5");
+    CHECK(Move::fromShortString<Black>("Bcx3+", board) == Move::fromString("b4c3", board));
+
+    Board::setFromFen(board, "r4rk1/3nppbp/bq1p1np1/2pP4/8/2N2NPP/PP2PPB1/R1BQR1K1 b - - 1 12");
+    CHECK(Move::fromShortString<Black>("Rfb8", board) == Move::fromString("f8b8", board));
+
+    Board::setFromFen(board, "r2q1rk1/2p1bppp/p2p1n2/1p2P3/4P1b1/1nP1BN2/PP3PPP/RN1QR1K1 w - - 1 12");
+    CHECK(Move::fromShortString<White>("exf6", board) == Move::fromString("e5f6", board));
+
+    Board::setFromFen(board, "r2qkbnr/2p2pp1/p1pp4/4p2p/4P1b1/5N1P/PPPP1PP1/RNBQ1RK1 w kq - 1 8");
+    CHECK(Move::fromShortString<White>("hxg4", board) == Move::fromString("h3g4", board));
 }
 
 void bitboards(UNumspeed complexity) {

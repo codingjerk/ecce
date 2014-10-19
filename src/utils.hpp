@@ -119,18 +119,58 @@ namespace Move {
         
         if (*cursor == '+') ++cursor;
 
-        char digit = *cursor;
-        ++cursor;
+        const Coord::Type unknown = 666;
 
-        char alpha = *cursor;
-        ++cursor;
+        Coord::Type toDigit = unknown;
+        if (cursor != text.rend() && isdigit(*cursor)) {
+            toDigit = Coord::digit(Coord::fromChars('a', *cursor));
+            ++cursor;
+        }
 
-        auto to = Coord::fromChars(alpha, digit);
+        if (cursor != text.rend() && *cursor == 'x') {
+            ++cursor;
+        }
+
+        Coord::Type toAlpha = unknown;
+        if (cursor != text.rend() && isalpha(*cursor) && islower(*cursor)) {
+            toAlpha = Coord::alpha(Coord::fromChars(*cursor, '1'));
+            ++cursor;
+        }
+
+        if (cursor != text.rend() && *cursor == 'x') {
+            ++cursor;
+        }
+
+        Coord::Type fromDigit = unknown;
+        if (cursor != text.rend() && isdigit(*cursor)) {
+            if (toDigit == unknown) {
+                toDigit = Coord::digit(Coord::fromChars('a', *cursor));
+            } else {
+                fromDigit = Coord::digit(Coord::fromChars('a', *cursor));
+            }
+            ++cursor;
+        }
+
+        if (cursor != text.rend() && *cursor == 'x') {
+            ++cursor;
+        }
+
+        Coord::Type fromAlpha = unknown;
+        if (cursor != text.rend() && isalpha(*cursor) && islower(*cursor)) {
+            if (toAlpha == unknown) {
+                toAlpha = Coord::alpha(Coord::fromChars(*cursor, '1'));
+            } else {
+                fromAlpha = Coord::alpha(Coord::fromChars(*cursor, '1'));
+            }
+            ++cursor;
+        }
+
+        if (cursor != text.rend() && *cursor == 'x') {
+            ++cursor;
+        }
 
         Piece::Type piece = Piece::create(White, Pawn);
-        if (cursor != text.rend()) {
-            if (*cursor == 'x') ++cursor;
-
+        if (cursor != text.rend() && isalpha(*cursor) && isupper(*cursor)) {
             piece = Piece::fromChar(*cursor);
             ++cursor;
         }
@@ -139,18 +179,36 @@ namespace Move {
             piece ^= Color::White;
         }
 
+        if (cursor != text.rend() && *cursor == 'x') {
+            ++cursor;
+        }
+
         Move::Buffer buffer;
         Generator::phase<COLOR>(buffer, board);
 
         auto total = buffer[0];
         for (Move::Type i = 1; i <= total; ++i) {
             const auto move = buffer[i];
+
             const auto checkedTo = move & Coord::typeMask;
+            const auto checkedToDigit = Coord::digit(checkedTo);
+            const auto checkedToAlpha = Coord::alpha(checkedTo);
+
             const auto checkedFrom = (move >> Coord::usedBits) & Coord::typeMask;
+            const auto checkedFromDigit = Coord::digit(checkedFrom);
+            const auto checkedFromAlpha = Coord::alpha(checkedFrom);
             
-            if (checkedTo == to && board.squares[checkedFrom] == piece) {
-                std::string moveString = Coord::show(checkedFrom) + Coord::show(checkedTo);
-                return fromString(moveString, board);
+            if (board.squares[checkedFrom] == piece) {
+                if (toDigit == unknown || toDigit == checkedToDigit) {
+                    if (toAlpha == unknown || toAlpha == checkedToAlpha) {
+                        if (fromDigit == unknown || fromDigit == checkedFromDigit) {
+                            if (fromAlpha == unknown || fromAlpha == checkedFromAlpha) {
+                                std::string moveString = Coord::show(checkedFrom) + Coord::show(checkedTo);
+                                return fromString(moveString, board);
+                            }
+                        }
+                    }
+                }
             }
         }
 
