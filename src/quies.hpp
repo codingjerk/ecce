@@ -8,10 +8,13 @@
 #include "mover.hpp"
 #include "generatorPhases.hpp"
 #include "moves.hpp"
+#include "statistic.hpp"
 
 namespace Search {
     template <Color::Type COLOR>
     Score::Type quiesce(Board::Type &board, Score::Type alpha, Score::Type beta) {
+        Statistic::increaseQuiesceNodes();
+
         MAKEOPP(COLOR);
 
 		if (Board::isRepeat(board)) return Score::Draw;
@@ -29,7 +32,6 @@ namespace Search {
 
             if (Move::makeCapture<COLOR>(move, board)) {
                 score = -quiesce<OPP>(board, -beta, -alpha);
-
                 alpha = max(alpha, score);
             }
 
