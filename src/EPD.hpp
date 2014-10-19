@@ -14,6 +14,7 @@ namespace EPD {
         Board::Type board;
         Move::Type move;
         bool avoidMode;
+        std::string description;
     };
 
     inline void loadRecord(Record& record, std::string str) {
@@ -33,6 +34,7 @@ namespace EPD {
 
         Board::setFromFen(record.board, position + " " + color + " " + castle + " " + enpassant + " 0 1");
 
+        bool moveSetted = false;
         while (!ss.eof()) {
             std::string cursor;
             ss >> cursor;
@@ -41,7 +43,8 @@ namespace EPD {
                 cursor = cursor.substr(cursor.size() - 2, 2);
             }
 
-            if (cursor == "bm" || cursor == "am") {
+            if (!moveSetted && cursor == "bm" || cursor == "am") {
+                moveSetted == true;
                 record.avoidMode = (cursor == "am");
 
                 std::string bestmove;
@@ -55,8 +58,21 @@ namespace EPD {
                 } else {
                     record.move = Move::fromShortString<Black>(bestmove, record.board);
                 }
+            } else if (cursor == "id") {
+                std::string description;
+                ss >> description;
 
-                break;
+                if (description[0] == '\"') {
+                    description = description.substr(1);
+                }
+
+                if (description[description.size() - 1] == ';') {
+                    description = description.substr(0, description.size() - 2);
+                } else if (description[description.size() - 1] == '\"') {
+                    description = description.substr(0, description.size() - 1);
+                }
+
+                record.description = description;
             }
         }
     }
@@ -106,10 +122,10 @@ namespace EPD {
             ++total;
             if (EPD::checkRecord(record, TM::time(time))) {
                 ++succes;
-                std::cout << "Succes\n";
+                std::cout << total << " (" << record.description << ") >> Succes\n";
             } else {
                 ++failed;
-                std::cout << "Failed\n";
+                std::cout << total << " (" << record.description << ") >> Failed\n";
             }
         }
 
