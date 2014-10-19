@@ -212,7 +212,7 @@ namespace Move {
             }
         }
 
-        return 0;
+        return Move::create(Coord::A1, Coord::A1);
     }
 }
 
