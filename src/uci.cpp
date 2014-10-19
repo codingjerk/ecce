@@ -159,7 +159,10 @@ bool epd(std::list<std::string> arguments) {
     fileContent.assign((std::istreambuf_iterator<char>(fs)),
         (std::istreambuf_iterator<char>()));
 
-    EPD::checkFile(fileContent, time);
+    std::string failedEpd = EPD::checkFile(fileContent, time);
+    std::ofstream ofs(fileName + "_f", std::ios_base::out);
+    ofs << failedEpd;
+    ofs.close();
 
     return true;
 }

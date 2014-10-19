@@ -98,8 +98,9 @@ namespace EPD {
         return result;
     }
 
-    // Returns success/total in promille (from 0 to 1000000)
-    inline UNummax checkFile(std::string epdContent, UNumspeed time) {
+    // Returns epd with fail positions
+    inline std::string checkFile(std::string epdContent, UNumspeed time) {
+        std::stringstream failedContent;
         EPD::Record record;
         auto cursor = epdContent.begin();
 
@@ -126,12 +127,14 @@ namespace EPD {
             } else {
                 ++failed;
                 std::cout << total << " (" << record.description << ") >> Failed\n";
+                failedContent << Board::toFen(record.board) << "; " << (record.avoidMode ? "am" : "bm")
+                    << Move::show(record.move) << "; id \"" << record.description << "\";\n";
             }
         }
 
         std::cout << "\nTotal: " << total << ", Succes: " << succes << "/" << total << "\n";
 
-        return succes * 1000 / total;
+        return failedContent.str();
     }
 }
 
