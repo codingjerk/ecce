@@ -12,18 +12,20 @@
 #endif
 
 namespace Statistic {
-    struct Data {
-        UNummax alphaUpped;
-        UNummax alphaPruned;
-        UNummax betaPruned;
-        UNummax goingToNextPhase;
-        UNummax noLegalMoves;
-        UNummax returnedAlpha;
-        UNummax repeatPruned;
-        UNummax totalNodes;
-    };
+    #ifdef STATISTIC 
+        struct Data {
+            UNummax alphaUpped;
+            UNummax alphaPruned;
+            UNummax betaPruned;
+            UNummax goingToNextPhase;
+            UNummax noLegalMoves;
+            UNummax returnedAlpha;
+            UNummax repeatPruned;
+            UNummax totalNodes;
+        };
 
-    static Data master;
+        static Data master;
+    #endif
 
     inline void alphaUpped() {
         #ifdef STATISTIC
@@ -73,23 +75,23 @@ namespace Statistic {
         #endif
     }
 
-    inline void flush(Data& data) {
+    inline void flush() {
         #ifdef STATISTIC
-            data.alphaUpped       = 0;
-            data.alphaPruned      = 0;
-            data.betaPruned       = 0;
-            data.goingToNextPhase = 0;
-            data.noLegalMoves     = 0;
-            data.returnedAlpha    = 0;
-            data.repeatPruned     = 0;
-            data.totalNodes       = 0;
+            master.alphaUpped       = 0;
+            master.alphaPruned      = 0;
+            master.betaPruned       = 0;
+            master.goingToNextPhase = 0;
+            master.noLegalMoves     = 0;
+            master.returnedAlpha    = 0;
+            master.repeatPruned     = 0;
+            master.totalNodes       = 0;
         #endif
     }
 
-    inline void print(Data& data) {
+    inline void print() {
         #ifdef STATISTIC
-            #define INFOPERCENT(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << data.PARAM << " (" << (double(data.PARAM * 100) / data.totalNodes) << "%)\n";
-            #define INFO(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << data.PARAM << "\n";
+            #define INFOPERCENT(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << master.PARAM << " (" << (double(master.PARAM * 100) / master.totalNodes) << "%)\n";
+            #define INFO(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << master.PARAM << "\n";
 
             INFOPERCENT(alphaUpped);
             INFOPERCENT(alphaPruned);

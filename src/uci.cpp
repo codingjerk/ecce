@@ -247,7 +247,6 @@ bool go(std::list<std::string> arguments) {
             ++cursor;
         }
 
-
         TM::TimeLimit tm; 
         if (Board::master.turn == White) {
             tm = TM::time(wtime, winc, movestogo);
@@ -260,7 +259,7 @@ bool go(std::list<std::string> arguments) {
         std::cout << "bestmove " << Move::show(bm) << "\n";
     }
 
-    Statistic::print(Statistic::master);
+    Statistic::print();
 
     return true;
 }
