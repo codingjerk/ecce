@@ -21,6 +21,7 @@ namespace Statistic {
             UNummax noLegalMoves;
             UNummax returnedAlpha;
             UNummax repeatPruned;
+            UNummax negaScoutFails;
             UNummax totalNodes;
         };
 
@@ -69,6 +70,12 @@ namespace Statistic {
         #endif
     }
 
+    inline void negaScoutFailed() {
+        #ifdef STATISTIC
+            ++master.negaScoutFails;
+        #endif
+    }
+
     inline void increaseNodes() {
         #ifdef STATISTIC
             ++master.totalNodes;
@@ -84,6 +91,7 @@ namespace Statistic {
             master.noLegalMoves     = 0;
             master.returnedAlpha    = 0;
             master.repeatPruned     = 0;
+            master.negaScoutFails   = 0;
             master.totalNodes       = 0;
         #endif
     }
@@ -100,6 +108,7 @@ namespace Statistic {
             INFOPERCENT(noLegalMoves);
             INFOPERCENT(returnedAlpha);
             INFOPERCENT(repeatPruned);
+            INFOPERCENT(negaScoutFails);
             INFO(totalNodes);
         #endif
     }

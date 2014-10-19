@@ -13,6 +13,8 @@
 #include "statistic.hpp"
 
 namespace Search {
+    #define NEGASCOUT
+
     template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {
         ++totalNodes;
@@ -46,9 +48,22 @@ namespace Search {
                 move = Board::currentBuffer(board)[i];
 
                 if (phase.make(move, board)) {
-                    score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
-
-                    noLegalMoves = false;
+                    #ifdef NEGASCOUT
+                        if (noLegalMoves) {
+                            score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                            noLegalMoves = false;
+                        } else {
+                            score = -alphaBeta<OPP, isInterupt, false>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board)); 
+                        
+                            if (score > alpha && score < beta) {
+                                Statistic::negaScoutFailed();
+                                score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                            }
+                        }
+                    #else
+                        score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                        noLegalMoves = false;
+                    #endif
 
                     if (score > alpha) {
                         Statistic::alphaUpped();
