@@ -127,7 +127,7 @@ namespace EPD {
             } else {
                 ++failed;
                 std::cout << total << " (" << record.description << ") >> Failed\n";
-                failedContent << Board::toFen(record.board) << "; " << (record.avoidMode ? "am" : "bm")
+                failedContent << Board::toFen(record.board) << "; " << (record.avoidMode ? "am " : "bm ")
                     << Move::show(record.move) << "; id \"" << record.description << "\";\n";
             }
         }
