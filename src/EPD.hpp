@@ -37,8 +37,8 @@ namespace EPD {
             std::string cursor;
             ss >> cursor;
 
-            if (cursor == "bm" || cursor == "am") {
-                record.avoidMode = (cursor == "am");
+            if (cursor == "bm" || cursor == "am" || cursor == ";bm" || cursor == ";am") {
+                record.avoidMode = (cursor == "am" || cursor == ";am");
 
                 std::string bestmove;
                 ss >> bestmove;

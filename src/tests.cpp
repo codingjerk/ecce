@@ -68,6 +68,9 @@ void moves(UNumspeed complexity) {
 
     Board::setFromFen(board, "r2qkbnr/2p2pp1/p1pp4/4p2p/4P1b1/5N1P/PPPP1PP1/RNBQ1RK1 w kq - 1 8");
     CHECK(Move::fromShortString<White>("hxg4", board) == Move::fromString("h3g4", board));
+
+    Board::setFromFen(board, "rn1qkb1r/pp2pppp/5n2/3p1b2/3P4/1QN1P3/PP3PPP/R1B1KBNR b KQkq - 1 1");
+    CHECK(Move::fromShortString<Black>("Bc8", board) == Move::fromString("f5c8", board));
 }
 
 void bitboards(UNumspeed complexity) {
