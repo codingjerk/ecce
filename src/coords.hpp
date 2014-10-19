@@ -31,6 +31,14 @@ namespace Coord {
         return fromRaw(x, y << usedBitsByComponent);
     }
 
+    inline Type alpha(const Type coord) {
+        return coord & componentMask;
+    }
+
+    inline Type digit(const Type coord) {
+        return coord & (componentMask << usedBitsByComponent);
+    }
+
     const Type A1 = 0;
     const Type B1 = 1;
     const Type C1 = 2;
