@@ -27,17 +27,31 @@ namespace Search {
         UNumspeed total = Board::currentBuffer(board)[0];
         Move::Type move;
         Score::Type score;
+        bool noMoves = true;
         for (UNumspeed i = 1; i <= total; ++i) {
             move = Board::currentBuffer(board)[i];
 
             if (Move::makeCapture<COLOR>(move, board)) {
                 score = -quiesce<OPP>(board, -beta, -alpha);
-                alpha = max(alpha, score);
+                noMoves = false;
+                if (score > alpha) {
+                    Statistic::quiesceAlphaUpped();
+                    alpha = score;
+                } else {
+                    Statistic::quiesceAlphaPruned();
+                }
             }
 
             Move::unmakeCapture<COLOR>(move, board);
 
-            if (alpha >= beta) break;
+            if (alpha >= beta) {
+                Statistic::quiesceBetaPruned();
+                break;
+            }
+        }
+
+        if (noMoves) {
+            Statistic::noQuiesceMoves();
         }
 
         return alpha;

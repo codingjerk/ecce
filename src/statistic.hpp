@@ -21,8 +21,14 @@ namespace Statistic {
             UNummax noLegalMoves;
             UNummax returnedAlpha;
             UNummax repeatPruned;
-            UNummax quiesceNodes;
             UNummax negaScoutFails;
+
+            UNummax quiesceAlphaUpped;
+            UNummax quiesceAlphaPruned;
+            UNummax quiesceBetaPruned;
+            UNummax noQuiesceMoves;
+
+            UNummax quiesceNodes;
             UNummax totalNodes;
         };
 
@@ -77,6 +83,30 @@ namespace Statistic {
         #endif
     }
 
+    inline void quiesceAlphaUpped() {
+        #ifdef STATISTIC
+            ++master.quiesceAlphaUpped;
+        #endif
+    }
+
+    inline void quiesceAlphaPruned() {
+        #ifdef STATISTIC
+            ++master.quiesceAlphaPruned;
+        #endif
+    }
+
+    inline void quiesceBetaPruned() {
+        #ifdef STATISTIC
+            ++master.quiesceBetaPruned;
+        #endif
+    }
+
+    inline void noQuiesceMoves() {
+        #ifdef STATISTIC
+            ++master.noQuiesceMoves;
+        #endif
+    }
+
     inline void increaseQuiesceNodes() {
         #ifdef STATISTIC
             ++master.quiesceNodes;
@@ -91,32 +121,44 @@ namespace Statistic {
 
     inline void flush() {
         #ifdef STATISTIC
-            master.alphaUpped       = 0;
-            master.alphaPruned      = 0;
-            master.betaPruned       = 0;
-            master.goingToNextPhase = 0;
-            master.noLegalMoves     = 0;
-            master.returnedAlpha    = 0;
-            master.repeatPruned     = 0;
-            master.quiesceNodes     = 0;
-            master.negaScoutFails   = 0;
-            master.totalNodes       = 0;
+            master.alphaUpped         = 0;
+            master.alphaPruned        = 0;
+            master.betaPruned         = 0;
+            master.goingToNextPhase   = 0;
+            master.noLegalMoves       = 0;
+            master.returnedAlpha      = 0;
+            master.repeatPruned       = 0;
+            master.negaScoutFails     = 0;
+
+            master.quiesceAlphaUpped  = 0;
+            master.quiesceAlphaPruned = 0;
+            master.quiesceBetaPruned  = 0;
+            master.noQuiesceMoves     = 0;
+
+            master.quiesceNodes       = 0;
+            master.totalNodes         = 0;
         #endif
     }
 
     inline void print() {
         #ifdef STATISTIC
-            #define INFOPERCENT(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << master.PARAM << " (" << (double(master.PARAM * 100) / master.totalNodes) << "%)\n";
+            #define INFOPERCENT(PARAM, TOTAL) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << master.PARAM << " (" << (double(master.PARAM * 100) / master.TOTAL) << "%)\n";
             #define INFO(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << master.PARAM << "\n";
 
-            INFOPERCENT(alphaUpped);
-            INFOPERCENT(alphaPruned);
-            INFOPERCENT(betaPruned);
-            INFOPERCENT(goingToNextPhase);
-            INFOPERCENT(noLegalMoves);
-            INFOPERCENT(returnedAlpha);
-            INFOPERCENT(repeatPruned);
-            INFOPERCENT(negaScoutFails);
+            INFOPERCENT(alphaUpped, totalNodes);
+            INFOPERCENT(alphaPruned, totalNodes);
+            INFOPERCENT(betaPruned, totalNodes);
+            INFOPERCENT(goingToNextPhase, totalNodes);
+            INFOPERCENT(noLegalMoves, totalNodes);
+            INFOPERCENT(returnedAlpha, totalNodes);
+            INFOPERCENT(repeatPruned, totalNodes);
+            INFOPERCENT(negaScoutFails, totalNodes);
+
+            INFOPERCENT(quiesceAlphaUpped, quiesceNodes);
+            INFOPERCENT(quiesceAlphaPruned, quiesceNodes);
+            INFOPERCENT(quiesceBetaPruned, quiesceNodes);
+            INFOPERCENT(noQuiesceMoves, quiesceNodes);
+
             INFO(quiesceNodes);
             INFO(totalNodes);
         #endif
