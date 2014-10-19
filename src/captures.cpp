@@ -272,13 +272,13 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 }
 }
 
-void msort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+void bubbleSort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     for (auto i = start + 1; i <= end; ++i) {
         for (auto j = start + 1; j <= end - i; ++j) {
-            if (buffer[i] < buffer[j+1]) {
+            if (buffer[i] < buffer[j + 1]) {
                 auto tmp = buffer[i];
-                buffer[i] = buffer[j+1];
-                buffer[j+1] = tmp;
+                buffer[i] = buffer[j + 1];
+                buffer[j + 1] = tmp;
             }
         }
     }
@@ -288,7 +288,7 @@ void msort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     start = buffer[0]; \
     command<COLOR>(buffer, board); \
     end = buffer[0]; \
-    msort(buffer, start, end);
+    bubbleSort(buffer, start, end);
 
 template <Color::Type COLOR> 
 void Captures::phase(Move::Buffer &buffer, const Board::Type &board) {
