@@ -12,7 +12,8 @@
 namespace EPD {
     struct Record {
         Board::Type board;
-        Move::Type bestmove;
+        Move::Type move;
+        bool avoidMode;
     };
 
     inline void loadRecord(Record& record, std::string str) {
@@ -36,7 +37,9 @@ namespace EPD {
             std::string cursor;
             ss >> cursor;
 
-            if (cursor == "bm") {
+            if (cursor == "bm" || cursor == "am") {
+                record.avoidMode = (cursor == "am");
+
                 std::string bestmove;
                 ss >> bestmove;
                 if (bestmove[bestmove.size() - 1] == ';') {
@@ -44,9 +47,9 @@ namespace EPD {
                 }
 
                 if (record.board.turn == White) {
-                    record.bestmove = Move::fromShortString<White>(bestmove, record.board);
+                    record.move = Move::fromShortString<White>(bestmove, record.board);
                 } else {
-                    record.bestmove = Move::fromShortString<Black>(bestmove, record.board);
+                    record.move = Move::fromShortString<Black>(bestmove, record.board);
                 }
 
                 break;
@@ -56,16 +59,27 @@ namespace EPD {
 
     inline bool checkRecord(Record& record, TM::TimeLimit tm) {
         auto bestmove = Search::incremental(record.board, tm);
-        auto result = (bestmove == record.bestmove);
 
-        if (!result) {
-            std::cout << "Needed " << Move::show(record.bestmove) << ", but result is " << Move::show(bestmove) << "\n";
+        bool result = false;
+        if (record.avoidMode) {
+            auto result = (bestmove != record.move);
+
+            if (!result) {
+                std::cout << "Needed not " << Move::show(record.move) << ", but result is " << Move::show(bestmove) << "\n";
+            }
+        } else {
+            auto result = (bestmove == record.move);
+
+            if (!result) {
+                std::cout << "Needed " << Move::show(record.move) << ", but result is " << Move::show(bestmove) << "\n";
+            }
         }
 
         return result;
     }
 
-    inline void checkFile(std::string epdContent, UNumspeed time) {
+    // Returns success/total in promille (from 0 to 1000000)
+    inline UNummax checkFile(std::string epdContent, UNumspeed time) {
         EPD::Record record;
         auto cursor = epdContent.begin();
 
@@ -96,6 +110,8 @@ namespace EPD {
         }
 
         std::cout << "\nTotal: " << total << ", Succes: " << succes << "/" << total << "\n";
+
+        return succes * 1000 / total;
     }
 }
 
