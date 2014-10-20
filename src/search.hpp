@@ -107,7 +107,7 @@ namespace Search {
         auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, 0);
         auto totalTime = GetTickCount() - startTime;
 
-        auto totalNPS = (totalTime != 0)? (totalNodes / totalTime): totalNodes;
+        auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
         std::cout << "info depth " << depth.maxDepth << " time " << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush; 
 
         return PV::master[0];
@@ -135,7 +135,7 @@ namespace Search {
             auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
             auto totalTime = GetTickCount() - startTime;
 
-            auto totalNPS = (totalTime != 0)? (totalNodes / totalTime): totalNodes;
+            auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
         
             if (stopSearch) break;
             
@@ -170,7 +170,7 @@ namespace Search {
             auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
             auto totalTime = GetTickCount() - startTime;
 
-            auto totalNPS = (totalTime != 0)? (totalNodes / totalTime): totalNodes;
+            auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
         
             if (stopSearch) break;
 
