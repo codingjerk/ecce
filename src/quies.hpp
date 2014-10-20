@@ -13,6 +13,7 @@
 namespace Search {
     template <Color::Type COLOR>
     Score::Type quiesce(Board::Type &board, Score::Type alpha, Score::Type beta) {
+        ++totalNodes;
         Statistic::increaseQuiesceNodes();
 
         MAKEOPP(COLOR);
