@@ -282,11 +282,19 @@ void bubbleSort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     }
 }
 
+void check(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+    for (auto i = start + 1; i < end; ++i) {
+        if (buffer[i] < buffer[i+1]) {
+            std::cout << "Error!\n";
+        }
+    }
+}
+
 #define SORTED(command) \
     start = buffer[0]; \
     command<COLOR>(buffer, board); \
     end = buffer[0]; \
-    bubbleSort(buffer, start, end);
+    bubbleSort(buffer, start, end); //check(buffer, start, end);
 
 template <Color::Type COLOR> 
 void Captures::phase(Move::Buffer &buffer, const Board::Type &board) {
