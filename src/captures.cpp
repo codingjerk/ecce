@@ -274,11 +274,9 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 
 void bubbleSort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     for (auto i = start + 1; i <= end; ++i) {
-        for (auto j = start + 1; j <= end - i; ++j) {
-            if (buffer[i] < buffer[j + 1]) {
-                auto tmp = buffer[i];
-                buffer[i] = buffer[j + 1];
-                buffer[j + 1] = tmp;
+        for (auto j = start + 1; j <= start + end - i; ++j) {
+            if (buffer[j] < buffer[j + 1]) {
+                std::swap(buffer[j], buffer[j+1]);
             }
         }
     }
