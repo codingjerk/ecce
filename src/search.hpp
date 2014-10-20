@@ -102,7 +102,8 @@ namespace Search {
     template <Color::Type COLOR>
     Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
         stopSearch = false;
-
+        
+        totalNodes = 0;
         auto startTime = GetTickCount();
         auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, 0);
         auto totalTime = GetTickCount() - startTime;
@@ -128,9 +129,9 @@ namespace Search {
         stopSearch = false;
 
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
-
+        
+        totalNodes = 0;
         for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
-            totalNodes = 0;
             auto startTime = GetTickCount();
             auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
             auto totalTime = GetTickCount() - startTime;
@@ -164,8 +165,8 @@ namespace Search {
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
 
         endTime = GetTickCount() + timeLimit.maxTime;
+        totalNodes = 0;
         for (UNumspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
-            totalNodes = 0;
             auto startTime = GetTickCount();
             auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
             auto totalTime = GetTickCount() - startTime;
