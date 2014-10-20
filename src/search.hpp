@@ -103,9 +103,12 @@ namespace Search {
     Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
         stopSearch = false;
 
+        auto startTime = GetTickCount();
         auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, 0);
+        auto totalTime = GetTickCount() - startTime;
 
-        std::cout << "info depth " << depth.maxDepth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush; 
+        auto totalNPS = (totalTime != 0)? (totalNodes / totalTime): totalNodes;
+        std::cout << "info depth " << depth.maxDepth << " time " << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush; 
 
         return PV::master[0];
     }
@@ -128,11 +131,15 @@ namespace Search {
 
         for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
             totalNodes = 0;
+            auto startTime = GetTickCount();
             auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
+            auto totalTime = GetTickCount() - startTime;
+
+            auto totalNPS = (totalTime != 0)? (totalNodes / totalTime): totalNodes;
         
             if (stopSearch) break;
             
-            std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+            std::cout << "info depth " << depth << " time " << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
         }
@@ -159,11 +166,15 @@ namespace Search {
         endTime = GetTickCount() + timeLimit.maxTime;
         for (UNumspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
             totalNodes = 0;
+            auto startTime = GetTickCount();
             auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
+            auto totalTime = GetTickCount() - startTime;
+
+            auto totalNPS = (totalTime != 0)? (totalNodes / totalTime): totalNodes;
         
             if (stopSearch) break;
 
-            std::cout << "info depth " << depth << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+            std::cout << "info depth " << depth << " time " << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
         }
