@@ -26,6 +26,8 @@ namespace Board {
         UNumspeed halfmoveClock;
 
         Move::Buffer buffer;
+        
+        Move::Type killer1, killer2;
     };
 
     struct Type {

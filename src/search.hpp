@@ -12,6 +12,7 @@
 #include "generatorPhases.hpp"
 #include "statistic.hpp"
 #include "history.hpp"
+#include "killers.hpp"
 
 namespace Search {
     #define NEGASCOUT
@@ -67,7 +68,10 @@ namespace Search {
                     #endif
 
                     if (score > alpha) {
-                        if (!Move::isCapture(move)) History::alphed(move);
+                        if (!Move::isCapture(move)) {
+                            History::alphed(move);
+                            Killer::write(move, board);
+                        }
 
                         Statistic::alphaUpped();
                         alpha = score;

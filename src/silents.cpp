@@ -4,6 +4,7 @@
 #include "generatorTables.hpp"
 #include "magics.hpp"
 #include "history.hpp"
+#include "killers.hpp"
 
 // @TODO: Move to generator as public
 inline void addLegalsSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
@@ -238,6 +239,20 @@ void historyCheck(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     }
 }
 
+Move::Type upKillers(Move::Buffer &buffer, const Board::Type &board) {
+    Move::Type offset = 0;
+
+    for (auto i = 1; i <= buffer[0]; ++i) {
+        if (buffer[i] == Killer::first(board) || buffer[i] == Killer::second(board)) {
+            std::swap(buffer[i], buffer[offset + 1]);
+            ++offset;
+            if (offset == 2) break;
+        }
+    }
+
+    return offset;
+}
+
 template <Color::Type COLOR> 
 void Silents::phase(Move::Buffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
@@ -249,7 +264,8 @@ void Silents::phase(Move::Buffer &buffer, const Board::Type &board) {
     pawns<COLOR>(buffer, board);
     kings<COLOR>(buffer, board);
     
-    historySort(buffer, 0, buffer[0]);
+    auto offset = upKillers(buffer, board);
+    historySort(buffer, offset, buffer[0]);
 }
 
 // Explicit template instantiations
