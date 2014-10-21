@@ -31,6 +31,7 @@
 #include "PST.hpp"
 #include "score.hpp"
 #include "zobrist.hpp"
+#include "history.hpp"
 
 void initTables() {
     Move::initTables();
@@ -41,6 +42,7 @@ void initTables() {
     PST::initTables();
     Score::initTables();
     Zobrist::initTables();
+    History::flush();
 }
 
 int main(int, char**) {

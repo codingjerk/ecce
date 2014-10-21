@@ -36,6 +36,14 @@ namespace History {
             }
         }
     }
+
+    inline void split() {
+        for(Coord::Type from = 0; from < 64; ++from) {
+            for(Coord::Type to = 0; to < 64; ++to) {
+                table[from][to] /= 100;
+            }
+        }
+    }
 }
 
 #endif /* HISTORY_HPP */

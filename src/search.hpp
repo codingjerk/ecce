@@ -134,7 +134,7 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
-        History::flush();
+        History::split();
         PV::clear();
 
         stopSearch = false;
@@ -169,7 +169,7 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
-        History::flush();
+        History::split();
         PV::clear();
 
         stopSearch = false;
