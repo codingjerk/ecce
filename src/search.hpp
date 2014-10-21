@@ -131,8 +131,8 @@ namespace Search {
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
         
         totalNodes = 0;
+        auto startTime = GetTickCount();
         for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
-            auto startTime = GetTickCount();
             auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
             auto totalTime = GetTickCount() - startTime;
 
@@ -166,8 +166,8 @@ namespace Search {
 
         endTime = GetTickCount() + timeLimit.maxTime;
         totalNodes = 0;
+        auto startTime = GetTickCount();
         for (UNumspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
-            auto startTime = GetTickCount();
             auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
             auto totalTime = GetTickCount() - startTime;
 
