@@ -11,6 +11,7 @@
 #include "quies.hpp"
 #include "generatorPhases.hpp"
 #include "statistic.hpp"
+#include "history.hpp"
 
 namespace Search {
     #define NEGASCOUT
@@ -66,8 +67,11 @@ namespace Search {
                     #endif
 
                     if (score > alpha) {
+                        if (!Move::isCapture(move)) History::alphed(move);
+
                         Statistic::alphaUpped();
                         alpha = score;
+
                         PV::master[pvIndex] = move;
                         PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
                     } else {
@@ -78,6 +82,8 @@ namespace Search {
                 phase.unmake(move, board);
 
                 if (alpha >= beta) {
+                    if (!Move::isCapture(move)) History::beted(move);
+
                     Statistic::betaPruned();
                     return alpha;
                 }
@@ -124,6 +130,7 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
+        History::flush();
         PV::clear();
 
         stopSearch = false;
@@ -158,6 +165,7 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
+        History::flush();
         PV::clear();
 
         stopSearch = false;

@@ -3,6 +3,7 @@
 #include "bitboards.hpp"
 #include "generatorTables.hpp"
 #include "magics.hpp"
+#include "history.hpp"
 
 // @TODO: Move to generator as public
 inline void addLegalsSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
@@ -219,6 +220,24 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 }
 }
 
+void historySort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+    for (auto i = start + 1; i <= end; ++i) {
+        for (auto j = start + 1; j <= start + end - i; ++j) {
+            if (History::score(buffer[j]) < History::score(buffer[j + 1])) {
+                std::swap(buffer[j], buffer[j+1]);
+            }
+        }
+    }
+}
+
+void historyCheck(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+    for (auto i = start + 1; i < end; ++i) {
+        if (History::score(buffer[i]) < History::score(buffer[i+1])) {
+            std::cout << "Error!\n";
+        }
+    }
+}
+
 template <Color::Type COLOR> 
 void Silents::phase(Move::Buffer &buffer, const Board::Type &board) {
     buffer[0] = 0;
@@ -229,6 +248,8 @@ void Silents::phase(Move::Buffer &buffer, const Board::Type &board) {
     bishops<COLOR>(buffer, board);
     pawns<COLOR>(buffer, board);
     kings<COLOR>(buffer, board);
+    
+    historySort(buffer, 0, buffer[0]);
 }
 
 // Explicit template instantiations
