@@ -15,7 +15,9 @@
 #include "killers.hpp"
 
 namespace Search {
+    // @TODO: Move all defines at one file
     #define NEGASCOUT
+    #define CHECK_EXTENSION
 
     template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {
@@ -29,6 +31,12 @@ namespace Search {
                 return Score::Draw;
             }
         }
+
+        #ifdef CHECK_EXTENSION
+            if (Checker::isCheck<COLOR>(board)) {
+                ++depth;
+            }
+        #endif
 
         if (depth == 0) return quiesce<COLOR>(board, alpha, beta);
         
