@@ -13,11 +13,21 @@ namespace Killer {
     }
 
     inline void write(Move::Type move, Board::Type& board) {
-        if (move == (board.depthPtr-1)->killer1) return;
-        if (move == (board.depthPtr-1)->killer2) return;
+        if (move == (board.depthPtr-1)->killer1) {
+            (board.depthPtr-1)->killer1Used += 1;
+            return;
+        }
 
-        (board.depthPtr-1)->killer2 = (board.depthPtr-1)->killer1;
-        (board.depthPtr-1)->killer1 = move;
+        if (move == (board.depthPtr-1)->killer2) {
+            (board.depthPtr-1)->killer2Used += 1;
+            return;
+        }
+
+        if ((board.depthPtr-1)->killer1Used >= (board.depthPtr-1)->killer2Used) {
+            (board.depthPtr-1)->killer2 = move;
+        } else {
+            (board.depthPtr-1)->killer1 = move;
+        }
     }
 }
 

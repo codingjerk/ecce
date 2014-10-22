@@ -28,6 +28,7 @@ namespace Board {
         Move::Buffer buffer;
         
         Move::Type killer1, killer2;
+        UNumspeed killer1Used = 0, killer2Used = 0;
     };
 
     struct Type {

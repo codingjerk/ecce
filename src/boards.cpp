@@ -12,6 +12,12 @@ void setPositionFromFen(Type &board, const std::string fen) {
     for (auto& bitboard: board.bitboards) bitboard = Bitboard::null;
     for (auto& square: board.squares) square = Piece::null;
 
+    for (auto& info: board.info) {
+        auto maxKiller = std::max(1ull, std::max(info.killer1Used, info.killer2Used));
+        info.killer1Used /= maxKiller;
+        info.killer2Used /= maxKiller;
+    }
+
     board.depthPtr = board.info;
     board.materialScore     = 0;
     board.positionalScore   = 0;
