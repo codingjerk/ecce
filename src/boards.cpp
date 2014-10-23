@@ -1,6 +1,7 @@
 #include "boards.hpp"
 
 #include <sstream>
+#include <algorithm>
 
 #include "cstf.hpp"
 
