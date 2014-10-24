@@ -14,8 +14,8 @@ namespace Score {
     const Type Draw     = 0;
 
     const Type Pawn     = 100;
-    const Type Bishop   = 300;
-    const Type Knight   = 300;
+    const Type Knight   = 320;
+    const Type Bishop   = 330;
     const Type Rook     = 500;
     const Type Queen    = 900;
 

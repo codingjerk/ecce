@@ -77,8 +77,29 @@ namespace EPD {
         }
     }
 
-    inline bool checkRecord(Record& record, TM::TimeLimit tm) {
-        auto bestmove = Search::incremental(record.board, tm);
+    inline bool checkRecord(Record& record, TM::DepthLimit DEPTH) {
+        auto bestmove = Search::incremental(record.board, DEPTH);
+
+        bool result = false;
+        if (record.avoidMode) {
+            result = (bestmove != record.move);
+
+            if (!result) {
+                std::cout << "Needed not " << Move::show(record.move) << ", but result is " << Move::show(bestmove) << "\n";
+            }
+        } else {
+            result = (bestmove == record.move);
+
+            if (!result) {
+                std::cout << "Needed " << Move::show(record.move) << ", but result is " << Move::show(bestmove) << "\n";
+            }
+        }
+
+        return result;
+    }
+
+    inline bool checkRecord(Record& record, TM::TimeLimit TIME) {
+        auto bestmove = Search::incremental(record.board, TIME);
 
         bool result = false;
         if (record.avoidMode) {
@@ -99,7 +120,7 @@ namespace EPD {
     }
 
     // Returns epd with fail positions
-    inline std::string checkFile(std::string epdContent, UNumspeed time) {
+    inline std::string checkFile(std::string epdContent, TM::DepthLimit DEPTH) {
         std::stringstream failedContent;
         EPD::Record record;
         auto cursor = epdContent.begin();
@@ -114,17 +135,57 @@ namespace EPD {
                 epdRecordAsText.push_back(*cursor);
                 ++cursor;
                 if (*cursor == '\n') {
-                    ++cursor; 
+                    ++cursor;
                     break;
                 }
             }
 
             EPD::loadRecord(record, epdRecordAsText);
             ++total;
-            if (EPD::checkRecord(record, TM::time(time))) {
+            if (EPD::checkRecord(record, DEPTH)) {
                 ++succes;
                 std::cout << total << " (" << record.description << ") >> Succes\n";
-            } else {
+            }
+            else {
+                ++failed;
+                std::cout << total << " (" << record.description << ") >> Failed\n";
+                failedContent << Board::toFen(record.board) << "; " << (record.avoidMode ? "am " : "bm ")
+                    << Move::show(record.move) << "; id \"" << record.description << "\";\n";
+            }
+        }
+
+        std::cout << "\nTotal: " << total << ", Succes: " << succes << "/" << total << "\n";
+
+        return failedContent.str();
+    }
+
+    inline std::string checkFile(std::string epdContent, TM::TimeLimit TIME) {
+        std::stringstream failedContent;
+        EPD::Record record;
+        auto cursor = epdContent.begin();
+
+        UNummax total = 0;
+        UNummax succes = 0;
+        UNummax failed = 0;
+        while (cursor != epdContent.end()) {
+            std::string epdRecordAsText;
+
+            while (cursor != epdContent.end()) {
+                epdRecordAsText.push_back(*cursor);
+                ++cursor;
+                if (*cursor == '\n') {
+                    ++cursor;
+                    break;
+                }
+            }
+
+            EPD::loadRecord(record, epdRecordAsText);
+            ++total;
+            if (EPD::checkRecord(record, TIME)) {
+                ++succes;
+                std::cout << total << " (" << record.description << ") >> Succes\n";
+            }
+            else {
                 ++failed;
                 std::cout << total << " (" << record.description << ") >> Failed\n";
                 failedContent << Board::toFen(record.board) << "; " << (record.avoidMode ? "am " : "bm ")

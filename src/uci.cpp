@@ -150,16 +150,26 @@ bool speed(std::list<std::string>) {
 bool epd(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
     std::string fileName = *cursor; ++cursor;
+    
+    std::string mode = *cursor; ++cursor;
+
     std::stringstream ss(*cursor); ++cursor;
-    UNumspeed time;
-    ss >> time;
+    UNumspeed parameter;
+    ss >> parameter;
 
     std::ifstream fs(fileName, std::ios_base::in);
     std::string fileContent;
     fileContent.assign((std::istreambuf_iterator<char>(fs)),
         (std::istreambuf_iterator<char>()));
 
-    std::string failedEpd = EPD::checkFile(fileContent, time);
+    std::string failedEpd;
+    
+    if (mode == "depth") {
+        failedEpd = EPD::checkFile(fileContent, TM::depth(parameter));
+    } else {
+        failedEpd = EPD::checkFile(fileContent, TM::time(parameter));
+    }
+    
     std::ofstream ofs(fileName + "_f", std::ios_base::out);
     ofs << failedEpd;
     ofs.close();
