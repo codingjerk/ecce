@@ -15,18 +15,18 @@ namespace History {
         return table[from][to];
     }
 
-    inline void alphed(Move::Type move) {
+    inline void alphed(Move::Type move, UNumspeed depth) {
         Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
         Coord::Type to   = move & Coord::typeMask;
 
-        table[from][to] += 1;
+        table[from][to] += 1 << depth;
     }
 
-    inline void beted(Move::Type move) {
+    inline void beted(Move::Type move, UNumspeed depth) {
         Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
         Coord::Type to   = move & Coord::typeMask;
-        
-        table[from][to] += 1;
+
+        table[from][to] += 1 << depth;
     }
 
     inline void flush() {
