@@ -17,7 +17,7 @@ namespace Hash {
     struct Node {
         Zobrist::Type key   = 0;
         Move::Type bestMove = 0;
-        UNumspeed ply       = 0;
+        UNumspeed depth       = 0;
 
         Score::Type score = 0;
         NodeType type = Invalid;
@@ -42,14 +42,14 @@ namespace Hash {
         setTableSize(sizeInMb * 1024 * 1024 / sizeof(Node));
     }
 
-    inline void write(Zobrist::Type key = 0, Move::Type bestMove = 0, Score::Type score = 0, UNumspeed ply = 0, NodeType type = Invalid) {
+    inline void write(Zobrist::Type key = 0, Move::Type bestMove = 0, Score::Type score = 0, UNumspeed depth = 0, NodeType type = Invalid) {
         auto const halfKey = key % modulo;
 
-        if (type >= table[halfKey].type && ply >= table[halfKey].ply) {
+        if (type >= table[halfKey].type && depth >= table[halfKey].depth) {
             table[halfKey].key      = key;
             table[halfKey].bestMove = bestMove;
             table[halfKey].score    = score;
-            table[halfKey].ply      = ply;
+            table[halfKey].depth    = depth;
             table[halfKey].type     = type;
         }
     }

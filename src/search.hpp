@@ -19,7 +19,6 @@ namespace Search {
     // @TODO: Move all defines at one file
     #define NEGASCOUT
     #define CHECK_EXTENSION
-    #define HASHTABLE
 
     template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {
@@ -46,6 +45,21 @@ namespace Search {
             if (isInterupt() || stopSearch) {
                 stopSearch = true;
                 return 0;
+            }
+        }
+
+        if (!ROOT) {
+            const auto &hashNode = Hash::read(board.depthPtr->zobrist);
+            if (hashNode.depth >= depth) {
+                if (hashNode.type == Hash::Exact) {
+                    PV::master[pvIndex] = hashNode.bestMove;
+                    return hashNode.score;
+                } else if (hashNode.type == Hash::Beta) {
+                    PV::master[pvIndex] = hashNode.bestMove;
+                    if (hashNode.score >= beta) return beta;
+                } else if (hashNode.type == Hash::Alpha) {
+                    if (hashNode.score <= alpha) return alpha;
+                }
             }
         }
 
@@ -97,6 +111,7 @@ namespace Search {
 
                 if (alpha >= beta) {
                     if (!Move::isCapture(move)) History::beted(move);
+                    Hash::write(board.depthPtr->zobrist, move, score, depth, Hash::Beta);
 
                     Statistic::betaPruned();
                     return alpha;
@@ -106,13 +121,25 @@ namespace Search {
             Statistic::goingToNextPhase();
         }
 
+        if (PV::master[pvIndex] != 0) {
+            Hash::write(board.depthPtr->zobrist, PV::master[pvIndex], alpha, depth, Hash::Exact);
+        } else {
+            Hash::write(board.depthPtr->zobrist, 0, alpha, depth, Hash::Alpha);
+        }
+
         if (noLegalMoves) {
             Statistic::noLegalMoves();
+            Score::Type score;
+
             if (Checker::isCheck<COLOR>(board)) {
-                return -Score::makeMate(Board::ply(board));
+                score = -Score::makeMate(Board::ply(board));
             } else {
-                return Score::Draw;
+                score = Score::Draw;
             }
+            
+            Hash::write(board.depthPtr->zobrist, 0, score, depth, Hash::Exact);
+
+            return score;
         }
 
         Statistic::returnedAlpha();
