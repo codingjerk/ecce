@@ -95,7 +95,7 @@ namespace Search {
 
                     if (score > alpha) {
                         if (!Move::isCapture(move)) {
-                            History::alphed(move);
+                            History::alphed(move, depth);
                             Killer::write(move, board);
                         }
 
@@ -112,7 +112,7 @@ namespace Search {
                 phase.unmake(move, board);
 
                 if (alpha >= beta) {
-                    if (!Move::isCapture(move)) History::beted(move);
+                    if (!Move::isCapture(move)) History::beted(move, depth);
                     if (!stopSearch) Hash::write(board.depthPtr->zobrist, move, score, depth, Hash::Beta);
 
                     Statistic::betaPruned();
