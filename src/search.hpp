@@ -57,8 +57,10 @@ namespace Search {
                 } else if (hashNode.type == Hash::Beta) {
                     PV::master[pvIndex] = hashNode.bestMove;
                     if (hashNode.score >= beta) return beta;
+                    if (hashNode.depth == depth && hashNode.score > alpha) alpha = hashNode.score - 1;
                 } else if (hashNode.type == Hash::Alpha) {
                     if (hashNode.score <= alpha) return alpha;
+                    if (hashNode.depth == depth && hashNode.score < beta) beta = hashNode.score + 1;
                 }
             }
         }
