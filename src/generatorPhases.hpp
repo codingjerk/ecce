@@ -19,12 +19,13 @@ namespace Generator {
         {}
     };
 
-	const UNumspeed phaseCount = 2;
+	const UNumspeed phaseCount = 3;
     using Phases = PhaseStruct[phaseCount];
 
     template <Color::Type COLOR>
 	inline PhaseStruct* phases() {
-		static const Phases result = {
+        static const Phases result = {
+            PhaseStruct(Hash::phase, Move::make<COLOR>, Move::unmake<COLOR>),
             PhaseStruct(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
             PhaseStruct(Silents::phase<COLOR>,  Move::makeSilent<COLOR>,  Move::unmakeSilent<COLOR>)
 		};

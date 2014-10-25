@@ -13,11 +13,13 @@
 #include "statistic.hpp"
 #include "history.hpp"
 #include "killers.hpp"
+#include "hash.hpp"
 
 namespace Search {
     // @TODO: Move all defines at one file
     #define NEGASCOUT
     #define CHECK_EXTENSION
+    #define HASHTABLE
 
     template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {

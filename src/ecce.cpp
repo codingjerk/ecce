@@ -3,9 +3,7 @@
 //      - Support of options
 
 //    - Best Search
-//      - Negascout
 //      - Null move
-//      - Hash table
 
 //    - Best Eval
 //      - Use genetic algos to optimize evaluation factors
@@ -32,6 +30,7 @@
 #include "score.hpp"
 #include "zobrist.hpp"
 #include "history.hpp"
+#include "hash.hpp"
 
 void initTables() {
     Move::initTables();
@@ -43,6 +42,7 @@ void initTables() {
     Score::initTables();
     Zobrist::initTables();
     History::flush();
+    Hash::setTableSizeInMb(50);
 }
 
 int main(int, char**) {
