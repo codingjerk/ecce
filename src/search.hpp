@@ -158,7 +158,7 @@ namespace Search {
         auto totalTime = GetTickCount() - startTime;
 
         auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
-        std::cout << "info depth " << depth.maxDepth << " time " << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush; 
+        std::cout << "info depth " << depth.maxDepth << " time " << " hashfull " << Hash::fillFactor() << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
         return PV::master[0];
     }
@@ -190,7 +190,7 @@ namespace Search {
         
             if (stopSearch) break;
             
-            std::cout << "info depth " << depth << " time " << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+            std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
         }
@@ -226,7 +226,7 @@ namespace Search {
         
             if (stopSearch) break;
 
-            std::cout << "info depth " << depth << " time " << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+            std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
         }

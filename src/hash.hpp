@@ -74,6 +74,17 @@ namespace Hash {
             buffer[0] = 0;
         }
     }
+
+    inline UNumspeed fillFactor() {
+        if (!table || size == 0) return 0;
+
+        UNumspeed filled = 0;
+        for (UNumspeed i = 0; i < size; ++i) {
+            if ((table + i)->type != Invalid) ++filled;
+        }
+
+        return filled * 1000 / size;
+    }
 }
 
 #endif /* HASH_HPP */

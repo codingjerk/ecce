@@ -51,8 +51,22 @@ bool isready(std::list<std::string>) {
     return true;
 }
 
-bool setoption(std::list<std::string>) {
-    std::cout << "setoption command isn't supported yet.\n" << std::flush;
+bool setoption(std::list<std::string> arguments) {
+    auto cursor = arguments.begin();
+
+    if (*cursor == "name") {
+        ++cursor;
+
+        auto name = *cursor; ++cursor;
+
+        if (*cursor == "value") {
+            ++cursor;
+
+            auto value = *cursor; ++cursor;
+
+            Options::set(name, value);
+        }
+    }
 
     return true;
 }
