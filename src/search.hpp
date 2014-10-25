@@ -111,7 +111,7 @@ namespace Search {
 
                 if (alpha >= beta) {
                     if (!Move::isCapture(move)) History::beted(move);
-                    Hash::write(board.depthPtr->zobrist, move, score, depth, Hash::Beta);
+                    if (!stopSearch) Hash::write(board.depthPtr->zobrist, move, score, depth, Hash::Beta);
 
                     Statistic::betaPruned();
                     return alpha;
@@ -121,7 +121,7 @@ namespace Search {
             Statistic::goingToNextPhase();
         }
 
-        if (PV::master[pvIndex] != 0) {
+        if (!stopSearch && PV::master[pvIndex] != 0) {
             Hash::write(board.depthPtr->zobrist, PV::master[pvIndex], alpha, depth, Hash::Exact);
         } else {
             Hash::write(board.depthPtr->zobrist, 0, alpha, depth, Hash::Alpha);
@@ -137,7 +137,7 @@ namespace Search {
                 score = Score::Draw;
             }
             
-            Hash::write(board.depthPtr->zobrist, 0, score, depth, Hash::Exact);
+            if (!stopSearch) Hash::write(board.depthPtr->zobrist, 0, score, depth, Hash::Exact);
 
             return score;
         }
