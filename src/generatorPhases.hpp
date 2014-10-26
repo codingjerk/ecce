@@ -3,6 +3,7 @@
 
 #include "silents.hpp"
 #include "captures.hpp"
+#include "recaptures.hpp"
 
 namespace Generator {
 	typedef void(*Generate)(Move::Buffer&, const Board::Type&);
@@ -19,24 +20,43 @@ namespace Generator {
         {}
     };
 
-	const UNumspeed phaseCount = 3;
+    const UNumspeed phaseCount = 4;
     using Phases = PhaseStruct[phaseCount];
 
     template <Color::Type COLOR>
-	inline PhaseStruct* phases() {
+    inline PhaseStruct* phases() {
         static const Phases result = {
             PhaseStruct(Hash::phase, Move::make<COLOR>, Move::unmake<COLOR>),
+            PhaseStruct(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
             PhaseStruct(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            PhaseStruct(Silents::phase<COLOR>,  Move::makeSilent<COLOR>,  Move::unmakeSilent<COLOR>)
-		};
+            PhaseStruct(Silents::phase<COLOR>, Move::makeSilent<COLOR>, Move::unmakeSilent<COLOR>)
+        };
 
-		return (PhaseStruct*)result;
+        return (PhaseStruct*)result;
+    }
+
+    const UNumspeed quiescePhaseCount = 2;
+    using QuiescePhases = PhaseStruct[quiescePhaseCount];
+
+    template <Color::Type COLOR>
+    inline PhaseStruct* quiescePhases() {
+        static const Phases result = {
+            PhaseStruct(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
+            PhaseStruct(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>)
+        };
+
+        return (PhaseStruct*)result;
     }
 
     #define forPhases(PHASE, PHASES) \
         UNumspeed G_M_I = 0; \
         auto PHASE = PHASES[G_M_I]; \
 		for (; G_M_I < Generator::phaseCount; ++G_M_I, PHASE = PHASES[G_M_I])
+
+    #define forQuiescePhases(PHASE, PHASES) \
+        UNumspeed G_M_I = 0; \
+        auto PHASE = PHASES[G_M_I]; \
+		for (; G_M_I < Generator::quiescePhaseCount; ++G_M_I, PHASE = PHASES[G_M_I])
 }
 
 #endif /* GENERATOR_PHASES_HPP */
