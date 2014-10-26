@@ -297,6 +297,8 @@ void Move::makeNull(Board::Type& board) {
 
     ++board.depthPtr;
 
+    board.depthPtr->lastMoved = (board.depthPtr-2)->lastMoved;
+
     Board::castle(board, oldCastle);
     Board::enpassant(board, Enpassant::null);
 }
