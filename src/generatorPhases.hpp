@@ -40,7 +40,7 @@ namespace Generator {
 
     template <Color::Type COLOR>
     inline PhaseStruct* quiescePhases() {
-        static const Phases result = {
+        static const QuiescePhases result = {
             PhaseStruct(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
             PhaseStruct(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>)
         };

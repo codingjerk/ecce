@@ -27,13 +27,13 @@ namespace Search {
         Move::Type move;
         Score::Type score;
         bool noMoves = true;
-        forQuiescePhases(phase, Generator::phases<COLOR>()) {
+        forQuiescePhases(phase, Generator::quiescePhases<COLOR>()) {
             phase.generate(Board::currentBuffer(board), board);
             UNumspeed total = Board::currentBuffer(board)[0];
             for (UNumspeed i = 1; i <= total; ++i) {
                 move = Board::currentBuffer(board)[i];
 
-                if (Move::makeCapture<COLOR>(move, board)) {
+                if (phase.make(move, board)) {
                     score = -quiesce<OPP>(board, -beta, -alpha);
                     noMoves = false;
                     if (score > alpha) {
@@ -45,7 +45,7 @@ namespace Search {
                     }
                 }
 
-                Move::unmakeCapture<COLOR>(move, board);
+                phase.unmake(move, board);
 
                 if (alpha >= beta) {
                     Statistic::quiesceBetaPruned();
