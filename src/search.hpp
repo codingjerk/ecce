@@ -1,6 +1,8 @@
 #ifndef SEARCH_HPP
 #define SEARCH_HPP
 
+#include <algorithm>
+
 #include "tm.hpp"
 #include "moves.hpp"
 #include "checker.hpp"
@@ -51,16 +53,12 @@ namespace Search {
         if (!ROOT) {
             const auto &hashNode = Hash::read(board.depthPtr->zobrist);
             if (hashNode.depth >= depth) {
-                if (hashNode.type == Hash::Exact) {
-                    PV::master[pvIndex] = hashNode.bestMove;
-                    return hashNode.score;
-                } else if (hashNode.type == Hash::Beta) {
-                    PV::master[pvIndex] = hashNode.bestMove;
-                    if (hashNode.score >= beta) return beta;
-                    if (hashNode.depth == depth && hashNode.score > alpha) alpha = hashNode.score - 1;
+                PV::master[pvIndex] = hashNode.bestMove;
+                if (hashNode.type == Hash::Beta || hashNode.type == Hash::Exact) {
+                    alpha = max(alpha, hashNode.score);
+                    if (alpha >= beta) return beta;
                 } else if (hashNode.type == Hash::Alpha) {
                     if (hashNode.score <= alpha) return alpha;
-                    if (hashNode.depth == depth && hashNode.score < beta) beta = hashNode.score + 1;
                 }
             }
         }
@@ -123,12 +121,6 @@ namespace Search {
             Statistic::goingToNextPhase();
         }
 
-        if (!stopSearch && PV::master[pvIndex] != 0) {
-            Hash::write(board.depthPtr->zobrist, PV::master[pvIndex], alpha, depth, Hash::Exact);
-        } else {
-            Hash::write(board.depthPtr->zobrist, 0, alpha, depth, Hash::Alpha);
-        }
-
         if (noLegalMoves) {
             Statistic::noLegalMoves();
             Score::Type score;
@@ -142,6 +134,15 @@ namespace Search {
             if (!stopSearch) Hash::write(board.depthPtr->zobrist, 0, score, depth, Hash::Exact);
 
             return score;
+        }
+
+        if (!stopSearch) {
+            if (PV::master[pvIndex] != 0) {
+                Hash::write(board.depthPtr->zobrist, PV::master[pvIndex], alpha, depth, Hash::Exact);
+            }
+            else {
+                Hash::write(board.depthPtr->zobrist, 0, alpha, depth, Hash::Alpha);
+            }
         }
 
         Statistic::returnedAlpha();
