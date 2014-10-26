@@ -14,6 +14,26 @@ inline void addLegalRecaptures(Move::Buffer &buffer, const Board::Type &board, c
     }
 }
 
+template <Color::Type COLOR>
+inline void addLegalPawnRecaptures(Move::Buffer &buffer, const Board::Type &board, const Coord::Type to, Bitboard::Type froms) {
+    while (froms != Bitboard::null) {
+        const auto from = Bitboard::bitScan(froms);
+        
+        if (Bitboard::fromCoord(from) & Tables::pawnSubPromotionLine[COLOR]) {
+            buffer[0] += 4;
+            buffer[buffer[0]] = Move::promotion(from, to, Piece::create(COLOR, Knight), board.squares[to]);
+            buffer[buffer[0] - 1] = Move::promotion(from, to, Piece::create(COLOR, Bishop), board.squares[to]);
+            buffer[buffer[0] - 2] = Move::promotion(from, to, Piece::create(COLOR, Rook), board.squares[to]);
+            buffer[buffer[0] - 3] = Move::promotion(from, to, Piece::create(COLOR, Queen), board.squares[to]);
+        } else {
+            ++buffer[0];
+            buffer[buffer[0]] = Move::create(from, to, board.squares[to]);
+        }
+
+        froms ^= Bitboard::fromIndex(from);
+    }
+}
+
 inline void addOneLegalRecapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type to, Bitboard::Type froms) {
     if (froms != Bitboard::null) {
         const auto from = Bitboard::bitScan(froms);
@@ -36,7 +56,7 @@ void pawnsRecaptures(Move::Buffer& buffer, const Board::Type& board, Coord::Type
 
     const auto attackers = Tables::pawnCaptureMasks[OPP][lastMoved] & board.bitboards[Piece::create(COLOR, Pawn)];
 
-    addLegalRecaptures(buffer, board, lastMoved, attackers);
+    addLegalPawnRecaptures<COLOR>(buffer, board, lastMoved, attackers);
 }
 
 template <Color::Type COLOR>
