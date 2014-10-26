@@ -35,6 +35,7 @@ void setPositionFromFen(Type &board, const std::string fen) {
                 const auto piece = Piece::fromChar(fen[cursor]);
                 const auto coord = Coord::fromRaw(x, y);
 				setPiece<true>(board, piece, coord);
+                board.depthPtr->lastMoved = coord;
             }
 
             ++cursor;
