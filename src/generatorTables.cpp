@@ -12,6 +12,7 @@ Bitboard::Type Tables::bishopFullMasks[makeUNumspeed(1) << Coord::usedBits];
 Bitboard::Type Tables::rookFullMasks[makeUNumspeed(1) << Coord::usedBits];
 
 Bitboard::Type Tables::pawnStartLine[makeUNumspeed(1) << Color::usedBitsReal];
+Bitboard::Type Tables::pawnSubPromotionLine[makeUNumspeed(1) << Color::usedBitsReal];
 
 Bitboard::Type Tables::castleNeeded[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Dignity::usedBits];
 Coord::Type Tables::castleTarget[makeUNumspeed(1) << Color::usedBitsReal][makeUNumspeed(1) << Dignity::usedBits];
@@ -188,6 +189,9 @@ void Tables::initTables() {
                          | Bitboard::fromCoord(Coord::F7)
                          | Bitboard::fromCoord(Coord::G7)
                          | Bitboard::fromCoord(Coord::H7);
+
+    pawnSubPromotionLine[White] = pawnStartLine[Black];
+    pawnSubPromotionLine[Black] = pawnStartLine[White];
 
     castleNeeded[White][King]  = Bitboard::fromCoord(Coord::F1)
                                | Bitboard::fromCoord(Coord::G1);
