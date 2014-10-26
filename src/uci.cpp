@@ -24,6 +24,8 @@
 
 #include "EPD.hpp"
 
+#include "recaptures.hpp"
+
 bool exit(std::list<std::string>) {
     return false;
 }
@@ -349,7 +351,16 @@ bool processCommand() {
 }
 
 void Uci::cycle() {
-    Board::setFromFen(Board::master, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Board::setFromFen(Board::master, "rnbqkbnr/pppppppp/8/8/8/3p4/PPP2PPP/RNBQKBNR w KQkq - 0 1");
+    Board::master.depthPtr->lastMoved = Coord::D3;
+
+    Recaptures::phase<White>(Board::currentBuffer(Board::master), Board::master);
+    const auto total = Board::currentBuffer(Board::master)[0];
+    for (int i = 1; i <= total; ++i) {
+        const auto move = Board::currentBuffer(Board::master)[i];
+
+        std::cout << Move::show(move) << "\n";
+    }
 
     while (processCommand());
 }
