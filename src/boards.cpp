@@ -35,7 +35,6 @@ void setPositionFromFen(Type &board, const std::string fen) {
                 const auto piece = Piece::fromChar(fen[cursor]);
                 const auto coord = Coord::fromRaw(x, y);
 				setPiece<true>(board, piece, coord);
-                board.depthPtr->lastMoved = coord;
             }
 
             ++cursor;
@@ -91,6 +90,9 @@ void Board::setFromFen(Type &board, const std::string fen) {
 
     fenStream >> board.depthPtr->halfmoveClock;
     fenStream >> board.initialFullmoveNumber;
+
+    const auto oppKings = board.bitboards[Piece::create(Color::inv(board.turn), King)];
+    board.depthPtr->lastMoved = Bitboard::bitScan(oppKings);
 }
 
 std::string Board::toFen(const Type &board) {
