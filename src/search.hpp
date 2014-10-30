@@ -176,6 +176,7 @@ namespace Search {
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
         History::split();
         PV::clear();
+        Hash::clear();
 
         stopSearch = false;
 
@@ -211,6 +212,7 @@ namespace Search {
     Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
         History::split();
         PV::clear();
+        Hash::clear();
 
         stopSearch = false;
 

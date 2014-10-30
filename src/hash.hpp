@@ -75,6 +75,12 @@ namespace Hash {
         }
     }
 
+    inline void clear() {
+        for (UNumspeed i = 0; i < size; ++i) {
+            table[i] = empty;
+        }
+    }
+
     inline UNumspeed fillFactor() {
         if (!table || size == 0) return 0;
 
