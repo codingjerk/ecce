@@ -221,17 +221,7 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 }
 }
 
-void historySortBubble(Move::Buffer &buffer, Move::Type start, Move::Type end) {
-    for (auto i = start + 1; i <= end; ++i) {
-        for (auto j = start + 1; j <= start + end - i; ++j) {
-            if (History::score(buffer[j]) < History::score(buffer[j + 1])) {
-                std::swap(buffer[j], buffer[j + 1]);
-            }
-        }
-    }
-}
-
-void historySortInsertion(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+inline void historySortInsertion(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     if (start >= end) return;
 
     for (auto i = start; i <= end; ++i) {
@@ -249,7 +239,7 @@ void historyCheck(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     }
 }
 
-Move::Type upKillers(Move::Buffer &buffer, const Board::Type &board) {
+inline Move::Type upKillers(Move::Buffer &buffer, const Board::Type &board) {
     Move::Type offset = 1;
 
     for (auto i = 1; i <= buffer[0]; ++i) {
