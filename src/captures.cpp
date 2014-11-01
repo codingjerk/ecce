@@ -17,45 +17,45 @@ inline void addLegalCaptures(Move::Buffer &buffer, const Board::Type &board, con
 }
 
 template <Color::Type COLOR>
-void forKnightCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Coord::Type lastMoved) {
+void forKnightCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type correctMask) {
     MAKEOPP(COLOR);
-    const Bitboard::Type legalSquares = (board.bitboards[OPP]) & Tables::knightMasks[from] & ~Bitboard::fromCoord(lastMoved);
+    const Bitboard::Type legalSquares = (board.bitboards[OPP]) & Tables::knightMasks[from] & correctMask;
 
     addLegalCaptures(buffer, board, from, legalSquares);
 }
 
 template <Color::Type COLOR>
-void forKingCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Coord::Type lastMoved) {
+void forKingCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type correctMask) {
     MAKEOPP(COLOR);
-    const Bitboard::Type legalSquares = (board.bitboards[OPP]) & Tables::kingMasks[from] & ~Bitboard::fromCoord(lastMoved);
+    const Bitboard::Type legalSquares = (board.bitboards[OPP]) & Tables::kingMasks[from] & correctMask;
 
     addLegalCaptures(buffer, board, from, legalSquares);
 }
 
 template <Color::Type COLOR>
-void forBishopCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Coord::Type lastMoved) {
+void forBishopCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type correctMask) {
     MAKEOPP(COLOR);
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = Magic::bishopOffsets[from] 
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) * Magic::bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegalCaptures(buffer, board, from, Magic::bishopData[magicIndex] & board.bitboards[OPP] & ~Bitboard::fromCoord(lastMoved));
+    addLegalCaptures(buffer, board, from, Magic::bishopData[magicIndex] & board.bitboards[OPP] & correctMask);
 }
 
 template <Color::Type COLOR>
-void forRookCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Coord::Type lastMoved) {
+void forRookCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type correctMask) {
     MAKEOPP(COLOR);
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed magicIndex = Magic::rookOffsets[from] 
         + UNumspeed(((nonEmpty & Tables::rookMasks[from]) * Magic::rookMagics[from]) 
             >> (Magic::rookMaskShifts[from]));
 
-    addLegalCaptures(buffer, board, from, Magic::rookData[magicIndex] & board.bitboards[OPP] & ~Bitboard::fromCoord(lastMoved));
+    addLegalCaptures(buffer, board, from, Magic::rookData[magicIndex] & board.bitboards[OPP] & correctMask);
 }
 
 template <Color::Type COLOR>
-void forQueenCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Coord::Type lastMoved) {
+void forQueenCapture(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type correctMask) {
     MAKEOPP(COLOR);
     Bitboard::Type nonEmpty = (board.bitboards[Black] | board.bitboards[White]);
     const UNumspeed rookMagicIndex = Magic::rookOffsets[from] 
@@ -66,59 +66,59 @@ void forQueenCapture(Move::Buffer &buffer, const Board::Type &board, const Coord
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) *Magic:: bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegalCaptures(buffer, board, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & board.bitboards[OPP] & ~Bitboard::fromCoord(lastMoved));
+    addLegalCaptures(buffer, board, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & board.bitboards[OPP] & correctMask);
 }
 
 template <Color::Type COLOR>
-void Captures::knights(Move::Buffer &buffer, const Board::Type &board, Coord::Type lastMoved) {
+void Captures::knights(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto knights = board.bitboards[Piece::create(COLOR, Knight)];
     while(knights != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(knights);
 
-        forKnightCapture<COLOR>(buffer, board, Coord::Type(bitIndex), lastMoved);
+        forKnightCapture<COLOR>(buffer, board, Coord::Type(bitIndex), correctMask);
 
         knights ^= Bitboard::fromIndex(bitIndex);
     }
 }
 
 template <Color::Type COLOR>
-void Captures::kings(Move::Buffer &buffer, const Board::Type &board, Coord::Type lastMoved) {
+void Captures::kings(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto bitboard = board.bitboards[Piece::create(COLOR, King)];
 
-    forKingCapture<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)), lastMoved);
+    forKingCapture<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)), correctMask);
 }
 
 template <Color::Type COLOR> 
-void Captures::bishops(Move::Buffer &buffer, const Board::Type &board, Coord::Type lastMoved) {
+void Captures::bishops(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Bishop)];
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        forBishopCapture<COLOR>(buffer, board, Coord::Type(bitIndex), lastMoved);
+        forBishopCapture<COLOR>(buffer, board, Coord::Type(bitIndex), correctMask);
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
 }
 
 template <Color::Type COLOR> 
-void Captures::rooks(Move::Buffer &buffer, const Board::Type &board, Coord::Type lastMoved) {
+void Captures::rooks(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Rook)];
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        forRookCapture<COLOR>(buffer, board, Coord::Type(bitIndex), lastMoved);
+        forRookCapture<COLOR>(buffer, board, Coord::Type(bitIndex), correctMask);
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
 }
 
 template <Color::Type COLOR> 
-void Captures::queens(Move::Buffer &buffer, const Board::Type &board, Coord::Type lastMoved) {
+void Captures::queens(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Queen)];
     while(bitboard != Bitboard::null) {
         const auto bitIndex = Bitboard::bitScan(bitboard);
 
-        forQueenCapture<COLOR>(buffer, board, Coord::Type(bitIndex), lastMoved);
+        forQueenCapture<COLOR>(buffer, board, Coord::Type(bitIndex), correctMask);
 
         bitboard ^= Bitboard::fromIndex(bitIndex);
     }
@@ -127,7 +127,7 @@ void Captures::queens(Move::Buffer &buffer, const Board::Type &board, Coord::Typ
 // Temporary solution, because gcc is stupid dick
 namespace Captures {
 template <> 
-void pawns<White>(Move::Buffer &buffer, const Board::Type &board, Coord::Type lastMoved) {
+void pawns<White>(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     //@TODO(low): Refactoring?
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
 
@@ -138,7 +138,7 @@ void pawns<White>(Move::Buffer &buffer, const Board::Type &board, Coord::Type la
     workingBB >>= 1ull;
     auto leftCapturesEp = workingBB;
     workingBB &= board.bitboards[Black];
-    workingBB &= ~Bitboard::fromCoord(lastMoved);
+    workingBB &= correctMask;
     while(workingBB != Bitboard::null) {
         bitIndex = Bitboard::bitScan(workingBB);
         const auto to = Coord::Type(bitIndex);
@@ -162,7 +162,7 @@ void pawns<White>(Move::Buffer &buffer, const Board::Type &board, Coord::Type la
     workingBB <<= 1ull;
     auto rightCapturesEp = workingBB;
     workingBB &= board.bitboards[Black];
-    workingBB &= ~Bitboard::fromCoord(lastMoved);
+    workingBB &= correctMask;
     while(workingBB != Bitboard::null) {
         bitIndex = Bitboard::bitScan(workingBB);
         const auto to = Coord::Type(bitIndex);
@@ -201,7 +201,7 @@ void pawns<White>(Move::Buffer &buffer, const Board::Type &board, Coord::Type la
 }
 
 template <> 
-void pawns<Black>(Move::Buffer &buffer, const Board::Type &board, Coord::Type lastMoved) {
+void pawns<Black>(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     //@TODO: Refactoring?
     const auto pawns = board.bitboards[Piece::create(Black, Pawn)];
 
@@ -209,7 +209,7 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board, Coord::Type la
     auto workingBB = (pawns & ~Bitboard::leftLine) >> 9ull;
     auto leftCapturesEp = workingBB;
     workingBB &= board.bitboards[White];
-    workingBB &= ~Bitboard::fromCoord(lastMoved);
+    workingBB &= correctMask;
     while(workingBB != Bitboard::null) {
         bitIndex = Bitboard::bitScan(workingBB);
         const auto to = Coord::Type(bitIndex);
@@ -234,7 +234,7 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board, Coord::Type la
     workingBB = (pawns & ~Bitboard::rightLine) >> 7ull;
     auto rightCapturesEp = workingBB;
     workingBB &= board.bitboards[White];
-    workingBB &= ~Bitboard::fromCoord(lastMoved);
+    workingBB &= correctMask;
     while(workingBB != Bitboard::null) {
         bitIndex = Bitboard::bitScan(workingBB);
         const auto to = Coord::Type(bitIndex);
@@ -296,7 +296,7 @@ void check(Move::Buffer &buffer, Move::Type start, Move::Type end) {
 
 #define SORTED(command) \
     start = buffer[0]; \
-    command<COLOR>(buffer, board, lastMoved); \
+    command<COLOR>(buffer, board, correctMask); \
     end = buffer[0]; \
     insertionSort(buffer, start + 1, end); check(buffer, start, end);
 
@@ -306,7 +306,7 @@ void Captures::phase(Move::Buffer &buffer, const Board::Type &board) {
     
     Move::Type start, end;
 
-    auto const lastMoved = board.depthPtr->lastMoved;
+    auto const correctMask = ~Bitboard::fromCoord(board.depthPtr->lastMoved);
     
     SORTED(kings);
     SORTED(pawns);
