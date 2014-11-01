@@ -276,12 +276,12 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board, Coord::Type la
 }
 }
 
-void bubbleSort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
-    for (auto i = start + 1; i <= end; ++i) {
-        for (auto j = start + 1; j <= start + end - i; ++j) {
-            if (buffer[j] < buffer[j + 1]) {
-                std::swap(buffer[j], buffer[j+1]);
-            }
+inline void insertionSort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+    if (start >= end) return;
+
+    for (auto i = start; i <= end; ++i) {
+        for (auto j = i; (j > start) && (buffer[j] > buffer[j - 1]); --j) {
+            std::swap(buffer[j], buffer[j - 1]);
         }
     }
 }
@@ -298,7 +298,7 @@ void check(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     start = buffer[0]; \
     command<COLOR>(buffer, board, lastMoved); \
     end = buffer[0]; \
-    bubbleSort(buffer, start, end); //check(buffer, start, end);
+    insertionSort(buffer, start + 1, end); check(buffer, start, end);
 
 template <Color::Type COLOR> 
 void Captures::phase(Move::Buffer &buffer, const Board::Type &board) {
