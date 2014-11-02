@@ -360,14 +360,6 @@ void Generator::phase(Move::Buffer &buffer, const Board::Type &board) {
     queens<COLOR>(buffer, board);
 }
 
-void Generator::phase(Move::Buffer &buffer, const Board::Type &board) {
-    if (board.turn == White) {
-        phase<White>(buffer, board);
-    } else {
-        phase<Black>(buffer, board);
-    }
-}
-
 // Explicit template instantiations
 template void Generator::knights<White>(Move::Buffer&, const Board::Type&);
 template void Generator::knights<Black>(Move::Buffer&, const Board::Type&);

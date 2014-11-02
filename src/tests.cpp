@@ -214,27 +214,27 @@ void generator(UNumspeed complexity) {
 
     // Perft (with unlegals) at depth 1 tests
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    Generator::phase(buffer, board);
+    Generator::phase<White>(buffer, board);
     total = buffer[0];
     CHECK(total == 20);
 
     Board::setFromFen(board, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
-    Generator::phase(buffer, board);
+    Generator::phase<White>(buffer, board);
     total = buffer[0];
     CHECK(total == 48);
 
     Board::setFromFen(board, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1");
-    Generator::phase(buffer, board);
+    Generator::phase<White>(buffer, board);
     total = buffer[0];
     CHECK(total == 16);
 
     Board::setFromFen(board, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
-    Generator::phase(buffer, board);
+    Generator::phase<White>(buffer, board);
     total = buffer[0];
     CHECK(total == 38);
 
     Board::setFromFen(board, "rnbqkb1r/pp1p1ppp/2p5/4P3/2B5/8/PPP1NnPP/RNBQK2R w KQkq - 0 6");
-    Generator::phase(buffer, board);
+    Generator::phase<White>(buffer, board);
     total = buffer[0];
     CHECK(total == 42);
 
