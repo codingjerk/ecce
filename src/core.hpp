@@ -1,11 +1,10 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
-// --- OS ---
-// Remove this for compile on windows with visual studio
-// #define OSLINUX
+// @TODO: Remove types from core and move it to types.hpp
+#define OSLINUX
+#undef OSLINUX
 
-// --- Main definitions ---
 #define DEBUGMODE
 #undef DEBUGMODE
 
