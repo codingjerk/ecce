@@ -245,12 +245,33 @@ namespace Search {
         }
     }
 
-    inline void speed(Board::Type &board) {
+    inline void speed() {
+        Board::Type board;
+        Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
         unsigned long int start = GetTickCount();
         incremental<White>(board, TM::depth(9));
         unsigned long int total = GetTickCount() - start;
+        auto score = totalNodes / total;
         std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
-        std::cout << "Score: " << totalNodes / total << "\n";
+
+        Board::setFromFen(board, "8/4p3/p2p4/2pP4/2P1P3/1P4k1/1P1K4/8 w - - 0 1");
+
+        start = GetTickCount();
+        incremental<White>(board, TM::depth(15));
+        total = GetTickCount() - start;
+        score += totalNodes / total;
+        std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+
+        Board::setFromFen(board, "1r1rb1k1/2p3pp/p2q1p2/3PpP1Q/Pp1bP2N/1B5R/1P4PP/2B4K w - - 0 1");
+
+        start = GetTickCount();
+        incremental<White>(board, TM::depth(9));
+        total = GetTickCount() - start;
+        score += totalNodes / total;
+        std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+        
+        std::cout << "Score: " << score << "\n";
     }
 }
 

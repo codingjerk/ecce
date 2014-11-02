@@ -37,7 +37,7 @@ bool uci(std::list<std::string>) {
 }
 
 bool debug(std::list<std::string>) {
-    std::cout << "debug mode isn't supported yet.\n" << std::flush;
+    std::cout << "Debug mode can be switched by recompilation.\n" << std::flush;
 
     return true;
 }
@@ -145,15 +145,7 @@ bool perft(std::list<std::string> arguments) {
 }
 
 bool speed(std::list<std::string>) {
-    unsigned long int start = GetTickCount();
-    Board::Type testBoard;
-    Board::setFromFen(testBoard, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    UNummax nodes = Perft::perft_quiet(testBoard, 6);
-    unsigned long int total = GetTickCount() - start;
-    std::cout << "Perft info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << nodes << ", NPS: " << nodes / total << "K." << "\n";
-    std::cout << "Score: " << nodes / total << "\n";
-
-    Search::speed(testBoard);
+    Search::speed();
 
     return true;
 }
