@@ -229,6 +229,7 @@ namespace Search {
         
             if (stopSearch) break;
 
+            // @TODO: print only if totalTime >= 100ms (or 50/25/10ms)
             std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
