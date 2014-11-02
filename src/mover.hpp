@@ -118,6 +118,7 @@ namespace Move {
     }
 
     // Null
+    template <Color::Type COLOR>
     void makeNull(Board::Type&);
     void unmakeNull(Board::Type&);
 

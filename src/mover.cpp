@@ -290,6 +290,7 @@ Boolspeed (*Move::specialMakeSilentBlack[6])(Move::Type, Board::Type&) = {
     makePromotion<Black, TFalse>
 };
 
+template <Color::Type COLOR>
 void Move::makeNull(Board::Type& board) {
     const auto oldCastle = Board::castle(board);
     Board::copyzobrist(board);
@@ -297,7 +298,7 @@ void Move::makeNull(Board::Type& board) {
 
     ++board.depthPtr;
 
-    board.depthPtr->lastMoved = (board.depthPtr-2)->lastMoved;
+    board.depthPtr->lastMoved = Bitboard::bitScan(board.bitboards[Piece::create(COLOR, King)]);
 
     Board::castle(board, oldCastle);
     Board::enpassant(board, Enpassant::null);
