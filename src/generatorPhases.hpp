@@ -10,42 +10,40 @@ namespace Generator {
 	typedef Boolspeed(*Maker)(Move::Type, Board::Type&);
 	typedef void(*Unmaker)(Move::Type, Board::Type&);
 
-    struct PhaseStruct {
+    struct Phase {
         Generate generate;
         Maker make;
         Unmaker unmake;
 
-        PhaseStruct(Generate generate, Maker make, Unmaker unmake):
-            generate(generate), make(make), unmake(unmake)
-        {}
+        Phase(Generate generate, Maker make, Unmaker unmake): generate(generate), make(make), unmake(unmake) {}
     };
 
     const UNumspeed phaseCount = 4;
-    using Phases = PhaseStruct[phaseCount];
+    using Phases = Phase[phaseCount];
 
     template <Color::Type COLOR>
-    inline PhaseStruct* phases() {
+    inline Phase* phases() {
         static const Phases result = {
-            PhaseStruct(Hash::phase, Move::make<COLOR>, Move::unmake<COLOR>),
-            PhaseStruct(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            PhaseStruct(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            PhaseStruct(Silents::phase<COLOR>, Move::makeSilent<COLOR>, Move::unmakeSilent<COLOR>)
+            Phase(Hash::phase, Move::make<COLOR>, Move::unmake<COLOR>),
+            Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
+            Phase(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
+            Phase(Silents::phase<COLOR>, Move::makeSilent<COLOR>, Move::unmakeSilent<COLOR>)
         };
 
-        return (PhaseStruct*)result;
+        return (Phase*)result;
     }
 
     const UNumspeed quiescePhaseCount = 2;
-    using QuiescePhases = PhaseStruct[quiescePhaseCount];
+    using QuiescePhases = Phase[quiescePhaseCount];
 
     template <Color::Type COLOR>
-    inline PhaseStruct* quiescePhases() {
+    inline Phase* quiescePhases() {
         static const QuiescePhases result = {
-            PhaseStruct(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            PhaseStruct(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>)
+            Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
+            Phase(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>)
         };
 
-        return (PhaseStruct*)result;
+        return (Phase*)result;
     }
 
     #define forPhases(PHASE, PHASES) \
