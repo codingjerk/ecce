@@ -115,6 +115,7 @@ namespace Coord {
     #define forRawYCoords(var) for (Numspeed var = makeNumspeed(56); var >= makeNumspeed(0); var -= 8)
     
     #define forCoord(var) for (UNumspeed var = Coord::componentLower; var <= Coord::componentHighter; ++var)
+    #define forCoords(var) for (UNumspeed var = Coord::A1; var <= Coord::H8; ++var)
 }
 
 #endif /* COORDS_HPP */
