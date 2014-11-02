@@ -9,13 +9,12 @@
 // @TODO: Move to generator as public
 inline void addLegalsSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
     while(legals != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(legals);
-        const auto to = Coord::Type(bitIndex);
+        const auto to = Bitboard::bitScan(legals);
 
         ++buffer[0];
         buffer[buffer[0]] = Move::create(from, to);
 
-        legals ^= Bitboard::fromIndex(bitIndex);
+        legals ^= Bitboard::fromCoord(to);
     }
 }
 
