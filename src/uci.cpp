@@ -29,11 +29,8 @@ bool exit(std::list<std::string>) {
 }
 
 bool uci(std::list<std::string>) {
-    std::cout << "id name " << Info::name << " " << Info::version << "\n";
-    std::cout << "id author " << Info::author << "\n";
-
+    Info::show();
     Options::show();
-
     std::cout << "uciok\n" << std::flush;
 
     return true;
