@@ -95,11 +95,6 @@ namespace Search {
                     if (noLegalMoves) {
                         score = -alphaBeta<OPP, isInterupt, false, true>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
                         noLegalMoves = false;
-
-                        if (ROOT) {
-                            PV::master[pvIndex] = move;
-                            PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
-                        }
                     } else {
                         score = -alphaBeta<OPP, isInterupt, false, true>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
                         
@@ -204,7 +199,10 @@ namespace Search {
 
             auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
         
-            if (stopSearch) break;
+            if (stopSearch) {
+                if (depth == 1) bestMove = PV::master[0];
+                break;
+            }
             
             if (totalTime >= 100) std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
@@ -236,8 +234,11 @@ namespace Search {
             auto totalTime = GetTickCount() - startTime;
 
             auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
-        
-            if (stopSearch) break;
+
+            if (stopSearch) {
+                if (depth == 1) bestMove = PV::master[0];
+                break;
+            }
 
             if (totalTime >= 100) std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
