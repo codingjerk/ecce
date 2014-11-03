@@ -211,12 +211,12 @@ bool go(std::list<std::string> arguments) {
         auto tm = TM::depth(depth);
         auto bm = Search::incremental(Board::master, tm);
 
-        std::cout << "bestmove " << Move::show(bm) << "\n";
+        std::cout << "bestmove " << Move::show(bm) << "\n" << std::flush;
     } else if (cursor == arguments.end() || *cursor == "infinite") {
         auto tm = TM::depth(MAX_DEPTH);
         auto bm = Search::incremental(Board::master, tm);
 
-        std::cout << "bestmove " << Move::show(bm) << "\n";
+        std::cout << "bestmove " << Move::show(bm) << "\n" << std::flush;
     } else if (cursor != arguments.end() && *cursor == "movetime") {
         ++cursor;
         std::stringstream ss(*cursor);
@@ -226,7 +226,7 @@ bool go(std::list<std::string> arguments) {
         auto tm = TM::time(time);
         auto bm = Search::incremental(Board::master, tm);
 
-        std::cout << "bestmove " << Move::show(bm) << "\n";
+        std::cout << "bestmove " << Move::show(bm) << "\n" << std::flush;
     } else {
         Numspeed wtime = 0;
         Numspeed btime = 0;
@@ -272,8 +272,12 @@ bool go(std::list<std::string> arguments) {
 
         auto bm = Search::incremental(Board::master, tm);
 
-        std::cout << "bestmove " << Move::show(bm) << "\n";
+        std::cout << "bestmove " << Move::show(bm) << "\n" << std::flush;
     }
+
+    History::split();
+    PV::clear();
+    Hash::clear();
 
     Statistic::print();
 

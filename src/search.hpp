@@ -95,6 +95,11 @@ namespace Search {
                     if (noLegalMoves) {
                         score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
                         noLegalMoves = false;
+
+                        if (ROOT) {
+                            PV::master[pvIndex] = move;
+                            PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
+                        }
                     } else {
                         score = -alphaBeta<OPP, isInterupt, false>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
                         
@@ -187,10 +192,6 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
-        History::split();
-        PV::clear();
-        Hash::clear();
-
         stopSearch = false;
 
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
@@ -205,7 +206,7 @@ namespace Search {
         
             if (stopSearch) break;
             
-            std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+            if (totalTime >= 100) std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
         }
@@ -223,10 +224,6 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
-        History::split();
-        PV::clear();
-        Hash::clear();
-
         stopSearch = false;
 
         Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
@@ -242,8 +239,7 @@ namespace Search {
         
             if (stopSearch) break;
 
-            // @TODO: print only if totalTime >= 100ms (or 50/25/10ms)
-            std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+            if (totalTime >= 100) std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
 
             bestMove = PV::master[0];
         }
@@ -264,27 +260,36 @@ namespace Search {
         Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
         unsigned long int start = GetTickCount();
-        incremental<White>(board, TM::depth(9));
+        incremental<White>(board, TM::depth(11));
         unsigned long int total = GetTickCount() - start;
         auto score = totalNodes / total;
         std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+        History::split();
+        PV::clear();
+        Hash::clear();
 
         Board::setFromFen(board, "8/4p3/p2p4/2pP4/2P1P3/1P4k1/1P1K4/8 w - - 0 1");
 
         start = GetTickCount();
-        incremental<White>(board, TM::depth(15));
+        incremental<White>(board, TM::depth(21));
         total = GetTickCount() - start;
         score += totalNodes / total;
         std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+        History::split();
+        PV::clear();
+        Hash::clear();
 
         Board::setFromFen(board, "1r1rb1k1/2p3pp/p2q1p2/3PpP1Q/Pp1bP2N/1B5R/1P4PP/2B4K w - - 0 1");
 
         start = GetTickCount();
-        incremental<White>(board, TM::depth(9));
+        incremental<White>(board, TM::depth(11));
         total = GetTickCount() - start;
         score += totalNodes / total;
         std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
-        
+        History::split();
+        PV::clear();
+        Hash::clear();
+
         std::cout << "Score: " << score << "\n";
     }
 }
