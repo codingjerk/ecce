@@ -16,12 +16,13 @@ namespace Hash {
     };
 
     struct Node {
-        Zobrist::Type key   = 0;
-        Move::Type bestMove = 0;
-        UNumspeed depth       = 0;
+        Zobrist::Type key; // 64
+        Move::Type bestMove: 24; // 88
+        UNumspeed depth: 9; // 97
+        NodeType type: 3; // 100
+        Score::Type score: 28; // 128
 
-        Score::Type score = 0;
-        NodeType type = Invalid;
+        Node() : key(0), bestMove(0), depth(0), type(Invalid), score(0) {}
     };
 
     const Node empty;
@@ -34,13 +35,14 @@ namespace Hash {
         if (table) delete[] table;
 
         size = newSize;
-        modulo = size - 1;
+        modulo = size;
 
         table = new Node[size];
     }
 
     inline void setTableSizeInMb(UNumspeed sizeInMb) {
         setTableSize(sizeInMb * 1024 * 1024 / sizeof(Node));
+        std::cout << sizeof(Node) << "\n";
     }
 
     inline void write(Zobrist::Type key = 0, Move::Type bestMove = 0, Score::Type score = 0, UNumspeed depth = 0, NodeType type = Invalid) {
