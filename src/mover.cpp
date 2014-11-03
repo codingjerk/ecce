@@ -292,7 +292,6 @@ Boolspeed (*Move::specialMakeSilentBlack[6])(Move::Type, Board::Type&) = {
 
 template <Color::Type COLOR>
 void Move::makeNull(Board::Type& board) {
-    const auto oldCastle = Board::castle(board);
     Board::copyzobrist(board);
     Board::resetclock(board);
 
@@ -300,9 +299,12 @@ void Move::makeNull(Board::Type& board) {
 
     board.depthPtr->lastMoved = Bitboard::bitScan(board.bitboards[Piece::create(COLOR, King)]);
 
-    Board::castle(board, oldCastle);
+    Board::castle(board, Castle::null);
     Board::enpassant(board, Enpassant::null);
 }
+
+template void Move::makeNull<White>(Board::Type& board);
+template void Move::makeNull<Black>(Board::Type& board);
 
 template <Triple IS_CAPTURE>
 void unmakeUsual(Move::Type move, Board::Type& board) {

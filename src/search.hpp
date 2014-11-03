@@ -23,7 +23,7 @@ namespace Search {
     #define CHECK_EXTENSION
 
     template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
-    Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {
+    Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex, bool nullMoveAllowed = true) {
         ++totalNodes;
         Statistic::increaseNodes();
         MAKEOPP(COLOR);
@@ -74,6 +74,19 @@ namespace Search {
             }
         }
 
+        if (nullMoveAllowed && Board::ply(board) >= 4 && !Checker::isCheck<COLOR>(board)) {
+            auto staticScore = Eval::total<COLOR>(board);
+
+            if (staticScore >= beta) {
+                Move::makeNull<COLOR>(board);
+                auto newDepth = (depth <= 4) ? 0 : depth - 4;
+                auto nullScore = -alphaBeta<OPP, isInterupt, false>(board, -beta, -beta + 1, newDepth, pvIndex + MAX_DEPTH - Board::ply(board), false);
+                Move::unmakeNull(board);
+
+                if (nullScore >= beta) return beta;
+            }
+        }
+
         PV::master[pvIndex] = 0;
         Move::Type move;
         Score::Type score;
@@ -87,14 +100,14 @@ namespace Search {
                 if (phase.make(move, board)) {
                     #ifdef NEGASCOUT
                         if (noLegalMoves) {
-                            score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                            score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
                             noLegalMoves = false;
                         } else {
-                            score = -alphaBeta<OPP, isInterupt, false>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board)); 
+                            score = -alphaBeta<OPP, isInterupt, false>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
                         
                             if (score > alpha && score < beta) {
                                 Statistic::negaScoutFailed();
-                                score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                                score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
                             }
                         }
                     #else
