@@ -20,11 +20,8 @@ inline void addLegalPawnRecaptures(Move::Buffer &buffer, const Board::Type &boar
         const auto from = Bitboard::bitScan(froms);
         
         if (Bitboard::fromCoord(from) & Tables::pawnSubPromotionLine[COLOR]) {
-            buffer[0] += 4;
-            buffer[buffer[0]] = Move::promotion(from, to, Piece::create(COLOR, Knight), board.squares[to]);
-            buffer[buffer[0] - 1] = Move::promotion(from, to, Piece::create(COLOR, Bishop), board.squares[to]);
-            buffer[buffer[0] - 2] = Move::promotion(from, to, Piece::create(COLOR, Rook), board.squares[to]);
-            buffer[buffer[0] - 3] = Move::promotion(from, to, Piece::create(COLOR, Queen), board.squares[to]);
+            ++buffer[0];
+            buffer[buffer[0]] = Move::promotion(from, to, Piece::create(COLOR, Queen), board.squares[to]);
         } else {
             ++buffer[0];
             buffer[buffer[0]] = Move::create(from, to, board.squares[to]);

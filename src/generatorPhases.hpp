@@ -4,6 +4,7 @@
 #include "silents.hpp"
 #include "captures.hpp"
 #include "recaptures.hpp"
+#include "uselesses.hpp"
 
 namespace Generator {
 	typedef void(*Generate)(Move::Buffer&, const Board::Type&);
@@ -18,7 +19,7 @@ namespace Generator {
         Phase(Generate generate, Maker make, Unmaker unmake): generate(generate), make(make), unmake(unmake) {}
     };
 
-    const UNumspeed phaseCount = 4;
+    const UNumspeed phaseCount = 5;
     using Phases = Phase[phaseCount];
 
     template <Color::Type COLOR>
@@ -27,7 +28,8 @@ namespace Generator {
             Phase(Hash::phase, Move::make<COLOR>, Move::unmake<COLOR>),
             Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
             Phase(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            Phase(Silents::phase<COLOR>, Move::makeSilent<COLOR>, Move::unmakeSilent<COLOR>)
+            Phase(Silents::phase<COLOR>, Move::makeSilent<COLOR>, Move::unmakeSilent<COLOR>),
+            Phase(Uselesses::phase<COLOR>, Move::make<COLOR>, Move::unmake<COLOR>)
         };
 
         return (Phase*)result;
