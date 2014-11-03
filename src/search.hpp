@@ -263,7 +263,7 @@ namespace Search {
         incremental<White>(board, TM::depth(11));
         unsigned long int total = GetTickCount() - start;
         auto score = totalNodes / total;
-        std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+        std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
         History::split();
         PV::clear();
         Hash::clear();
@@ -274,7 +274,7 @@ namespace Search {
         incremental<White>(board, TM::depth(21));
         total = GetTickCount() - start;
         score += totalNodes / total;
-        std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+        std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
         History::split();
         PV::clear();
         Hash::clear();
@@ -285,12 +285,12 @@ namespace Search {
         incremental<White>(board, TM::depth(11));
         total = GetTickCount() - start;
         score += totalNodes / total;
-        std::cout << "Search info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n";
+        std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
         History::split();
         PV::clear();
         Hash::clear();
 
-        std::cout << "Score: " << score << "\n";
+        std::cout << "\nScore: " << score << "\n";
     }
 }
 
