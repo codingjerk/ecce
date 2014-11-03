@@ -42,7 +42,6 @@ namespace Hash {
 
     inline void setTableSizeInMb(UNumspeed sizeInMb) {
         setTableSize(sizeInMb * 1024 * 1024 / sizeof(Node));
-        std::cout << sizeof(Node) << "\n";
     }
 
     inline void write(Zobrist::Type key = 0, Move::Type bestMove = 0, Score::Type score = 0, UNumspeed depth = 0, NodeType type = Invalid) {
