@@ -44,7 +44,7 @@ namespace Hash {
         setTableSize(sizeInMb * 1024 * 1024 / sizeof(Node));
     }
 
-    inline void write(Zobrist::Type key = 0, Move::Type bestMove = 0, Score::Type score = 0, UNumspeed depth = 0, NodeType type = Invalid) {
+    inline void write(Zobrist::Type key, Move::Type bestMove, Score::Type score, UNumspeed depth, NodeType type, UNumspeed ply) {
         auto const halfKey = key % modulo;
 
         if (type >= table[halfKey].type && depth >= table[halfKey].depth) {
@@ -56,9 +56,12 @@ namespace Hash {
 
             table[halfKey].key      = key;
             table[halfKey].bestMove = bestMove;
-            table[halfKey].score    = score;
             table[halfKey].depth    = depth;
             table[halfKey].type     = type;
+            
+            if (Score::isPositiveMate(score))      score += ply;
+            else if (Score::isNegativeMate(score)) score -= ply;
+            table[halfKey].score    = score;
         }
     }
 
