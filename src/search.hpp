@@ -18,10 +18,6 @@
 #include "hash.hpp"
 
 namespace Search {
-    // @TODO: Move all defines at one file
-    #define NEGASCOUT
-    #define CHECK_EXTENSION
-
     template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
     Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex, bool nullMoveAllowed = true) {
         ++totalNodes;
@@ -35,11 +31,9 @@ namespace Search {
             }
         }
 
-        #ifdef CHECK_EXTENSION
-            if (Checker::isCheck<COLOR>(board)) {
-                ++depth;
-            }
-        #endif
+        if (Checker::isCheck<COLOR>(board)) {
+            ++depth;
+        }
 
         if (depth == 0) return quiesce<COLOR>(board, alpha, beta);
         
@@ -98,22 +92,17 @@ namespace Search {
                 move = Board::currentBuffer(board)[i];
 
                 if (phase.make(move, board)) {
-                    #ifdef NEGASCOUT
-                        if (noLegalMoves) {
-                            score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
-                            noLegalMoves = false;
-                        } else {
-                            score = -alphaBeta<OPP, isInterupt, false>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
-                        
-                            if (score > alpha && score < beta) {
-                                Statistic::negaScoutFailed();
-                                score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
-                            }
-                        }
-                    #else
-                        score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                    if (noLegalMoves) {
+                        score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
                         noLegalMoves = false;
-                    #endif
+                    } else {
+                        score = -alphaBeta<OPP, isInterupt, false>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
+                        
+                        if (score > alpha && score < beta) {
+                            Statistic::negaScoutFailed();
+                            score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
+                        }
+                    }
 
                     if (score > alpha) {
                         if (!Move::isCapture(move)) {
