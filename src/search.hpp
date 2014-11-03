@@ -18,8 +18,8 @@
 #include "hash.hpp"
 
 namespace Search {
-    template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true>
-    Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex, bool nullMoveAllowed = true) {
+    template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true, bool NULLMOVE_ALLOWED = true>
+    Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {
         ++totalNodes;
         Statistic::increaseNodes();
         MAKEOPP(COLOR);
@@ -68,13 +68,13 @@ namespace Search {
             }
         }
 
-        if (nullMoveAllowed && Board::ply(board) >= 4 && !Checker::isCheck<COLOR>(board)) {
+        if (NULLMOVE_ALLOWED && Board::ply(board) >= 4 && !Checker::isCheck<COLOR>(board)) {
             auto staticScore = Eval::total<COLOR>(board);
 
             if (staticScore >= beta) {
                 Move::makeNull<COLOR>(board);
                 auto newDepth = (depth <= 4) ? 0 : depth - 4;
-                auto nullScore = -alphaBeta<OPP, isInterupt, false>(board, -beta, -beta + 1, newDepth, pvIndex + MAX_DEPTH - Board::ply(board), false);
+                auto nullScore = -alphaBeta<OPP, isInterupt, false, false>(board, -beta, -beta + 1, newDepth, pvIndex + MAX_DEPTH - Board::ply(board));
                 Move::unmakeNull(board);
 
                 if (nullScore >= beta) return beta;
@@ -93,7 +93,7 @@ namespace Search {
 
                 if (phase.make(move, board)) {
                     if (noLegalMoves) {
-                        score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
+                        score = -alphaBeta<OPP, isInterupt, false, true>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
                         noLegalMoves = false;
 
                         if (ROOT) {
@@ -101,11 +101,11 @@ namespace Search {
                             PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
                         }
                     } else {
-                        score = -alphaBeta<OPP, isInterupt, false>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
+                        score = -alphaBeta<OPP, isInterupt, false, true>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
                         
                         if (score > alpha && score < beta) {
                             Statistic::negaScoutFailed();
-                            score = -alphaBeta<OPP, isInterupt, false>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), true);
+                            score = -alphaBeta<OPP, isInterupt, false, true>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
                         }
                     }
 
