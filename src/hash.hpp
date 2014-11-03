@@ -5,6 +5,7 @@
 #include "score.hpp"
 #include "moves.hpp"
 #include "boards.hpp"
+#include "statistic.hpp"
 
 namespace Hash {
     enum NodeType {
@@ -46,6 +47,12 @@ namespace Hash {
         auto const halfKey = key % modulo;
 
         if (type >= table[halfKey].type && depth >= table[halfKey].depth) {
+            if (key == table[halfKey].key || table[halfKey].type == Invalid) {
+                Statistic::hashGoodRewrited();
+            } else {
+                Statistic::hashBadRewrited();
+            }
+
             table[halfKey].key      = key;
             table[halfKey].bestMove = bestMove;
             table[halfKey].score    = score;

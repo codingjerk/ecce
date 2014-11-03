@@ -28,6 +28,12 @@ namespace Statistic {
             UNummax quiesceBetaPruned;
             UNummax noQuiesceMoves;
 
+            UNummax hashFinded;
+            UNummax hashAlphaPruned;
+            UNummax hashBetaPruned;
+            UNummax hashGoodRewrited;
+            UNummax hashBadRewrited;
+
             UNummax quiesceNodes;
             UNummax totalNodes;
         };
@@ -107,6 +113,36 @@ namespace Statistic {
         #endif
     }
 
+    inline void hashFinded() {
+        #ifdef STATISTIC
+            ++master.hashFinded;
+        #endif
+    }
+
+    inline void hashBetaPruned() {
+        #ifdef STATISTIC
+            ++master.hashBetaPruned;
+        #endif
+    }
+
+    inline void hashAlphaPruned() {
+        #ifdef STATISTIC
+            ++master.hashAlphaPruned;
+        #endif
+    }
+
+    inline void hashBadRewrited() {
+        #ifdef STATISTIC
+            ++master.hashBadRewrited;
+        #endif
+    }
+
+    inline void hashGoodRewrited() {
+        #ifdef STATISTIC
+            ++master.hashGoodRewrited;
+        #endif
+    }
+
     inline void increaseQuiesceNodes() {
         #ifdef STATISTIC
             ++master.quiesceNodes;
@@ -135,6 +171,12 @@ namespace Statistic {
             master.quiesceBetaPruned  = 0;
             master.noQuiesceMoves     = 0;
 
+            master.hashFinded         = 0;
+            master.hashAlphaPruned    = 0;
+            master.hashBetaPruned     = 0;
+            master.hashBadRewrited    = 0;
+            master.hashGoodRewrited   = 0;
+
             master.quiesceNodes       = 0;
             master.totalNodes         = 0;
         #endif
@@ -158,6 +200,12 @@ namespace Statistic {
             INFOPERCENT(quiesceAlphaPruned, quiesceNodes);
             INFOPERCENT(quiesceBetaPruned, quiesceNodes);
             INFOPERCENT(noQuiesceMoves, quiesceNodes);
+
+            INFOPERCENT(hashFinded, totalNodes);
+            INFOPERCENT(hashAlphaPruned, totalNodes);
+            INFOPERCENT(hashBetaPruned, totalNodes);
+            INFOPERCENT(hashBadRewrited, totalNodes);
+            INFOPERCENT(hashGoodRewrited, totalNodes);
 
             INFO(quiesceNodes);
             INFO(totalNodes);

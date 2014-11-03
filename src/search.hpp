@@ -53,12 +53,19 @@ namespace Search {
         if (!ROOT) {
             const auto &hashNode = Hash::read(board.depthPtr->zobrist);
             if (hashNode.depth >= depth) {
+                Statistic::hashFinded();
                 PV::master[pvIndex] = hashNode.bestMove;
                 if (hashNode.type == Hash::Beta || hashNode.type == Hash::Exact) {
                     alpha = max(alpha, hashNode.score);
-                    if (alpha >= beta) return beta;
+                    if (alpha >= beta) {
+                        Statistic::hashBetaPruned();
+                        return beta;
+                    }
                 } else if (hashNode.type == Hash::Alpha) {
-                    if (hashNode.score <= alpha) return alpha;
+                    if (hashNode.score <= alpha) {
+                        Statistic::hashAlphaPruned();
+                        return alpha;
+                    }
                 }
             }
         }
