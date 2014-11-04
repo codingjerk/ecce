@@ -110,6 +110,7 @@ namespace Search {
                     }
 
                     if (score > alpha) {
+                        // @TODO: Speedfix
                         if (!Move::isCapture(move)) {
                             History::alphed(move, depth);
                             Killer::write(move, board);
@@ -128,6 +129,7 @@ namespace Search {
                 phase.unmake(move, board);
 
                 if (alpha >= beta) {
+                    // @TODO: Speedfix
                     if (!Move::isCapture(move)) History::beted(move, depth);
                     if (!stopSearch) Hash::write(board.depthPtr->zobrist, move, score, depth, Hash::Beta, Board::ply(board));
 
@@ -157,37 +159,13 @@ namespace Search {
         if (!stopSearch) {
             if (PV::master[pvIndex] != 0) {
                 Hash::write(board.depthPtr->zobrist, PV::master[pvIndex], alpha, depth, Hash::Exact, Board::ply(board));
-            }
-            else {
+            } else {
                 Hash::write(board.depthPtr->zobrist, 0, alpha, depth, Hash::Alpha, Board::ply(board));
             }
         }
 
         Statistic::returnedAlpha();
         return alpha;
-    }
-
-    template <Color::Type COLOR>
-    Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
-        stopSearch = false;
-        
-        totalNodes = 0;
-        auto startTime = GetTickCount();
-        auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth.maxDepth, 0);
-        auto totalTime = GetTickCount() - startTime;
-
-        auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
-        std::cout << "info depth " << depth.maxDepth << " time " << " hashfull " << Hash::fillFactor() << totalTime << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
-
-        return PV::master[0];
-    }
-
-    inline Move::Type simple(Board::Type &board, TM::DepthLimit depth) {
-        if (board.turn == White) {
-            return simple<White>(board, depth);
-        } else {
-            return simple<Black>(board, depth);
-        }
     }
 
     template <Color::Type COLOR>
@@ -289,6 +267,17 @@ namespace Search {
 
         start = GetTickCount();
         incremental<White>(board, TM::depth(11));
+        total = GetTickCount() - start;
+        score += totalNodes / total;
+        std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
+        History::split();
+        PV::clear();
+        Hash::clear();
+
+        Board::setFromFen(board, "8/7p/5k2/5p2/p1p2P2/Pr1pPK2/1P1R3P/8 b - - 0 1");
+
+        start = GetTickCount();
+        incremental<White>(board, TM::depth(15));
         total = GetTickCount() - start;
         score += totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
