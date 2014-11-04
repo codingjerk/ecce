@@ -34,6 +34,9 @@ namespace Statistic {
             UNummax hashGoodRewrited;
             UNummax hashBadRewrited;
 
+            UNummax nullMoveUsed;
+            UNummax nullMoveFailed;
+
             UNummax quiesceNodes;
             UNummax totalNodes;
         };
@@ -143,6 +146,18 @@ namespace Statistic {
         #endif
     }
 
+    inline void nullMoveUsed() {
+        #ifdef STATISTIC
+            ++master.nullMoveUsed;
+        #endif
+    }
+
+    inline void nullMoveFailed() {
+        #ifdef STATISTIC
+            ++master.nullMoveFailed;
+        #endif
+    }
+
     inline void increaseQuiesceNodes() {
         #ifdef STATISTIC
             ++master.quiesceNodes;
@@ -177,6 +192,9 @@ namespace Statistic {
             master.hashBadRewrited    = 0;
             master.hashGoodRewrited   = 0;
 
+            master.nullMoveUsed       = 0;
+            master.nullMoveFailed     = 0;
+
             master.quiesceNodes       = 0;
             master.totalNodes         = 0;
         #endif
@@ -206,6 +224,9 @@ namespace Statistic {
             INFOPERCENT(hashBetaPruned, totalNodes);
             INFOPERCENT(hashBadRewrited, totalNodes);
             INFOPERCENT(hashGoodRewrited, totalNodes);
+
+            INFOPERCENT(nullMoveUsed, totalNodes);
+            INFOPERCENT(nullMoveFailed, nullMoveUsed);
 
             INFO(quiesceNodes);
             INFO(totalNodes);

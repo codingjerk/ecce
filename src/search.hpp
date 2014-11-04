@@ -72,12 +72,17 @@ namespace Search {
             auto staticScore = Eval::total<COLOR>(board);
 
             if (staticScore >= beta) {
+                Statistic::nullMoveUsed();
                 Move::makeNull<COLOR>(board);
                 auto newDepth = (depth <= 4) ? 0 : depth - 4;
                 auto nullScore = -alphaBeta<OPP, isInterupt, false, false>(board, -beta, -beta + 1, newDepth, pvIndex + MAX_DEPTH - Board::ply(board));
                 Move::unmakeNull(board);
 
-                if (nullScore >= beta) return beta;
+                if (nullScore >= beta) {
+                    return beta;
+                } else {
+                    Statistic::nullMoveFailed();
+                }
             }
         }
 
