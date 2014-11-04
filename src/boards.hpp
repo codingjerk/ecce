@@ -166,6 +166,10 @@ namespace Board {
     std::string toFen(const Type&);
 
     std::string show(const Type&);
+
+    inline void copy(Type& result, const Type& original) {
+        setFromFen(result, toFen(original));
+    }
 }
 
 #endif /* BOARDS_HPP */

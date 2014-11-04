@@ -4,6 +4,8 @@
 #include "checker.hpp"
 #include "generator.hpp"
 
+#include <omp.h>
+
 namespace Perft {
     template <Color::Type COLOR>
     UNum64 perft_quiet(Board::Type &board, UNumspeed depth) {
@@ -41,16 +43,18 @@ namespace Perft {
         UNum64 result = 0;
         
         Generator::phase<COLOR>(Board::currentBuffer(board), board);
-        UNumspeed total = Board::currentBuffer(board)[0];
-        for (UNumspeed i = 1; i <= total; ++i) {
+        Numspeed total = Board::currentBuffer(board)[0];
+
+        #pragma omp parallel for reduction(+:result)
+        for (Numspeed i = 1; i <= total; ++i) {
             const Move::Type move = Board::currentBuffer(board)[i];
-            if (Move::make<COLOR>(move, board)) {
-                const auto nodes = perft_quiet<OPP>(board, depth - 1);
+            Board::Type newBoard;
+            Board::copy(newBoard, board);
+            if (Move::make<COLOR>(move, newBoard)) {
+                const auto nodes = perft_quiet<OPP>(newBoard, depth - 1);
                 std::cout << "Move: " << Move::show(move) << " = " << nodes << "\n";
                 result += nodes;
             }
-        
-            Move::unmake<COLOR>(move, board);
         }
         
         std::cout << "Perft at depth " << depth << " = " << result << "\n";
