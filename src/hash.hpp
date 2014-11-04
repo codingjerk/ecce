@@ -29,13 +29,13 @@ namespace Hash {
 
     extern Node *table;
     extern UNumspeed size;
-    extern UNumspeed modulo;
 
     inline void setTableSize(UNumspeed newSize) {
         if (table) delete[] table;
 
         size = newSize;
-        modulo = size;
+
+        if (size == 0) return;
 
         table = new Node[size];
     }
@@ -45,7 +45,9 @@ namespace Hash {
     }
 
     inline void write(Zobrist::Type key, Move::Type bestMove, Score::Type score, UNumspeed depth, NodeType type, UNumspeed ply) {
-        auto const halfKey = key % modulo;
+        if (size == 0) return;
+
+        auto const halfKey = key % size;
 
         if (type >= table[halfKey].type && depth >= table[halfKey].depth) {
             if (key == table[halfKey].key || table[halfKey].type == Invalid) {
@@ -66,7 +68,9 @@ namespace Hash {
     }
 
     inline const Node &read(Zobrist::Type key) {
-        auto const halfKey = key % modulo;
+        if (size == 0) return Hash::empty;
+
+        auto const halfKey = key % size;
 
         if (key == table[halfKey].key) {
             return table[halfKey];
