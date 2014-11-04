@@ -5,6 +5,7 @@
 #include "generator.hpp"
 
 #include <omp.h>
+#include <mutex>
 
 namespace Perft {
     template <Color::Type COLOR>
@@ -45,14 +46,17 @@ namespace Perft {
         Generator::phase<COLOR>(Board::currentBuffer(board), board);
         Numspeed total = Board::currentBuffer(board)[0];
 
-        #pragma omp parallel for reduction(+:result)
+        #pragma omp parallel for reduction(+:result) schedule(guided)
         for (Numspeed i = 1; i <= total; ++i) {
             const Move::Type move = Board::currentBuffer(board)[i];
             Board::Type newBoard;
             Board::copy(newBoard, board);
             if (Move::make<COLOR>(move, newBoard)) {
                 const auto nodes = perft_quiet<OPP>(newBoard, depth - 1);
+                static std::mutex outLocker;
+                outLocker.lock();
                 std::cout << "Move: " << Move::show(move) << " = " << nodes << "\n";
+                outLocker.unlock();
                 result += nodes;
             }
         }
