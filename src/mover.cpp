@@ -508,6 +508,8 @@ void Move::initTables() {
 
 template <Color::Type COLOR>
 Boolspeed makeFastUsual(Move::Type move, Board::Type& board) {
+    MAKEOPP(COLOR);
+
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
@@ -518,17 +520,19 @@ Boolspeed makeFastUsual(Move::Type move, Board::Type& board) {
 
     Board::enpassant(board, Enpassant::null);
 
-    if (Move::isCapture(move)) Board::removePieceFast(board, to);
+    if (Move::isCapture(move)) Board::removePieceFast<OPP>(board, to);
     
-	Board::setPieceFast(board, board.squares[from], to);
+	Board::setPieceFast<COLOR>(board, board.squares[from], to);
 
-	Board::removePieceFast(board, from);
+	Board::removePieceFast<COLOR>(board, from);
 
     return !(Checker::isCheck<COLOR>(board));
 }
 
 template <Color::Type COLOR>
 Boolspeed makeFastPromotion(Move::Type move, Board::Type& board) {
+    MAKEOPP(COLOR);
+
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
     const auto oldCastle = Board::castle(board);
@@ -539,12 +543,12 @@ Boolspeed makeFastPromotion(Move::Type move, Board::Type& board) {
 
     Board::enpassant(board, Enpassant::null);
     
-    if (Move::isCapture(move)) Board::removePieceFast(board, to);
+    if (Move::isCapture(move)) Board::removePieceFast<OPP>(board, to);
     
     const auto promoted = (move & Move::promotionMask) >> Move::promotionOffset;
-	Board::setPieceFast(board, promoted, to);
+	Board::setPieceFast<COLOR>(board, promoted, to);
 
-    Board::removePieceFast(board, from);
+    Board::removePieceFast<COLOR>(board, from);
     
     return !(Checker::isCheck<COLOR>(board));
 }
@@ -565,9 +569,9 @@ Boolspeed makeFastPawnDouble(Move::Type move, Board::Type& board) {
         Board::enpassant(board, to + 8ull);
     }
 
-    Board::setPieceFast<COLOR|Pawn>(board, to);
+    Board::setPieceFast<COLOR|Pawn, COLOR>(board, to);
 
-    Board::removePiece<COLOR|Pawn>(board, from);
+    Board::removePiece<COLOR|Pawn, COLOR>(board, from);
     
     return !(Checker::isCheck<COLOR>(board));
 }
@@ -585,13 +589,13 @@ Boolspeed makeFastEnpassant(Move::Type move, Board::Type& board) {
     Board::enpassant(board, Enpassant::null);
 
     if (COLOR == White) {
-        Board::removePieceFast<Black|Pawn>(board, to - 8ull);
+        Board::removePieceFast<Black|Pawn, Black>(board, to - 8ull);
     } else {
-        Board::removePieceFast<White|Pawn>(board, to + 8ull);
+        Board::removePieceFast<White|Pawn, White>(board, to + 8ull);
     }
 
-    Board::setPieceFast<COLOR|Pawn>(board, to);
-    Board::removePieceFast<COLOR|Pawn>(board, from);
+    Board::setPieceFast<COLOR|Pawn, COLOR>(board, to);
+    Board::removePieceFast<COLOR|Pawn, COLOR>(board, from);
     
     return !(Checker::isCheck<COLOR>(board));
 }
@@ -611,20 +615,20 @@ Boolspeed makeFastCastleLong(Move::Type, Board::Type& board) {
     Board::enpassant(board, Enpassant::null);
 
     if (COLOR == White) {
-        Board::setPieceFast<White|King>(board, Coord::C1);
-        Board::removePieceFast<White|King>(board, Coord::E1);
+        Board::setPieceFast<White|King, White>(board, Coord::C1);
+        Board::removePieceFast<White|King, White>(board, Coord::E1);
 
-        Board::setPieceFast<White|Rook>(board, Coord::D1);
-        Board::removePieceFast<White|Rook>(board, Coord::A1);
+        Board::setPieceFast<White|Rook, White>(board, Coord::D1);
+        Board::removePieceFast<White|Rook, White>(board, Coord::A1);
 
         if (Checker::isAttacked<White>(board, Coord::D1)) return makeBoolspeed(0);
         if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
     } else {
-        Board::setPieceFast<Black|King>(board, Coord::C8);
-        Board::removePieceFast<Black|King>(board, Coord::E8);
+        Board::setPieceFast<Black|King, Black>(board, Coord::C8);
+        Board::removePieceFast<Black|King, Black>(board, Coord::E8);
 
-        Board::setPieceFast<Black|Rook>(board, Coord::D8);
-        Board::removePieceFast<Black|Rook>(board, Coord::A8);
+        Board::setPieceFast<Black|Rook, Black>(board, Coord::D8);
+        Board::removePieceFast<Black|Rook, Black>(board, Coord::A8);
 
         if (Checker::isAttacked<Black>(board, Coord::D8)) return makeBoolspeed(0);
         if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
@@ -648,20 +652,20 @@ Boolspeed makeFastCastleShort(Move::Type, Board::Type& board) {
     Board::enpassant(board, Enpassant::null);
     
     if (COLOR == White) {
-        Board::setPieceFast<White|King>(board, Coord::G1);
-        Board::removePieceFast<White|King>(board, Coord::E1);
+        Board::setPieceFast<White|King, White>(board, Coord::G1);
+        Board::removePieceFast<White|King, White>(board, Coord::E1);
 
-        Board::setPieceFast<White|Rook>(board, Coord::F1);
-        Board::removePieceFast<White|Rook>(board, Coord::H1);
+        Board::setPieceFast<White|Rook, White>(board, Coord::F1);
+        Board::removePieceFast<White|Rook, White>(board, Coord::H1);
 
         if (Checker::isAttacked<White>(board, Coord::F1)) return makeBoolspeed(0);
         if (Checker::isAttacked<White>(board, Coord::E1)) return makeBoolspeed(0);
     } else {
-        Board::setPieceFast<Black|King>(board, Coord::G8);
-        Board::removePieceFast<Black|King>(board, Coord::E8);
+        Board::setPieceFast<Black|King, Black>(board, Coord::G8);
+        Board::removePieceFast<Black|King, Black>(board, Coord::E8);
 
-        Board::setPieceFast<Black|Rook>(board, Coord::F8);
-        Board::removePieceFast<Black|Rook>(board, Coord::H8);
+        Board::setPieceFast<Black|Rook, Black>(board, Coord::F8);
+        Board::removePieceFast<Black|Rook, Black>(board, Coord::H8);
 
         if (Checker::isAttacked<Black>(board, Coord::F8)) return makeBoolspeed(0);
         if (Checker::isAttacked<Black>(board, Coord::E8)) return makeBoolspeed(0);
@@ -688,16 +692,19 @@ Boolspeed (*Move::specialFastMakeBlack[6])(Move::Type, Board::Type&) = {
     makeFastPromotion<Black>
 };
 
+template <Color::Type COLOR>
 void unmakeFastUsual(Move::Type move, Board::Type& board) {
+    MAKEOPP(COLOR);
+
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    Board::setPieceFast(board, board.squares[to], from);
-	Board::removePieceFast(board, to);
+    Board::setPieceFast<COLOR>(board, board.squares[to], from);
+	Board::removePieceFast<COLOR>(board, to);
     
-	if (Move::isCapture(move)) Board::setPieceFast(board, (move & Move::captureMask) >> Move::captureOffset, to);
+	if (Move::isCapture(move)) Board::setPieceFast<OPP>(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
 template <Color::Type COLOR>
@@ -705,17 +712,17 @@ void unmakeFastCastleShort(Move::Type, Board::Type& board) {
     --board.depthPtr;
 
     if (COLOR == White) {
-        Board::setPieceFast<White|King>(board, Coord::E1);
-        Board::removePieceFast<White|King>(board, Coord::G1);
+        Board::setPieceFast<White|King, White>(board, Coord::E1);
+        Board::removePieceFast<White|King, White>(board, Coord::G1);
 
-        Board::setPieceFast<White|Rook>(board, Coord::H1);
-        Board::removePieceFast<White|Rook>(board, Coord::F1);
+        Board::setPieceFast<White|Rook, White>(board, Coord::H1);
+        Board::removePieceFast<White|Rook, White>(board, Coord::F1);
     } else {
-        Board::setPieceFast<Black|King>(board, Coord::E8);
-        Board::removePieceFast<Black|King>(board, Coord::G8);
+        Board::setPieceFast<Black|King, Black>(board, Coord::E8);
+        Board::removePieceFast<Black|King, Black>(board, Coord::G8);
 
-        Board::setPieceFast<Black|Rook>(board, Coord::H8);
-        Board::removePieceFast<Black|Rook>(board, Coord::F8);
+        Board::setPieceFast<Black|Rook, Black>(board, Coord::H8);
+        Board::removePieceFast<Black|Rook, Black>(board, Coord::F8);
     }
 }
 
@@ -724,42 +731,45 @@ void unmakeFastCastleLong(Move::Type, Board::Type& board) {
     --board.depthPtr;
 
     if (COLOR == White) {
-        Board::setPieceFast<White|King>(board, Coord::E1);
-        Board::removePieceFast<White|King>(board, Coord::C1);
+        Board::setPieceFast<White|King, White>(board, Coord::E1);
+        Board::removePieceFast<White|King, White>(board, Coord::C1);
 
-        Board::setPieceFast<White|Rook>(board, Coord::A1);
-        Board::removePieceFast<White|Rook>(board, Coord::D1);
+        Board::setPieceFast<White|Rook, White>(board, Coord::A1);
+        Board::removePieceFast<White|Rook, White>(board, Coord::D1);
     } else {
-        Board::setPieceFast<Black|King>(board, Coord::E8);
-        Board::removePieceFast<Black|King>(board, Coord::C8);
+        Board::setPieceFast<Black|King, Black>(board, Coord::E8);
+        Board::removePieceFast<Black|King, Black>(board, Coord::C8);
 
-        Board::setPieceFast<Black|Rook>(board, Coord::A8);
-        Board::removePieceFast<Black|Rook>(board, Coord::D8);
+        Board::setPieceFast<Black|Rook, Black>(board, Coord::A8);
+        Board::removePieceFast<Black|Rook, Black>(board, Coord::D8);
     }
 }
 
+template <Color::Type COLOR>
 void unmakeFastPawnDouble(Move::Type move, Board::Type& board) {
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    Board::setPieceFast(board, board.squares[to], from);
-	Board::removePieceFast(board, to);
+    Board::setPieceFast<COLOR>(board, board.squares[to], from);
+	Board::removePieceFast<COLOR>(board, to);
 }
 
 template <Color::Type COLOR>
 void unmakeFastPromotion(Move::Type move, Board::Type& board) {
+    MAKEOPP(COLOR);
+
     --board.depthPtr;
 
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    Board::setPieceFast<COLOR|Pawn>(board, from);
+    Board::setPieceFast<COLOR|Pawn, COLOR>(board, from);
 
-	Board::removePieceFast(board, to);
+	Board::removePieceFast<COLOR>(board, to);
     
-    if (Move::isCapture(move)) Board::setPieceFast(board, (move & Move::captureMask) >> Move::captureOffset, to);
+    if (Move::isCapture(move)) Board::setPieceFast<OPP>(board, (move & Move::captureMask) >> Move::captureOffset, to);
 }
 
 template <Color::Type COLOR>
@@ -769,30 +779,30 @@ void unmakeFastEnpassant(Move::Type move, Board::Type& board) {
     const Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
     const Coord::Type to = move & Coord::typeMask;
 
-    Board::setPieceFast<COLOR|Pawn>(board, from);
-    Board::removePieceFast<COLOR|Pawn>(board, to);
+    Board::setPieceFast<COLOR|Pawn, COLOR>(board, from);
+    Board::removePieceFast<COLOR|Pawn, COLOR>(board, to);
     
     if (COLOR == White) {
-        Board::setPieceFast<Black|Pawn>(board, to - 8ull);
+        Board::setPieceFast<Black|Pawn, Black>(board, to - 8ull);
     } else {
-        Board::setPieceFast<White|Pawn>(board, to + 8ull);
+        Board::setPieceFast<White|Pawn, White>(board, to + 8ull);
     }
 }
 
 void (*Move::specialFastUnmakeWhite[6])(Move::Type, Board::Type&) = {
-    unmakeFastUsual,
+    unmakeFastUsual<White>,
     unmakeFastEnpassant<White>,
     unmakeFastCastleLong<White>,
     unmakeFastCastleShort<White>,
-    unmakeFastPawnDouble,
+    unmakeFastPawnDouble<White>,
     unmakeFastPromotion<White>
 };
 
 void (*Move::specialFastUnmakeBlack[6])(Move::Type, Board::Type&) = {
-    unmakeFastUsual,
+    unmakeFastUsual<Black>,
     unmakeFastEnpassant<Black>,
     unmakeFastCastleLong<Black>,
     unmakeFastCastleShort<Black>,
-    unmakeFastPawnDouble,
+    unmakeFastPawnDouble<Black>,
     unmakeFastPromotion<Black>
 };

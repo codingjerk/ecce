@@ -164,32 +164,34 @@ namespace Board {
     }
 
     // Fast versions of {set,remove}Piece
+    template <Color::Type COLOR>
     inline void setPieceFast(Type &board, const Piece::Type piece, const Coord::Type coord) {
         board.bitboards[piece] |= Bitboard::fromCoord(coord);
-        board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
+        board.bitboards[COLOR] |= Bitboard::fromCoord(coord);
 
         board.squares[coord] = piece; 
     }
-
+    
+    template <Color::Type COLOR>
     inline void removePieceFast(Type &board, const Coord::Type coord) {
         board.bitboards[board.squares[coord]] ^= Bitboard::fromCoord(coord);
-        board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
+        board.bitboards[COLOR] ^= Bitboard::fromCoord(coord);
 
         board.squares[coord] = Piece::null; 
     }
 
-	template <Piece::Type PIECE>
+	template <Piece::Type PIECE, Color::Type COLOR>
     inline void setPieceFast(Type &board, const Coord::Type coord) {
         board.bitboards[PIECE] |= Bitboard::fromCoord(coord);
-        board.bitboards[PIECE & Color::typeMask] |= Bitboard::fromCoord(coord);
+        board.bitboards[COLOR] |= Bitboard::fromCoord(coord);
 
         board.squares[coord] = PIECE; 
     }
 
-	template <Piece::Type PIECE>
+	template <Piece::Type PIECE, Color::Type COLOR>
     inline void removePieceFast(Type &board, const Coord::Type coord) {
         board.bitboards[PIECE] ^= Bitboard::fromCoord(coord);
-        board.bitboards[PIECE & Color::typeMask] ^= Bitboard::fromCoord(coord);
+        board.bitboards[COLOR] ^= Bitboard::fromCoord(coord);
 
         board.squares[coord] = Piece::null;
     }
