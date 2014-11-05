@@ -3,6 +3,8 @@
 
 #include "core.hpp"
 
+#include <algorithm>
+
 namespace TM {
     struct DepthLimit {
         Numspeed maxDepth = MAX_DEPTH;
