@@ -110,6 +110,7 @@ namespace Board {
         return (board.depthPtr->halfmoveClock >= 50);
     }
 
+    // @TODO: Send COLOR as template parameter
 	template <bool CHANGE_ZOBRIST>
     inline void setPiece(Type &board, const Piece::Type piece, const Coord::Type coord) {
         board.bitboards[piece] |= Bitboard::fromCoord(coord);
@@ -158,6 +159,37 @@ namespace Board {
 		board.materialScore   -= Score::pieceToScoreTable[PIECE];
 
 		if (CHANGE_ZOBRIST) xorzobrist(board, Zobrist::table[PIECE][coord]);
+
+        board.squares[coord] = Piece::null;
+    }
+
+    // Fast versions of {set,remove}Piece
+    inline void setPieceFast(Type &board, const Piece::Type piece, const Coord::Type coord) {
+        board.bitboards[piece] |= Bitboard::fromCoord(coord);
+        board.bitboards[piece & Color::typeMask] |= Bitboard::fromCoord(coord);
+
+        board.squares[coord] = piece; 
+    }
+
+    inline void removePieceFast(Type &board, const Coord::Type coord) {
+        board.bitboards[board.squares[coord]] ^= Bitboard::fromCoord(coord);
+        board.bitboards[board.squares[coord] & Color::typeMask] ^= Bitboard::fromCoord(coord);
+
+        board.squares[coord] = Piece::null; 
+    }
+
+	template <Piece::Type PIECE>
+    inline void setPieceFast(Type &board, const Coord::Type coord) {
+        board.bitboards[PIECE] |= Bitboard::fromCoord(coord);
+        board.bitboards[PIECE & Color::typeMask] |= Bitboard::fromCoord(coord);
+
+        board.squares[coord] = PIECE; 
+    }
+
+	template <Piece::Type PIECE>
+    inline void removePieceFast(Type &board, const Coord::Type coord) {
+        board.bitboards[PIECE] ^= Bitboard::fromCoord(coord);
+        board.bitboards[PIECE & Color::typeMask] ^= Bitboard::fromCoord(coord);
 
         board.squares[coord] = Piece::null;
     }

@@ -11,6 +11,11 @@ namespace Move {
     extern Boolspeed (*specialMakeBlack[6])(Move::Type, Board::Type&);
     extern void (*specialUnmakeWhite[6])(Move::Type, Board::Type&);
     extern void (*specialUnmakeBlack[6])(Move::Type, Board::Type&);
+
+    extern Boolspeed (*specialFastMakeWhite[6])(Move::Type, Board::Type&);
+    extern Boolspeed (*specialFastMakeBlack[6])(Move::Type, Board::Type&);
+    extern void (*specialFastUnmakeWhite[6])(Move::Type, Board::Type&);
+    extern void (*specialFastUnmakeBlack[6])(Move::Type, Board::Type&);
     
     extern Boolspeed (*specialMakeCaptureWhite[6])(Move::Type, Board::Type&);
     extern Boolspeed (*specialMakeCaptureBlack[6])(Move::Type, Board::Type&);
@@ -137,6 +142,37 @@ namespace Move {
         } else {
             unmake<Black>(move, board);
         }
+    }
+
+    // Fast
+    template <Color::Type COLOR> 
+    inline Boolspeed makeFast(Type, Board::Type&);
+
+    template <>
+    inline Boolspeed makeFast<White>(Type move, Board::Type& board) {
+        const auto specialIndex = special(move);
+        return specialFastMakeWhite[specialIndex](move, board);    
+    }
+
+    template <>
+    inline Boolspeed makeFast<Black>(Type move, Board::Type& board) {
+        const auto specialIndex = special(move);
+        return specialFastMakeBlack[specialIndex](move, board);    
+    }
+
+    template <Color::Type COLOR>
+    inline void unmakeFast(Type, Board::Type&);
+
+    template <>
+    inline void unmakeFast<White>(Type move, Board::Type& board) {
+        const auto specialIndex = special(move);
+        specialFastUnmakeWhite[specialIndex](move, board);
+    }
+
+    template <>
+    inline void unmakeFast<Black>(Type move, Board::Type& board) {
+        const auto specialIndex = special(move);
+        specialFastUnmakeBlack[specialIndex](move, board);
     }
 }
 

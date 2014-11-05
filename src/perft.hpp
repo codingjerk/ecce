@@ -19,10 +19,10 @@ namespace Perft {
         UNumspeed total = Board::currentBuffer(board)[0];
         for (UNumspeed i = 1; i <= total; ++i) {
             const Move::Type move = Board::currentBuffer(board)[i];
-            if (Move::make<COLOR>(move, board))
+            if (Move::makeFast<COLOR>(move, board))
                 result += perft_quiet<OPP>(board, depth - 1);
 
-            Move::unmake<COLOR>(move, board);
+            Move::unmakeFast<COLOR>(move, board);
         }
 
         return result;
@@ -51,7 +51,7 @@ namespace Perft {
             const Move::Type move = Board::currentBuffer(board)[i];
             Board::Type newBoard;
             Board::copy(newBoard, board);
-            if (Move::make<COLOR>(move, newBoard)) {
+            if (Move::makeFast<COLOR>(move, newBoard)) {
                 const auto nodes = perft_quiet<OPP>(newBoard, depth - 1);
                 static std::mutex outLocker;
                 outLocker.lock();
