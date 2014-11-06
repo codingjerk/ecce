@@ -230,16 +230,16 @@ namespace Search {
             if (totalTime >= 100) {
                 if (bestMove != PV::master[0]) { // PV was changed
                     endTime += TM::timeUp(timeLimit);
-                    std::cout << "info string TM say to think more, cause PV changed\n";
+                    std::cout << "info string TM say to think more, cause PV changed, endTime = " << endTime << "\n";
                 } else if (delta < -5) { // Score goes down
                     endTime += TM::timeUp(timeLimit);
-                    std::cout << "info string TM say to think more, cause score goes down\n";
+                    std::cout << "info string TM say to think more, cause score goes down, endTime = " << endTime << "\n";
                 } else if (delta > 75) { // Score goes up too fast
                     endTime += TM::timeUp(timeLimit);
-                    std::cout << "info string TM say to think more, cause score goes up to fast\n";
+                    std::cout << "info string TM say to think more, cause score goes up to fast, endTime = " << endTime << "\n";
                 } else {
-                    endTime += TM::timeDown(timeLimit);
-                    std::cout << "info string TM say to think LESS, cause score node is simple\n";
+                    endTime -= TM::timeDown(timeLimit);
+                    std::cout << "info string TM say to think LESS, cause score node is simple, endTime = " << endTime << "\n";
                 }
             }
 

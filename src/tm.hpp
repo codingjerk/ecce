@@ -48,15 +48,17 @@ namespace TM {
     }
 
     inline Numspeed timeUp(TimeLimit& tl) {
+        auto told = tl.real;
         tl.real = (tl.real + tl.maxTime) / 2;
 
-        return tl.real;
+        return tl.real - told;
     }
 
     inline Numspeed timeDown(TimeLimit& tl) {
+        auto told = tl.real;
         tl.real = (tl.real + tl.minTime) / 2;
 
-        return tl.real;
+        return told - tl.real;
     }
 }
 
