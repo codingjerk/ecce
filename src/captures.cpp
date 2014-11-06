@@ -286,7 +286,7 @@ void check(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     start = buffer[0]; \
     command<COLOR>(buffer, board, correctMask); \
     end = buffer[0]; \
-    insertionSort(buffer, start + 1, end); check(buffer, start, end);
+    insertionSort(buffer, start + 1, end); //check(buffer, start, end);
 
 template <Color::Type COLOR> 
 void Captures::phase(Move::Buffer &buffer, const Board::Type &board) {
