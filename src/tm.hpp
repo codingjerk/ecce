@@ -9,6 +9,8 @@ namespace TM {
     };
 
     struct TimeLimit {
+        Numspeed minTime;
+        Numspeed real;
         Numspeed maxTime;
     };
 
@@ -23,17 +25,38 @@ namespace TM {
     inline TimeLimit time(Numspeed aTime) {
         TimeLimit result;
 
+        result.minTime = aTime;
+        result.real    = aTime;
         result.maxTime = aTime;
 
         return result;
     }
 
     inline TimeLimit time(Numspeed aTime, Numspeed inc, Numspeed moves) {
+        TimeLimit result;
+
         if (moves != 0) {
-            return time((aTime + inc * moves) / moves);
+            result.real = (aTime + inc * moves) / moves;
         } else {
-            return time((aTime + inc * 40) / 40);
+            result.real = (aTime + inc * 40) / 40;
         }
+
+        result.minTime = result.real / 3;
+        result.maxTime = std::min(result.real * 3, aTime - 1);
+
+        return result;
+    }
+
+    inline Numspeed timeUp(TimeLimit& tl) {
+        tl.real = (tl.real + tl.maxTime) / 2;
+
+        return tl.real;
+    }
+
+    inline Numspeed timeDown(TimeLimit& tl) {
+        tl.real = (tl.real + tl.minTime) / 2;
+
+        return tl.real;
     }
 }
 
