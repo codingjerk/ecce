@@ -28,10 +28,10 @@ namespace Search {
         Score::Type score;
         bool noMoves = true;
         forQuiescePhases(phase, Generator::quiescePhases<COLOR>()) {
-            phase.generate(Board::currentBuffer(board), board);
-            UNumspeed total = Board::currentBuffer(board)[0];
+            phase.generate(Board::buffer(board), board);
+            UNumspeed total = Board::buffer(board)[0];
             for (UNumspeed i = 1; i <= total; ++i) {
-                move = Board::currentBuffer(board)[i];
+                move = Board::buffer(board)[i];
 
                 if (phase.make(move, board)) {
                     score = -quiesce<OPP>(board, -beta, -alpha);

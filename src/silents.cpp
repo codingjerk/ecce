@@ -214,20 +214,12 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
 }
 }
 
-inline void historySortInsertion(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+inline void historySort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     if (start >= end) return;
 
     for (auto i = start; i <= end; ++i) {
         for (auto j = i; (j > start) && (History::score(buffer[j]) > History::score(buffer[j - 1])); --j) {
             std::swap(buffer[j], buffer[j - 1]);
-        }
-    }
-}
-
-void historyCheck(Move::Buffer &buffer, Move::Type start, Move::Type end) {
-    for (auto i = start; i < end; ++i) {
-        if (History::score(buffer[i]) < History::score(buffer[i+1])) {
-            std::cout << "Error!\n";
         }
     }
 }
@@ -258,7 +250,7 @@ void Silents::phase(Move::Buffer &buffer, const Board::Type &board) {
     kings<COLOR>(buffer, board);
     
     auto offset = upKillers(buffer, board);
-    historySortInsertion(buffer, offset, buffer[0]);
+    historySort(buffer, offset, buffer[0]);
 }
 
 // Explicit template instantiations

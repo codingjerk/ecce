@@ -264,7 +264,7 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type
 }
 }
 
-inline void insertionSort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
+inline void mvvSort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
     if (start >= end) return;
 
     for (auto i = start; i <= end; ++i) {
@@ -274,19 +274,11 @@ inline void insertionSort(Move::Buffer &buffer, Move::Type start, Move::Type end
     }
 }
 
-void check(Move::Buffer &buffer, Move::Type start, Move::Type end) {
-    for (auto i = start + 1; i < end; ++i) {
-        if (buffer[i] < buffer[i+1]) {
-            std::cout << "Error!\n";
-        }
-    }
-}
-
 #define SORTED(command) \
     start = buffer[0]; \
     command<COLOR>(buffer, board, correctMask); \
     end = buffer[0]; \
-    insertionSort(buffer, start + 1, end); //check(buffer, start, end);
+    mvvSort(buffer, start + 1, end);
 
 template <Color::Type COLOR> 
 void Captures::phase(Move::Buffer &buffer, const Board::Type &board) {

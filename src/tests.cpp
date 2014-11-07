@@ -125,7 +125,7 @@ void generator(UNumspeed complexity) {
     SECTION(Generator);
     Board::Type board;
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
-    auto &buffer = Board::currentBuffer(board);
+    auto &buffer = Board::buffer(board);
 
     buffer[0] = 0;
     Generator::knights<Black>(buffer, board);

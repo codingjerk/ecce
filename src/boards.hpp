@@ -15,8 +15,6 @@
 #include "PST.hpp"
 #include "zobrist.hpp"
 
-#include <iostream>
-
 namespace Board {
     struct Info {
         Castle::Type castle = Castle::null;
@@ -52,51 +50,51 @@ namespace Board {
 
     extern Board::Type master;
 
-    inline Numspeed ply(const Type& board) {
+    inline Numspeed ply(const Type &board) {
         return Numspeed(board.depthPtr - board.depthCounter - board.depthOffset);
     }
         
-    inline Move::Buffer &currentBuffer(Type& board) {
+    inline Move::Buffer &buffer(Type &board) {
         return board.depthPtr->buffer;
     }
 
-    inline Castle::Type castle(const Type& board) {
+    inline Castle::Type castle(const Type &board) {
         return board.depthPtr->castle;
     }
     
-    inline void castle(Type& board, const Castle::Type castle) {
+    inline void castle(Type &board, const Castle::Type castle) {
         board.depthPtr->castle = castle;
     }
     
-    inline Enpassant::Type enpassant(const Type& board) {
+    inline Enpassant::Type enpassant(const Type &board) {
         return board.depthPtr->enpassant;
     }
     
-    inline void enpassant(Type& board, const Enpassant::Type enpassant) {
+    inline void enpassant(Type &board, const Enpassant::Type enpassant) {
         board.depthPtr->enpassant = enpassant;
 	}
 
-	inline void xorzobrist(const Type& board, Zobrist::Type delta) {
+	inline void xorzobrist(const Type &board, Zobrist::Type delta) {
 		board.depthPtr->zobrist ^= delta;
 	}
 
-	inline void copyzobrist(const Type& board) {
+	inline void copyzobrist(const Type &board) {
 		(board.depthPtr + 1)->zobrist = board.depthPtr->zobrist ^ Zobrist::turnKey;
 	}
 
-	inline void copyclock(const Type& board) {
+	inline void copyclock(const Type &board) {
         (board.depthPtr + 1)->halfmoveClock = board.depthPtr->halfmoveClock + 1;
 	}
 
-	inline void resetclock(const Type& board) {
+	inline void resetclock(const Type &board) {
         (board.depthPtr + 1)->halfmoveClock = 0;
 	}
 
-    inline UNumspeed fullMoveNumber(const Type& board) {
+    inline UNumspeed fullMoveNumber(const Type &board) {
         return board.initialFullmoveNumber + (board.depthPtr - board.info) / 2;
     }
 
-	inline bool isRepeat(const Type& board) {
+	inline bool isRepeat(const Type &board) {
         for (auto depth = board.depthPtr - 4; depth >= (board.depthPtr - board.depthPtr->halfmoveClock); depth -= 2) {
 			if (depth->zobrist == board.depthPtr->zobrist) {
 				return true;
@@ -106,7 +104,7 @@ namespace Board {
 		return false;
 	}
 
-    inline bool isFifty(const Type& board) {
+    inline bool isFifty(const Type &board) {
         return (board.depthPtr->halfmoveClock >= 50);
     }
 
@@ -201,7 +199,7 @@ namespace Board {
 
     std::string show(const Type&);
 
-    inline void copy(Type& result, const Type& original) {
+    inline void copy(Type &result, const Type &original) {
         setFromFen(result, toFen(original));
     }
 }
