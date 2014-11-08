@@ -11,8 +11,9 @@ namespace Search {
     static UNumspeed totalNodes;
     static UNumspeed endTime;
 
+    template <UNumspeed MODULO = 4095>
     inline bool stopInterupter() {
-        if(totalNodes % 1024 == 0 && isInputAvailable()) {
+        if((totalNodes & MODULO) == 0 && isInputAvailable()) {
             std::string input;
             std::getline(std::cin, input);
             return (input == "stop");
@@ -22,7 +23,7 @@ namespace Search {
     }
 
     inline bool timeInterupter() {
-        return GetTickCount() >= endTime || stopInterupter();
+        return GetTickCount() >= endTime || stopInterupter<16383>();
     }
 }
 
