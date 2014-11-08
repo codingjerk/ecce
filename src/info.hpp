@@ -3,7 +3,7 @@
 
 namespace Info {
     const std::string name    = "Ecce";
-    const std::string version = "rev. 380";
+    const std::string version = "rev. 508";
     const std::string author  = "D. Gruzdev, M. Melnikov";
 
     inline void show() {
