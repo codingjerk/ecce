@@ -571,7 +571,7 @@ Boolspeed makeFastPawnDouble(Move::Type move, Board::Type& board) {
 
     Board::setPieceFast<COLOR|Pawn, COLOR>(board, to);
 
-    Board::removePiece<COLOR|Pawn, COLOR>(board, from);
+    Board::removePieceFast<COLOR|Pawn, COLOR>(board, from);
     
     return !(Checker::isCheck<COLOR>(board));
 }
