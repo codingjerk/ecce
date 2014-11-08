@@ -8,15 +8,12 @@
 
 namespace Options {
     void show() {
-        std::cout << "option name Hash type spin default 10 min 1 max 2048\n";
+        std::cout << "option name Hash type spin default 50 min 1 max 4096\n";
     }
 
     void set(std::string name, std::string value) {
         if (name == "Hash") {
-            std::stringstream ss(value);
-            UNumspeed size;
-            ss >> size;
-            Hash::setTableSizeInMb(size);
+            Hash::setTableSizeInMb(toNum(value));
         } else {
             std::cout << "Unsuported option, sory.\n";
         }

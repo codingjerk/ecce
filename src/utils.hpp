@@ -22,6 +22,14 @@ inline unsigned long GetTickCount()
     #include <Windows.h>
 #endif
 
+template <class RESULT = UNumspeed>
+inline RESULT toNum(std::string text) {
+    std::stringstream ss(text);
+    RESULT value; 
+    ss >> value;
+    return value;
+}
+
 inline bool isInputAvailable() {
 #ifdef OSLINUX
     int val;
