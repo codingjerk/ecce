@@ -69,7 +69,7 @@ void forQueenCapture(Move::Buffer &buffer, const Board::Type &board, const Coord
 }
 
 template <Color::Type COLOR>
-void Captures::knights(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
+void knights(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto knights = board.bitboards[Piece::create(COLOR, Knight)];
     while(knights != Bitboard::null) {
         Coord::Type to = Bitboard::bitScan(knights);
@@ -81,14 +81,14 @@ void Captures::knights(Move::Buffer &buffer, const Board::Type &board, Bitboard:
 }
 
 template <Color::Type COLOR>
-void Captures::kings(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
+void kings(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto bitboard = board.bitboards[Piece::create(COLOR, King)];
 
     forKingCapture<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)), correctMask);
 }
 
 template <Color::Type COLOR> 
-void Captures::bishops(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
+void bishops(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Bishop)];
     while(bitboard != Bitboard::null) {
         Coord::Type to = Bitboard::bitScan(bitboard);
@@ -100,7 +100,7 @@ void Captures::bishops(Move::Buffer &buffer, const Board::Type &board, Bitboard:
 }
 
 template <Color::Type COLOR> 
-void Captures::rooks(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
+void rooks(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Rook)];
     while(bitboard != Bitboard::null) {
         Coord::Type to = Bitboard::bitScan(bitboard);
@@ -112,7 +112,7 @@ void Captures::rooks(Move::Buffer &buffer, const Board::Type &board, Bitboard::T
 }
 
 template <Color::Type COLOR> 
-void Captures::queens(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
+void queens(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Queen)];
     while(bitboard != Bitboard::null) {
         Coord::Type to = Bitboard::bitScan(bitboard);
@@ -123,8 +123,8 @@ void Captures::queens(Move::Buffer &buffer, const Board::Type &board, Bitboard::
     }
 }
 
-// Temporary solution, because gcc is stupid dick
-namespace Captures {
+template <Color::Type COLOR> void pawns(Move::Buffer&, const Board::Type&, Bitboard::Type);
+
 template <> 
 void pawns<White>(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type correctMask) {
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
@@ -236,7 +236,6 @@ void pawns<Black>(Move::Buffer &buffer, const Board::Type &board, Bitboard::Type
             buffer[buffer[0]] = Move::enpassant<Black>(to + 7ull, to);
         }
     }
-}
 }
 
 inline void mvvSort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
