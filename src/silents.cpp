@@ -6,7 +6,6 @@
 #include "history.hpp"
 #include "killers.hpp"
 
-// @TODO: Move to generator as public
 inline void addLegalsSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
     while(legals != Bitboard::null) {
         const auto to = Bitboard::bitScan(legals);
@@ -83,135 +82,128 @@ void forQueenSilent(Move::Buffer &buffer, const Board::Type &board, const Coord:
 }
 
 template <Color::Type COLOR>
-void Silents::knights(Move::Buffer &buffer, const Board::Type &board) {
+void knights(Move::Buffer &buffer, const Board::Type &board) {
     auto knights = board.bitboards[Piece::create(COLOR, Knight)];
     while(knights != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(knights);
+        const auto to = Bitboard::bitScan(knights);
 
-        forKnightSilent<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forKnightSilent<COLOR>(buffer, board, to);
 
-        knights ^= Bitboard::fromIndex(bitIndex);
+        knights ^= Bitboard::fromCoord(to);
     }
 }
 
 template <Color::Type COLOR>
-void Silents::kings(Move::Buffer &buffer, const Board::Type &board) {
+void kings(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, King)];
 
     forKingSilent<COLOR>(buffer, board, Coord::Type(Bitboard::bitScan(bitboard)));
 }
 
 template <Color::Type COLOR> 
-void Silents::bishops(Move::Buffer &buffer, const Board::Type &board) {
+void bishops(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Bishop)];
     while(bitboard != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(bitboard);
+        const auto to = Bitboard::bitScan(bitboard);
 
-        forBishopSilent<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forBishopSilent<COLOR>(buffer, board, to);
         
-        bitboard ^= Bitboard::fromIndex(bitIndex);
+        bitboard ^= Bitboard::fromCoord(to);
     }
 }
 
 template <Color::Type COLOR> 
-void Silents::rooks(Move::Buffer &buffer, const Board::Type &board) {
+void rooks(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Rook)];
     while(bitboard != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(bitboard);
+        const auto to = Bitboard::bitScan(bitboard);
 
-        forRookSilent<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forRookSilent<COLOR>(buffer, board, to);
 
-        bitboard ^= Bitboard::fromIndex(bitIndex);
+        bitboard ^= Bitboard::fromCoord(to);
     }
 }
 
 template <Color::Type COLOR> 
-void Silents::queens(Move::Buffer &buffer, const Board::Type &board) {
+void queens(Move::Buffer &buffer, const Board::Type &board) {
     auto bitboard = board.bitboards[Piece::create(COLOR, Queen)];
     while(bitboard != Bitboard::null) {
-        const auto bitIndex = Bitboard::bitScan(bitboard);
+        const auto to = Bitboard::bitScan(bitboard);
 
-        forQueenSilent<COLOR>(buffer, board, Coord::Type(bitIndex));
+        forQueenSilent<COLOR>(buffer, board, to);
 
-        bitboard ^= Bitboard::fromIndex(bitIndex);
+        bitboard ^= Bitboard::fromCoord(to);
     }
 }
 
-// Temporary solution, because gcc is stupid dick
-namespace Silents {
+template <Color::Type COLOR>
+void pawns(Move::Buffer &buffer, const Board::Type &board);
+
 template <> 
 void pawns<White>(Move::Buffer &buffer, const Board::Type &board) {
-    //@TODO(low): Refactoring?
     const Bitboard::Type legalSquares = ~(board.bitboards[White] | board.bitboards[Black]);
     const auto pawns = board.bitboards[Piece::create(White, Pawn)];
     const auto onestep = (pawns << makeUNum64(8)) & legalSquares;
 
-    UNumspeed bitIndex;
+    Coord::Type to;
     auto workingBB = onestep;
     while(workingBB != Bitboard::null) {
-        bitIndex = Bitboard::bitScan(workingBB);
-        
-        if (bitIndex >= 56ull) { //Pawn goes at last line
-            ++buffer[0];
-            buffer[buffer[0]] = Move::promotion(Coord::Type(bitIndex - 8ull), Coord::Type(bitIndex), Piece::create(White, Queen));
+        to = Bitboard::bitScan(workingBB);
+
+        ++buffer[0];
+        if (to >= 56ull) { //Pawn goes at last line
+            buffer[buffer[0]] = Move::promotion(to - 8ull, to, Piece::create(White, Queen));
         } else {
-            ++buffer[0];
-            buffer[buffer[0]] = Move::create(Coord::Type(bitIndex - 8ull), Coord::Type(bitIndex));
+            buffer[buffer[0]] = Move::create(to - 8ull, to);
         }
 
-        workingBB ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromCoord(to);
     }
 
     workingBB = pawns & Tables::pawnStartLine[White];
     workingBB &= onestep >> 8ull;
     workingBB = (workingBB << 16ull) & legalSquares; 
     while(workingBB != Bitboard::null) {
-        bitIndex = Bitboard::bitScan(workingBB);
+        to = Bitboard::bitScan(workingBB);
         
         ++buffer[0];
-        buffer[buffer[0]] = Move::pawnDouble(Coord::Type(bitIndex - 16ull), Coord::Type(bitIndex));
+        buffer[buffer[0]] = Move::pawnDouble(to - 16ull, to);
 
-        workingBB ^= Bitboard::fromIndex(bitIndex);
+        workingBB ^= Bitboard::fromCoord(to);
     }
 }
 
 template <> 
 void pawns<Black>(Move::Buffer &buffer, const Board::Type &board) {
-    //@TODO: Refactoring?
     const Bitboard::Type legalSquares = ~(board.bitboards[Black] | board.bitboards[White]);
     const auto pawns = board.bitboards[Piece::create(Black, Pawn)];
     const auto onestep = (pawns >> makeUNum64(8)) & legalSquares;
 
-    UNumspeed bitIndex;
+    Coord::Type to;
     auto workingBB = onestep;
     while(workingBB != Bitboard::null) {
-        bitIndex = Bitboard::bitScan(workingBB);
-
-        const auto from = Coord::Type(bitIndex + 8ull);
-        
-        if (bitIndex < 8ull) { //Pawn goes at last line
-            ++buffer[0];
-            buffer[buffer[0]] = Move::promotion(from, Coord::Type(bitIndex), Piece::create(Black, Queen));
-        } else {
-            ++buffer[0];
-            buffer[buffer[0]] = Move::create(from, Coord::Type(bitIndex));
-        }
-        
-        workingBB ^= Bitboard::fromIndex(bitIndex);
-    }
-
-    workingBB = pawns & Tables::pawnStartLine[Black];
-    workingBB &= onestep << 8ull;
-    workingBB = (workingBB >> 16ull) & legalSquares; 
-    while(workingBB != Bitboard::null) {
-        bitIndex = Bitboard::bitScan(workingBB);
+        to = Bitboard::bitScan(workingBB);
 
         ++buffer[0];
-        buffer[buffer[0]] = Move::pawnDouble(Coord::Type(bitIndex + 16ull), Coord::Type(bitIndex));
-
-        workingBB ^= Bitboard::fromIndex(bitIndex);
+        if (to < 8ull) { //Pawn goes at last line
+            buffer[buffer[0]] = Move::promotion(to + 8ull, to, Piece::create(Black, Queen));
+        } else {
+            buffer[buffer[0]] = Move::create(to + 8ull, to);
+        }
+        
+        workingBB ^= Bitboard::fromCoord(to);
     }
-}
+
+    workingBB = pawns & Tables::pawnStartLine[Black] & (onestep << 8ull);
+    workingBB = (workingBB >> 16ull) & legalSquares; 
+    while(workingBB != Bitboard::null) {
+        to = Bitboard::bitScan(workingBB);
+
+        ++buffer[0];
+        buffer[buffer[0]] = Move::pawnDouble(to + 16ull, to);
+
+        workingBB ^= Bitboard::fromCoord(to);
+    }
 }
 
 inline void historySort(Move::Buffer &buffer, Move::Type start, Move::Type end) {
@@ -254,20 +246,5 @@ void Silents::phase(Move::Buffer &buffer, const Board::Type &board) {
 }
 
 // Explicit template instantiations
-template void Silents::knights<White>(Move::Buffer&, const Board::Type&);
-template void Silents::knights<Black>(Move::Buffer&, const Board::Type&);
-
-template void Silents::kings<White>(Move::Buffer&, const Board::Type&);
-template void Silents::kings<Black>(Move::Buffer&, const Board::Type&);
-
-template void Silents::bishops<White>(Move::Buffer&, const Board::Type&);
-template void Silents::bishops<Black>(Move::Buffer&, const Board::Type&);
-
-template void Silents::rooks<White>(Move::Buffer&, const Board::Type&);
-template void Silents::rooks<Black>(Move::Buffer&, const Board::Type&);
-
-template void Silents::queens<White>(Move::Buffer&, const Board::Type&);
-template void Silents::queens<Black>(Move::Buffer&, const Board::Type&);
-
 template void Silents::phase<White>(Move::Buffer&, const Board::Type&);
 template void Silents::phase<Black>(Move::Buffer&, const Board::Type&);
