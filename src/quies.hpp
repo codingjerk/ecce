@@ -1,8 +1,6 @@
 #ifndef QUIES_HPP
 #define QUIES_HPP
 
-#include <iostream>
-
 #include "eval.hpp"
 #include "boards.hpp"
 #include "mover.hpp"
@@ -17,9 +15,6 @@ namespace Search {
         Statistic::increaseQuiesceNodes();
 
         MAKEOPP(COLOR);
-
-		if (Board::isRepeat(board)) return Score::Draw;
-        if (Board::isFifty(board))  return Score::Draw;
 
         alpha = max(alpha, Eval::total<COLOR>(board));
         if(alpha >= beta) return beta;
