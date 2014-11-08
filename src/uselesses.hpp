@@ -1,7 +1,6 @@
 #ifndef USELESSES_HPP
 #define USELESSES_HPP
 
-// @TODO: remove useless includes from all files
 #include "core.hpp"
 
 #include "boards.hpp"
