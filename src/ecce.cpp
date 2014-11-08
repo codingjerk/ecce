@@ -9,13 +9,16 @@
 #include "zobrist.hpp"
 #include "history.hpp"
 #include "hash.hpp"
+#include "generatorTables.hpp"
+#include "magics.hpp"
 
 void initTables() {
     Move::initTables();
     Bitboard::initTables();
     Color::initTables();
     Piece::initTables();
-    Generator::initTables();
+    Tables::initTables();
+    Magic::initTables();
     PST::initTables();
     Score::initTables();
     Zobrist::initTables();

@@ -361,25 +361,5 @@ void Generator::phase(Move::Buffer &buffer, const Board::Type &board) {
 }
 
 // Explicit template instantiations
-template void Generator::knights<White>(Move::Buffer&, const Board::Type&);
-template void Generator::knights<Black>(Move::Buffer&, const Board::Type&);
-
-template void Generator::kings<White>(Move::Buffer&, const Board::Type&);
-template void Generator::kings<Black>(Move::Buffer&, const Board::Type&);
-
-template void Generator::bishops<White>(Move::Buffer&, const Board::Type&);
-template void Generator::bishops<Black>(Move::Buffer&, const Board::Type&);
-
-template void Generator::rooks<White>(Move::Buffer&, const Board::Type&);
-template void Generator::rooks<Black>(Move::Buffer&, const Board::Type&);
-
-template void Generator::queens<White>(Move::Buffer&, const Board::Type&);
-template void Generator::queens<Black>(Move::Buffer&, const Board::Type&);
-
 template void Generator::phase<White>(Move::Buffer&, const Board::Type&);
 template void Generator::phase<Black>(Move::Buffer&, const Board::Type&);
-
-void Generator::initTables() {
-    Tables::initTables();
-    Magic::initTables();
-}

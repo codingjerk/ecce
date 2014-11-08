@@ -9,8 +9,6 @@
 #include "moves.hpp"
 
 namespace Generator {
-    void initTables();
-
     template <Color::Type COLOR> void pawns(Move::Buffer&, const Board::Type&);
     template <Color::Type COLOR> void knights(Move::Buffer&, const Board::Type&);
     template <Color::Type COLOR> void kings(Move::Buffer&, const Board::Type&);
