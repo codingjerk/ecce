@@ -204,7 +204,9 @@ namespace Statistic {
         #ifdef STATISTIC
             #define INFOPERCENT(PARAM, TOTAL) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << master.PARAM << " (" << (double(master.PARAM * 100) / master.TOTAL) << "%)\n";
             #define INFO(PARAM) std::cout << "info string " << std::setw(20) << #PARAM ": " << std::setw(15) << master.PARAM << "\n";
+            #define SECTION(NAME) std::cout << "\n" << #NAME << ":\n";
 
+            SECTION(COMMON);
             INFOPERCENT(alphaUpped, totalNodes);
             INFOPERCENT(alphaPruned, totalNodes);
             INFOPERCENT(betaPruned, totalNodes);
@@ -214,20 +216,24 @@ namespace Statistic {
             INFOPERCENT(repeatPruned, totalNodes);
             INFOPERCENT(negaScoutFails, totalNodes);
 
+            SECTION(QUIESCE);
             INFOPERCENT(quiesceAlphaUpped, quiesceNodes);
             INFOPERCENT(quiesceAlphaPruned, quiesceNodes);
             INFOPERCENT(quiesceBetaPruned, quiesceNodes);
             INFOPERCENT(noQuiesceMoves, quiesceNodes);
 
+            SECTION(HASH);
             INFOPERCENT(hashFinded, totalNodes);
             INFOPERCENT(hashAlphaPruned, totalNodes);
             INFOPERCENT(hashBetaPruned, totalNodes);
             INFOPERCENT(hashBadRewrited, totalNodes);
             INFOPERCENT(hashGoodRewrited, totalNodes);
 
+            SECTION(COMMON);
             INFOPERCENT(nullMoveUsed, totalNodes);
             INFOPERCENT(nullMoveFailed, nullMoveUsed);
 
+            SECTION(TOTAL);
             INFO(quiesceNodes);
             INFO(totalNodes);
         #endif
