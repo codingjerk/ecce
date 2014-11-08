@@ -2,7 +2,6 @@
 #define CHECKER_HPP
 
 #include "core.hpp"
-
 #include "boards.hpp"
 
 namespace Checker {

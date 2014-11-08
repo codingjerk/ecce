@@ -103,7 +103,7 @@ bool position(std::list<std::string> arguments) {
         for (++cursor; cursor != arguments.end(); ++cursor) {
             Move::Type move = Move::fromString(*cursor, Board::master);
             Move::make(move, Board::master);
-            Color::invert(Board::master.turn);
+            Board::master.turn = Color::invert(Board::master.turn);
             ++Board::master.depthOffset;
         }
     }

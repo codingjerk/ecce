@@ -91,7 +91,7 @@ void Board::setFromFen(Type &board, const std::string fen) {
     fenStream >> board.depthPtr->halfmoveClock;
     fenStream >> board.initialFullmoveNumber;
 
-    const auto oppKings = board.bitboards[Piece::create(Color::inv(board.turn), King)];
+    const auto oppKings = board.bitboards[Piece::create(Color::invert(board.turn), King)];
     board.depthPtr->lastMoved = Bitboard::bitScan(oppKings);
 }
 
