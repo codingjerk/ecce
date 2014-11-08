@@ -10,7 +10,7 @@ inline void addLegalRecaptures(Move::Buffer &buffer, const Board::Type &board, c
         ++buffer[0];
         buffer[buffer[0]] = Move::create(from, to, board.squares[to]);
 
-        froms ^= Bitboard::fromIndex(from);
+        froms ^= Bitboard::fromCoord(from);
     }
 }
 
@@ -18,16 +18,15 @@ template <Color::Type COLOR>
 inline void addLegalPawnRecaptures(Move::Buffer &buffer, const Board::Type &board, const Coord::Type to, Bitboard::Type froms) {
     while (froms != Bitboard::null) {
         const auto from = Bitboard::bitScan(froms);
-        
+
+        ++buffer[0];
         if (Bitboard::fromCoord(from) & Tables::pawnSubPromotionLine[COLOR]) {
-            ++buffer[0];
             buffer[buffer[0]] = Move::promotion(from, to, Piece::create(COLOR, Queen), board.squares[to]);
         } else {
-            ++buffer[0];
             buffer[buffer[0]] = Move::create(from, to, board.squares[to]);
         }
 
-        froms ^= Bitboard::fromIndex(from);
+        froms ^= Bitboard::fromCoord(from);
     }
 }
 

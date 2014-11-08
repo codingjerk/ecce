@@ -1,8 +1,6 @@
 #ifndef RECAPTURES_HPP
 #define RECAPTURES_HPP
 
-#include <string>
-
 #include "core.hpp"
 
 #include "boards.hpp"
