@@ -17,7 +17,7 @@ namespace Search {
         MAKEOPP(COLOR);
 
         alpha = max(alpha, Eval::total<COLOR>(board));
-        if(alpha >= beta) return beta;
+        if (alpha >= beta) return alpha;
 
         Move::Type move;
         Score::Type score;
