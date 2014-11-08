@@ -5,6 +5,7 @@
 #include "captures.hpp"
 #include "recaptures.hpp"
 #include "uselesses.hpp"
+#include "hash.hpp"
 
 namespace Generator {
 	typedef void(*Generate)(Move::Buffer&, const Board::Type&);
@@ -25,11 +26,11 @@ namespace Generator {
     template <Color::Type COLOR>
     inline Phase* phases() {
         static const Phases result = {
-            Phase(Hash::phase, Move::make<COLOR>, Move::unmake<COLOR>),
+            Phase(Hash::phase,              Move::make<COLOR>,        Move::unmake<COLOR>),
             Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            Phase(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            Phase(Silents::phase<COLOR>, Move::makeSilent<COLOR>, Move::unmakeSilent<COLOR>),
-            Phase(Uselesses::phase<COLOR>, Move::make<COLOR>, Move::unmake<COLOR>)
+            Phase(Captures::phase<COLOR>,   Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
+            Phase(Silents::phase<COLOR>,    Move::makeSilent<COLOR>,  Move::unmakeSilent<COLOR>),
+            Phase(Uselesses::phase<COLOR>,  Move::make<COLOR>,        Move::unmake<COLOR>)
         };
 
         return (Phase*)result;
@@ -42,7 +43,7 @@ namespace Generator {
     inline Phase* quiescePhases() {
         static const QuiescePhases result = {
             Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            Phase(Captures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>)
+            Phase(Captures::phase<COLOR>,   Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>)
         };
 
         return (Phase*)result;
