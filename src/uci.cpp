@@ -69,6 +69,8 @@ bool setoption(std::list<std::string> arguments) {
 }
 
 bool ucinewgame(std::list<std::string>) {
+    Search::flush();
+
     return true;
 }
 
@@ -275,9 +277,7 @@ bool go(std::list<std::string> arguments) {
         std::cout << "bestmove " << Move::show(bm) << "\n" << std::flush;
     }
 
-    History::split();
-    PV::clear();
-    Hash::clear();
+    Search::clear();
 
     Statistic::print();
 

@@ -29,22 +29,18 @@ namespace Search {
                 Statistic::repeatPruned();
                 return Score::Draw;
             }
-        }
 
-        if (Checker::isCheck<COLOR>(board)) {
-            ++depth;
-        }
+            if (Checker::isCheck<COLOR>(board)) {
+                ++depth;
+            }
 
-        if (depth == 0) return quiesce<COLOR>(board, alpha, beta);
-        
-        if (!ROOT) {
+            if (depth == 0) return quiesce<COLOR>(board, alpha, beta);
+
             if (isInterupt() || stopSearch) {
                 stopSearch = true;
                 return 0;
             }
-        }
 
-        if (!ROOT) {
             const auto &hashNode = Hash::read(board.depthPtr->zobrist);
             if (hashNode.depth >= depth) {
                 Statistic::hashFinded();
@@ -59,29 +55,31 @@ namespace Search {
                         Statistic::hashBetaPruned();
                         return beta;
                     }
-                } else if (hashNode.type == Hash::Node::Alpha) {
+                }
+                else if (hashNode.type == Hash::Node::Alpha) {
                     if (score <= alpha) {
                         Statistic::hashAlphaPruned();
                         return alpha;
                     }
                 }
             }
-        }
 
-        if (NULLMOVE_ALLOWED && Board::ply(board) >= 4 && !Checker::isCheck<COLOR>(board)) {
-            auto staticScore = Eval::total<COLOR>(board);
+            if (NULLMOVE_ALLOWED && Board::ply(board) >= 4 && !Checker::isCheck<COLOR>(board)) {
+                auto staticScore = Eval::total<COLOR>(board);
 
-            if (staticScore >= beta) {
-                Statistic::nullMoveUsed();
-                Move::makeNull<COLOR>(board);
-                auto newDepth = (depth <= 4) ? 0 : depth - 4;
-                auto nullScore = -alphaBeta<OPP, isInterupt, false, false>(board, -beta, -beta + 1, newDepth, pvIndex + MAX_DEPTH - Board::ply(board));
-                Move::unmakeNull(board);
+                if (staticScore >= beta) {
+                    Statistic::nullMoveUsed();
+                    Move::makeNull<COLOR>(board);
+                    auto newDepth = (depth <= 4) ? 0 : depth - 4;
+                    auto nullScore = -alphaBeta<OPP, isInterupt, false, false>(board, -beta, -beta + 1, newDepth, pvIndex + MAX_DEPTH - Board::ply(board));
+                    Move::unmakeNull(board);
 
-                if (nullScore >= beta) {
-                    return beta;
-                } else {
-                    Statistic::nullMoveFailed();
+                    if (nullScore >= beta) {
+                        return beta;
+                    }
+                    else {
+                        Statistic::nullMoveFailed();
+                    }
                 }
             }
         }
@@ -110,7 +108,6 @@ namespace Search {
                     }
 
                     if (score > alpha) {
-                        // @TODO: Speedfix
                         if (!Move::isCapture(move)) {
                             History::alphed(move, depth);
                             Killer::write(move, board);
@@ -129,9 +126,8 @@ namespace Search {
                 phase.unmake(move, board);
 
                 if (alpha >= beta) {
-                    // @TODO: Speedfix
                     if (!Move::isCapture(move)) History::beted(move, depth);
-                    if (!stopSearch) Hash::write(board.depthPtr->zobrist, move, score, depth, Hash::Node::Beta, Board::ply(board));
+                    if (!stopSearch) Hash::write(board.depthPtr->zobrist, move, alpha, depth, Hash::Node::Beta, Board::ply(board));
 
                     Statistic::betaPruned();
                     return alpha;
@@ -168,18 +164,20 @@ namespace Search {
         return alpha;
     }
 
+    #define INIT() \
+        stopSearch = false; \
+        Move::Type bestMove = 0; \
+        totalNodes = 0; \
+        auto startTime = GetTickCount();
+
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
-        stopSearch = false;
+        INIT();
 
-        Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
-        
-        totalNodes = 0;
-        auto startTime = GetTickCount();
         for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
             auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
+            
             auto totalTime = GetTickCount() - startTime;
-
             auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
         
             if (stopSearch) {
@@ -205,17 +203,13 @@ namespace Search {
 
     template <Color::Type COLOR>
     Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
-        stopSearch = false;
-
-        Move::Type bestMove = Move::create(Coord::A1, Coord::A1, Piece::null);
-
+        INIT();
         endTime = GetTickCount() + timeLimit.real;
-        totalNodes = 0;
-        auto startTime = GetTickCount();
+
         for (UNumspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
             auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
+            
             auto totalTime = GetTickCount() - startTime;
-
             auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
 
             if (stopSearch) {
@@ -239,6 +233,18 @@ namespace Search {
         }
     }
 
+    inline void clear() {
+        PV::clear();
+        Hash::clear();
+        History::split();
+    }
+
+    inline void flush() {
+        PV::clear();
+        Hash::clear();
+        History::flush();
+    }
+
     inline void speed() {
         Board::Type board;
         Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -248,9 +254,7 @@ namespace Search {
         unsigned long int total = GetTickCount() - start;
         auto score = totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
-        History::split();
-        PV::clear();
-        Hash::clear();
+        flush();
 
         Board::setFromFen(board, "8/4p3/p2p4/2pP4/2P1P3/1P4k1/1P1K4/8 w - - 0 1");
 
@@ -259,9 +263,7 @@ namespace Search {
         total = GetTickCount() - start;
         score += totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
-        History::split();
-        PV::clear();
-        Hash::clear();
+        flush();
 
         Board::setFromFen(board, "1r1rb1k1/2p3pp/p2q1p2/3PpP1Q/Pp1bP2N/1B5R/1P4PP/2B4K w - - 0 1");
 
@@ -270,9 +272,7 @@ namespace Search {
         total = GetTickCount() - start;
         score += totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
-        History::split();
-        PV::clear();
-        Hash::clear();
+        flush();
 
         Board::setFromFen(board, "8/7p/5k2/5p2/p1p2P2/Pr1pPK2/1P1R3P/8 b - - 0 1");
 
@@ -281,9 +281,7 @@ namespace Search {
         total = GetTickCount() - start;
         score += totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
-        History::split();
-        PV::clear();
-        Hash::clear();
+        flush();
 
         std::cout << "\nScore: " << score << "\n";
     }
