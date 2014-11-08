@@ -1,8 +1,6 @@
 #ifndef DIGNITIES_HPP
 #define DIGNITIES_HPP
 
-#include <string>
-
 #include "core.hpp"
 
 namespace Dignity {
