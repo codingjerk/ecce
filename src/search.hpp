@@ -53,13 +53,13 @@ namespace Search {
                 if (Score::isPositiveMate(score))      score -= Board::ply(board);
                 else if (Score::isNegativeMate(score)) score += Board::ply(board);
 
-                if (hashNode.type == Hash::Beta || hashNode.type == Hash::Exact) {
+                if (hashNode.type == Hash::Node::Beta || hashNode.type == Hash::Node::Exact) {
                     alpha = max(alpha, score);
                     if (alpha >= beta) {
                         Statistic::hashBetaPruned();
                         return beta;
                     }
-                } else if (hashNode.type == Hash::Alpha) {
+                } else if (hashNode.type == Hash::Node::Alpha) {
                     if (score <= alpha) {
                         Statistic::hashAlphaPruned();
                         return alpha;
@@ -131,7 +131,7 @@ namespace Search {
                 if (alpha >= beta) {
                     // @TODO: Speedfix
                     if (!Move::isCapture(move)) History::beted(move, depth);
-                    if (!stopSearch) Hash::write(board.depthPtr->zobrist, move, score, depth, Hash::Beta, Board::ply(board));
+                    if (!stopSearch) Hash::write(board.depthPtr->zobrist, move, score, depth, Hash::Node::Beta, Board::ply(board));
 
                     Statistic::betaPruned();
                     return alpha;
@@ -151,16 +151,16 @@ namespace Search {
                 score = Score::Draw;
             }
             
-            if (!stopSearch) Hash::write(board.depthPtr->zobrist, 0, score, depth, Hash::Exact, Board::ply(board));
+            if (!stopSearch) Hash::write(board.depthPtr->zobrist, 0, score, depth, Hash::Node::Exact, Board::ply(board));
 
             return score;
         }
 
         if (!stopSearch) {
             if (PV::master[pvIndex] != 0) {
-                Hash::write(board.depthPtr->zobrist, PV::master[pvIndex], alpha, depth, Hash::Exact, Board::ply(board));
+                Hash::write(board.depthPtr->zobrist, PV::master[pvIndex], alpha, depth, Hash::Node::Exact, Board::ply(board));
             } else {
-                Hash::write(board.depthPtr->zobrist, 0, alpha, depth, Hash::Alpha, Board::ply(board));
+                Hash::write(board.depthPtr->zobrist, 0, alpha, depth, Hash::Node::Alpha, Board::ply(board));
             }
         }
 
