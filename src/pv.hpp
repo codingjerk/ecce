@@ -22,6 +22,12 @@ namespace PV {
 
         return result;
     }
+
+    inline void clear() {
+        for (UNumspeed i = 0; i < PV_SIZE; ++i) {
+            master[i] = 0;
+        }
+    }
 }
 
 #endif /* PV_HPP */

@@ -249,6 +249,7 @@ namespace Search {
         auto score = totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
         History::split();
+        PV::clear();
         Hash::clear();
 
         Board::setFromFen(board, "8/4p3/p2p4/2pP4/2P1P3/1P4k1/1P1K4/8 w - - 0 1");
@@ -259,6 +260,7 @@ namespace Search {
         score += totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
         History::split();
+        PV::clear();
         Hash::clear();
 
         Board::setFromFen(board, "1r1rb1k1/2p3pp/p2q1p2/3PpP1Q/Pp1bP2N/1B5R/1P4PP/2B4K w - - 0 1");
@@ -269,6 +271,7 @@ namespace Search {
         score += totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
         History::split();
+        PV::clear();
         Hash::clear();
 
         Board::setFromFen(board, "8/7p/5k2/5p2/p1p2P2/Pr1pPK2/1P1R3P/8 b - - 0 1");
@@ -279,6 +282,7 @@ namespace Search {
         score += totalNodes / total;
         std::cout << "\nSearch info - time: " << total << "ms (" << total / 1000.0 << "s), nodes: " << totalNodes << ", NPS: " << totalNodes / total << "K." << "\n\n";
         History::split();
+        PV::clear();
         Hash::clear();
 
         std::cout << "\nScore: " << score << "\n";

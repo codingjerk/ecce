@@ -276,6 +276,7 @@ bool go(std::list<std::string> arguments) {
     }
 
     History::split();
+    PV::clear();
     Hash::clear();
 
     Statistic::print();
