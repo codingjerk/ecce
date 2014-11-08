@@ -118,13 +118,12 @@ bool test(std::list<std::string> arguments) {
     
     UNumspeed complexity = 0;
     if (cursor != arguments.end()) {
-        std::stringstream ss(*cursor);
-        ss >> complexity;
+        complexity = toNum(*cursor);
     }
     
-    unsigned long int start = GetTickCount();
+    UNumspeed start = GetTickCount();
     Tests::runAll(complexity);
-    unsigned long int total = GetTickCount() - start;
+    UNumspeed total = GetTickCount() - start;
     std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
 
     return true;
@@ -133,15 +132,13 @@ bool test(std::list<std::string> arguments) {
 bool perft(std::list<std::string> arguments) {
     auto cursor = arguments.begin();
 
-    std::stringstream ss(*cursor);
-    unsigned long long depth;
-    ss >> depth;
+    UNumspeed depth = toNum(*cursor);
 
-    unsigned long int start = GetTickCount();
+    UNumspeed start = GetTickCount();
     UNummax nodes = Perft::perft(Board::master, depth);
-    unsigned long int total = GetTickCount() - start;
+    UNumspeed total = GetTickCount() - start;
     std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
-    std::cout << "NPS: " << nodes / total << "K nodes per second.\n";
+    std::cout << "NPS: " << (total? (nodes / total): nodes) << "K nodes per second.\n";
 
     return true;
 }
@@ -158,9 +155,7 @@ bool epd(std::list<std::string> arguments) {
     
     std::string mode = *cursor; ++cursor;
 
-    std::stringstream ss(*cursor); ++cursor;
-    UNumspeed parameter;
-    ss >> parameter;
+    UNumspeed parameter = toNum(*cursor); ++cursor;
 
     std::ifstream fs(fileName, std::ios_base::in);
     std::string fileContent;
@@ -205,9 +200,7 @@ bool go(std::list<std::string> arguments) {
 
     if (cursor != arguments.end() && *cursor == "depth") {
         ++cursor;
-        std::stringstream ss(*cursor);
-        UNumspeed depth;
-        ss >> depth;
+        UNumspeed depth = toNum(*cursor);
         depth = min(depth, MAX_DEPTH);
 
         auto tm = TM::depth(depth);
@@ -221,9 +214,7 @@ bool go(std::list<std::string> arguments) {
         std::cout << "bestmove " << Move::show(bm) << "\n" << std::flush;
     } else if (cursor != arguments.end() && *cursor == "movetime") {
         ++cursor;
-        std::stringstream ss(*cursor);
-        Numspeed time;
-        ss >> time;
+        Numspeed time = toNum<Numspeed>(*cursor);
 
         auto tm = TM::time(time);
         auto bm = Search::incremental(Board::master, tm);
@@ -239,24 +230,19 @@ bool go(std::list<std::string> arguments) {
         while (cursor != arguments.end()) {
             if (*cursor == "wtime") {
                 ++cursor;
-                std::stringstream ss(*cursor);
-                ss >> wtime;
+                wtime = toNum<Numspeed>(*cursor);
             } else if (*cursor == "btime") {
                 ++cursor;
-                std::stringstream ss(*cursor);
-                ss >> btime;
+                btime = toNum<Numspeed>(*cursor);
             } else if (*cursor == "winc") {
                 ++cursor;
-                std::stringstream ss(*cursor);
-                ss >> winc;
+                winc = toNum<Numspeed>(*cursor);
             } else if (*cursor == "binc") {
                 ++cursor;
-                std::stringstream ss(*cursor);
-                ss >> binc;
+                binc = toNum<Numspeed>(*cursor);
             } else if (*cursor == "movestogo") {
                 ++cursor;
-                std::stringstream ss(*cursor);
-                ss >> movestogo;
+                movestogo = toNum<Numspeed>(*cursor);
             } else {
                 std::cout << "This go command is doesn't support.\n";
                 return true;
