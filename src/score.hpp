@@ -19,7 +19,7 @@ namespace Score {
     const Type Rook     = 500;
     const Type Queen    = 900;
 
-    const Type Infinity = 20 * Queen;
+    const Type Infinity = 14 * Queen;
 
     extern Type pieceToScoreTable[makeUNumspeed(1) << Piece::usedBits];
 
