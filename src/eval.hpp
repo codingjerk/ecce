@@ -3,9 +3,7 @@
 
 #include "score.hpp"
 #include "boards.hpp"
-#include "bitboards.hpp"
 #include "colors.hpp"
-#include "PST.hpp"
 
 namespace Eval {
     template <Color::Type WHO> 
