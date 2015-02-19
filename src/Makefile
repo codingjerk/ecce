@@ -31,7 +31,13 @@ SRC=cstf.cpp\
 	PST.cpp\
 	score.cpp\
 	zobrist.cpp\
-	captures.cpp
+	captures.cpp\
+	history.cpp\
+	hash.cpp\
+	recaptures.cpp\
+	silents.cpp\
+	uselesses.cpp\
+	
 
 MAINSRC=ecce.cpp $(SRC)
 MAINOBJ=$(MAINSRC:.cpp=.o)
