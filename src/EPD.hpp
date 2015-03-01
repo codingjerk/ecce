@@ -43,8 +43,8 @@ namespace EPD {
                 cursor = cursor.substr(cursor.size() - 2, 2);
             }
 
-            if (!moveSetted && cursor == "bm" || cursor == "am") {
-                moveSetted == true;
+            if (!moveSetted && (cursor == "bm" || cursor == "am")) {
+                moveSetted = true;
                 record.avoidMode = (cursor == "am");
 
                 std::string bestmove;

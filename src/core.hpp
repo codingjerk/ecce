@@ -6,6 +6,9 @@
 #define OSLINUX
 #undef OSLINUX
 
+#define PARALLEL
+#undef PARALLEL
+
 #define DEBUGMODE
 #undef DEBUGMODE
 

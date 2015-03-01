@@ -6,7 +6,7 @@
 #include "history.hpp"
 #include "killers.hpp"
 
-inline void addLegalsSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from, Bitboard::Type legals) {
+inline void addLegalsSilent(Move::Buffer &buffer, const Coord::Type from, Bitboard::Type legals) {
     while(legals != Bitboard::null) {
         const auto to = Bitboard::bitScan(legals);
 
@@ -21,16 +21,15 @@ template <Color::Type COLOR>
 void forKnightSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
     const Bitboard::Type legalSquares = (~(board.bitboards[White] | board.bitboards[Black])) & Tables::knightMasks[from];
 
-    addLegalsSilent(buffer, board, from, legalSquares);
+    addLegalsSilent(buffer, from, legalSquares);
 }
 
 template <Color::Type COLOR>
 void forKingSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::Type from) {
-    MAKEOPP(COLOR);
     const Bitboard::Type legal = ~(board.bitboards[White] | board.bitboards[Black]);
     const Bitboard::Type legalSquares = (legal) & Tables::kingMasks[from];
 
-    addLegalsSilent(buffer, board, from, legalSquares);
+    addLegalsSilent(buffer, from, legalSquares);
 
     if (Castle::is<COLOR, King>(Board::castle(board))) {
         if ((Tables::castleNeeded[COLOR][King] & legal) == Tables::castleNeeded[COLOR][King]) {
@@ -54,7 +53,7 @@ void forBishopSilent(Move::Buffer &buffer, const Board::Type &board, const Coord
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) * Magic::bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegalsSilent(buffer, board, from, Magic::bishopData[magicIndex] & (~nonEmpty));
+    addLegalsSilent(buffer, from, Magic::bishopData[magicIndex] & (~nonEmpty));
 }
 
 template <Color::Type COLOR>
@@ -64,7 +63,7 @@ void forRookSilent(Move::Buffer &buffer, const Board::Type &board, const Coord::
         + UNumspeed(((nonEmpty & Tables::rookMasks[from]) * Magic::rookMagics[from]) 
             >> (Magic::rookMaskShifts[from]));
 
-    addLegalsSilent(buffer, board, from, Magic::rookData[magicIndex] & (~nonEmpty));
+    addLegalsSilent(buffer, from, Magic::rookData[magicIndex] & (~nonEmpty));
 }
 
 template <Color::Type COLOR>
@@ -78,7 +77,7 @@ void forQueenSilent(Move::Buffer &buffer, const Board::Type &board, const Coord:
         + UNumspeed(((nonEmpty & Tables::bishopMasks[from]) *Magic:: bishopMagics[from]) 
             >> (Magic::bishopMaskShifts[from]));
 
-    addLegalsSilent(buffer, board, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~nonEmpty));
+    addLegalsSilent(buffer, from, (Magic::rookData[rookMagicIndex] | Magic::bishopData[bishopMagicIndex]) & (~nonEmpty));
 }
 
 template <Color::Type COLOR>
@@ -219,7 +218,7 @@ inline void historySort(Move::Buffer &buffer, Move::Type start, Move::Type end) 
 inline Move::Type upKillers(Move::Buffer &buffer, const Board::Type &board) {
     Move::Type offset = 1;
 
-    for (auto i = 1; i <= buffer[0]; ++i) {
+    for (Move::Type i = 1; i <= buffer[0]; ++i) {
         if (buffer[i] == Killer::first(board) || buffer[i] == Killer::second(board)) {
             std::swap(buffer[i], buffer[offset]);
             ++offset;

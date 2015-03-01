@@ -194,7 +194,7 @@ bool stop(std::list<std::string>) {
 }
 
 bool go(std::list<std::string> arguments) {
-    Statistic::flush;
+    Statistic::flush();
 
     auto cursor = arguments.begin();
 

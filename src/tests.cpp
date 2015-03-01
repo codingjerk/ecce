@@ -16,12 +16,12 @@
 #include "PST.hpp"
 #include "utils.hpp"
 
-void framework(UNumspeed complexity) {
+void framework(UNumspeed) {
     SECTION(Framework);
     CHECK(true);
 }
 
-void coords(UNumspeed complexity) {
+void coords(UNumspeed) {
     SECTION(Coords);
     CHECK(Coord::fromString("a1") == 0);
     CHECK(Coord::show(0ull) == "a1");
@@ -30,7 +30,7 @@ void coords(UNumspeed complexity) {
     CHECK(Coord::show(Coord::fromRaw(1, 0)) == "b1");
 }
 
-void moves(UNumspeed complexity) {
+void moves(UNumspeed) {
     SECTION(Moves);
     CHECK(Move::fromString("a1a1") == 0);
     CHECK(Move::show(0) == "a1a1");
@@ -73,38 +73,38 @@ void moves(UNumspeed complexity) {
     CHECK(Move::fromShortString<Black>("Bc8", board) == Move::fromString("f5c8", board));
 }
 
-void bitboards(UNumspeed complexity) {
+void bitboards(UNumspeed) {
     SECTION(Bitboards);
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("b2"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n01000000\n00000000\n");
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("a1"))) == "00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n10000000\n");
     CHECK(Bitboard::show(Bitboard::fromCoord(Coord::fromString("h8"))) == "00000001\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n00000000\n");
 }
 
-void colors(UNumspeed complexity) {
+void colors(UNumspeed) {
     SECTION(Colors);
     CHECK(Color::fromString("w") == White);
     CHECK(Color::show(Black) == "b");
 }
 
-void pieces(UNumspeed complexity) {
+void pieces(UNumspeed) {
     SECTION(Pieces);
     CHECK(Piece::fromString("Q") == Piece::create(White, Queen));
     CHECK(Piece::show(Piece::fromString("p")) == "p");
 }
 
-void enpassants(UNumspeed complexity) {
+void enpassants(UNumspeed) {
     SECTION(Enpassants);
     CHECK(Enpassant::fromString("-") == Enpassant::null);
     CHECK(Enpassant::fromString("f4") == Coord::fromString("f4"));
 }
 
-void castles(UNumspeed complexity) {
+void castles(UNumspeed) {
     SECTION(Castles);
     CHECK(Castle::fromString("-") == Castle::null);
     CHECK(Castle::fromString("KQ") == (Castle::whiteKing | Castle::whiteQueen));
 }
 
-void boards(UNumspeed complexity) {
+void boards(UNumspeed) {
     SECTION(Boards);
     Board::Type board;
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -286,7 +286,7 @@ void generator(UNumspeed complexity) {
     }
 }
 
-void evaluation(UNumspeed complexity) {
+void evaluation(UNumspeed) {
     SECTION(Evaluation);
     Board::Type board;
     Board::setFromFen(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
