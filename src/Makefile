@@ -3,8 +3,9 @@ LD=g++
 
 CCFLAGS=$(CCSTDFLAGS) $(CCWFLAGS) $(CCOFLAGS) 
 CCSTDFLAGS=-std=c++11
-CCWFLAGS=-Wall -Wextra
-CCOFLAGS=-O3
+CCWFLAGS=-pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused
+CCOFLAGS=-Ofast $(CCARCHFLAGS)
+CCARCHFLAGS=-msse -msse2 -msse3 -mfpmath=sse -mtune=native -march=native
 
 LDFLAGS=-pthread
 
@@ -37,7 +38,6 @@ SRC=cstf.cpp\
 	recaptures.cpp\
 	silents.cpp\
 	uselesses.cpp\
-	
 
 MAINSRC=ecce.cpp $(SRC)
 MAINOBJ=$(MAINSRC:.cpp=.o)
