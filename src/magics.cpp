@@ -205,8 +205,8 @@ void Magic::initTables() {
         bishopOffsets[from] = offset;
         offset += (makeUNum64(1) << bishopMaskBits[from]);
     }
-    bishopData = new Bitboard::Type[offset];
 
+    if (!bishopData) bishopData = new Bitboard::Type[offset];
     forCoord(x)
     forCoord(y) {
         auto const from = Coord::create(x, y);
@@ -228,8 +228,8 @@ void Magic::initTables() {
         rookOffsets[from] = offset;
         offset += (makeUNum64(1) << rookMaskBits[from]);
     }
-    rookData = new Bitboard::Type[offset];
 
+    if (!rookData) rookData = new Bitboard::Type[offset];
     forCoord(x)
     forCoord(y) {
         auto const from = Coord::create(x, y);
