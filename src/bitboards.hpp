@@ -38,7 +38,7 @@ namespace Bitboard {
         #ifdef OSLINUX
             return (bitboard * 0x0101010101010101ull) >> 56ull;
         #else
-            return _popcnt64(bitboard);
+            return __popcnt64(bitboard);
         #endif
     }
 
