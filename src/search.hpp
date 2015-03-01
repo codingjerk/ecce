@@ -193,7 +193,7 @@ namespace Search {
         return bestMove;
     }
 
-    inline Move::Type incremental(Board::Type &board, TM::DepthLimit depth) {
+    inline Move::Type incremental(Board::Type &board, const TM::DepthLimit &depth) {
         if (board.turn == White) {
             return incremental<White>(board, depth);
         } else {
@@ -225,7 +225,7 @@ namespace Search {
         return bestMove;
     }
 
-    inline Move::Type incremental(Board::Type &board, TM::TimeLimit timeLimit) {
+    inline Move::Type incremental(Board::Type &board, const TM::TimeLimit &timeLimit) {
         if (board.turn == White) {
             return incremental<White>(board, timeLimit);
         } else {

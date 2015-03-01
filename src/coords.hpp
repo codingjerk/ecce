@@ -22,7 +22,7 @@ namespace Coord {
     }
 
     Type fromChars(const char, const char);
-    Type fromString(const std::string);
+    Type fromString(const std::string&);
 
     std::string show(const Type);
 

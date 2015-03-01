@@ -10,7 +10,7 @@ bool firstSection = true;
 
 UNummax maxTestInfoSize = 35;
 
-std::string firsts(std::string old) {
+std::string firsts(const std::string &old) {
     if (old.size() <= maxTestInfoSize) {
         return old;
     } else {

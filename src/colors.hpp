@@ -13,7 +13,7 @@ namespace Color {
     void initTables();
 
     Type fromChar(const char);
-    Type fromString(const std::string);
+    Type fromString(const std::string&);
 
     inline Type invert(Type color) {
         return color ^ White;

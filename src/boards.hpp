@@ -194,7 +194,7 @@ namespace Board {
         board.squares[coord] = Piece::null;
     }
 
-    void setFromFen(Type&, const std::string);
+    void setFromFen(Type&, const std::string&);
     std::string toFen(const Type&);
 
     std::string show(const Type&);

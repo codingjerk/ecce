@@ -17,7 +17,7 @@ extern bool firstSection;
 
 extern UNummax maxTestInfoSize;
 
-std::string firsts(std::string);
+std::string firsts(const std::string &);
 
 // --- TDD tests ---
 

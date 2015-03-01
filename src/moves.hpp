@@ -13,7 +13,7 @@ namespace Move {
     
     using Buffer = Type[MAX_MOVES];
 
-    Type fromString(const std::string);
+    Type fromString(const std::string&);
 
     const UNumspeed enpassantFlag = makeNumspeed(1);
     const UNumspeed castleLongFlag = makeNumspeed(2);

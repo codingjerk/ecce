@@ -11,7 +11,7 @@ namespace Options {
         std::cout << "option name Hash type spin default 50 min 1 max 4096\n";
     }
 
-    void set(std::string name, std::string value) {
+    void set(const std::string &name, const std::string &value) {
         if (name == "Hash") {
             Hash::setTableSizeInMb(toNum(value));
         } else {

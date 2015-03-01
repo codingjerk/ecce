@@ -10,7 +10,7 @@ Type Coord::fromChars(const char x, const char y) {
     return create(x - 'a', y - '1');
 }
 
-Type Coord::fromString(const std::string str) {
+Type Coord::fromString(const std::string &str) {
     ASSERT(str.size() == 2);
 
     return fromChars(str[0], str[1]);
@@ -19,8 +19,8 @@ Type Coord::fromString(const std::string str) {
 std::string Coord::show(const Type coord) {
     std::string result("  ");
 
-    result[0] = (coord & componentMask) + 'a';
-    result[1] = (coord >> usedBitsByComponent) + '1';
+    result[0] = char(coord & componentMask) + 'a';
+    result[1] = char(coord >> usedBitsByComponent) + '1';
 
     return result; 
 }

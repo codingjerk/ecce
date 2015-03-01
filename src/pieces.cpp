@@ -16,7 +16,7 @@ Type Piece::fromChar(const char c) {
     return charToPieceTable[(unsigned char)(c)];
 }
 
-Type Piece::fromString(const std::string str) {
+Type Piece::fromString(const std::string &str) {
     ASSERT(str.size() == 1);
 
     return fromChar(str[0]);

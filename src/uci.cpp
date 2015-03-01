@@ -24,11 +24,11 @@
 
 #include "EPD.hpp"
 
-bool exit(std::list<std::string>) {
+bool exit(const std::list<std::string>&) {
     return false;
 }
 
-bool uci(std::list<std::string>) {
+bool uci(const std::list<std::string>&) {
     Info::show();
     Options::show();
     std::cout << "uciok\n" << std::flush;
@@ -36,19 +36,19 @@ bool uci(std::list<std::string>) {
     return true;
 }
 
-bool debug(std::list<std::string>) {
+bool debug(const std::list<std::string>&) {
     std::cout << "Debug mode can be switched by recompilation.\n" << std::flush;
 
     return true;
 }
 
-bool isready(std::list<std::string>) {
+bool isready(const std::list<std::string>&) {
     std::cout << "readyok\n" << std::flush;
 
     return true;
 }
 
-bool setoption(std::list<std::string> arguments) {
+bool setoption(const std::list<std::string> &arguments) {
     auto cursor = arguments.begin();
 
     if (*cursor == "name") {
@@ -68,13 +68,13 @@ bool setoption(std::list<std::string> arguments) {
     return true;
 }
 
-bool ucinewgame(std::list<std::string>) {
+bool ucinewgame(const std::list<std::string>&) {
     Search::flush();
 
     return true;
 }
 
-bool position(std::list<std::string> arguments) {
+bool position(const std::list<std::string> &arguments) {
     auto cursor = arguments.begin();
 
     if (cursor != arguments.end() && *cursor == "fen") {
@@ -113,7 +113,7 @@ bool position(std::list<std::string> arguments) {
     return true;
 }
 
-bool test(std::list<std::string> arguments) {
+bool test(const std::list<std::string> &arguments) {
     auto cursor = arguments.begin();
     
     UNumspeed complexity = 0;
@@ -129,7 +129,7 @@ bool test(std::list<std::string> arguments) {
     return true;
 }
 
-bool perft(std::list<std::string> arguments) {
+bool perft(const std::list<std::string> &arguments) {
     auto cursor = arguments.begin();
 
     UNumspeed depth = toNum(*cursor);
@@ -143,13 +143,13 @@ bool perft(std::list<std::string> arguments) {
     return true;
 }
 
-bool speed(std::list<std::string>) {
+bool speed(const std::list<std::string>&) {
     Search::speed();
 
     return true;
 }
 
-bool epd(std::list<std::string> arguments) {
+bool epd(const std::list<std::string> &arguments) {
     auto cursor = arguments.begin();
     std::string fileName = *cursor; ++cursor;
     
@@ -177,23 +177,23 @@ bool epd(std::list<std::string> arguments) {
     return true;
 }
 
-bool board(std::list<std::string>) {
+bool board(const std::list<std::string>&) {
     std::cout << Board::show(Board::master);
 
     return true;
 }
 
-bool fen(std::list<std::string>) {
+bool fen(const std::list<std::string>&) {
     std::cout << Board::toFen(Board::master) << "\n";
 
     return true;
 }
 
-bool stop(std::list<std::string>) {
+bool stop(const std::list<std::string>&) {
     return true;
 }
 
-bool go(std::list<std::string> arguments) {
+bool go(const std::list<std::string> &arguments) {
     Statistic::flush();
 
     auto cursor = arguments.begin();
@@ -270,13 +270,13 @@ bool go(std::list<std::string> arguments) {
     return true;
 }
 
-bool unknown(std::string command) {
+bool unknown(const std::string &command) {
     std::cout << "Unknown command: " << command << "\n"; 
 
     return true;
 }
 
-typedef bool (*ProcessFunction)(std::list<std::string>);
+typedef bool (*ProcessFunction)(const std::list<std::string>&);
 
 std::map<std::string, ProcessFunction> initUciFunctions() {
     std::map<std::string, ProcessFunction> result;

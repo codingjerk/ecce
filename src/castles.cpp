@@ -4,7 +4,7 @@
 
 using namespace Castle;
 
-Type Castle::fromString(const std::string str) {
+Type Castle::fromString(const std::string &str) {
     if (str[0] == '-') {
         ASSERT(str == "-");
 

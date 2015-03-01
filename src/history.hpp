@@ -6,7 +6,7 @@
 #include "moves.hpp"
 
 namespace History {
-    extern UNumspeed table[1ull << Coord::usedBits][1ull << Coord::usedBits];
+	extern UNumspeed table[makeUNumspeed(1) << Coord::usedBits][makeUNumspeed(1) << Coord::usedBits];
 
     inline UNumspeed score(Move::Type move) {
         Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
@@ -19,20 +19,20 @@ namespace History {
         Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
         Coord::Type to   = move & Coord::typeMask;
 
-        table[from][to] += 1 << depth;
+		table[from][to] += makeUNumspeed(1) << depth;
     }
 
     inline void beted(Move::Type move, UNumspeed depth) {
         Coord::Type from = (move >> Coord::usedBits) & Coord::typeMask;
         Coord::Type to   = move & Coord::typeMask;
 
-        table[from][to] += 1 << depth;
+        table[from][to] += makeUNumspeed(1) << depth;
     }
 
     inline void flush() {
         for(Coord::Type from = 0; from < 64; ++from) {
             for(Coord::Type to = 0; to < 64; ++to) {
-                table[from][to] = 0;
+				table[from][to] = makeUNumspeed(0);
             }
         }
     }

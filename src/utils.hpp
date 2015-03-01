@@ -23,7 +23,7 @@ inline unsigned long GetTickCount()
 #endif
 
 template <class RESULT = UNumspeed>
-inline RESULT toNum(std::string text) {
+inline RESULT toNum(const std::string &text) {
     std::stringstream ss(text);
     RESULT value; 
     ss >> value;
@@ -48,7 +48,7 @@ inline bool isInputAvailable() {
 #else
     static bool init = false, is_pipe;
     static HANDLE stdin_h;
-    DWORD val, error;
+    DWORD val;
 
     if (stdin->_cnt > 0) return true;
 
@@ -78,7 +78,7 @@ inline bool isInputAvailable() {
 }
 
 namespace Move {
-    inline Type fromString(const std::string text, Board::Type &board) {
+    inline Type fromString(const std::string &text, Board::Type &board) {
         Move::Type simple = fromString(text);
 
         // @TODO: Create methods Move::from and Move::to
@@ -122,7 +122,7 @@ namespace Move {
     }
 
     template <Color::Type COLOR>
-    inline Type fromShortString(const std::string text, Board::Type &board) {
+    inline Type fromShortString(const std::string &text, Board::Type &board) {
         auto cursor = text.rbegin();
         
         if (*cursor == '+') ++cursor;

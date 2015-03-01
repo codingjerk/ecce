@@ -9,7 +9,7 @@ using namespace Board;
 
 Board::Type Board::master;
 
-void setPositionFromFen(Type &board, const std::string fen) {
+void setPositionFromFen(Type &board, const std::string &fen) {
     for (auto& bitboard: board.bitboards) bitboard = Bitboard::null;
     for (auto& square: board.squares) square = Piece::null;
 
@@ -49,7 +49,7 @@ std::string getFenPosition(const Type &board) {
     result.reserve(64+8);
 
     forRawYCoords(y) {
-        UNumspeed skipped = makeUNumspeed(0);
+        char skipped = makeUNumspeed(0);
         forRawXCoords(x) {
             const auto coord = Coord::fromRaw(x, y);
             const auto piece = board.squares[coord];
@@ -73,7 +73,7 @@ std::string getFenPosition(const Type &board) {
     return result;
 }
 
-void Board::setFromFen(Type &board, const std::string fen) {
+void Board::setFromFen(Type &board, const std::string &fen) {
     std::stringstream fenStream(fen);
 
 	std::string positionPart, turnPart, castlePart, enapassantPart;

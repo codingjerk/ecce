@@ -16,7 +16,7 @@ std::string Bitboard::show(const Type bitboard) {
 
     forRawYCoords(y) {
         forRawXCoords(x) {
-            result += '0' + bool(bitboard & fromCoord(Coord::fromRaw(x, y)));
+            result += (bitboard & fromCoord(Coord::fromRaw(x, y)))? '1': '0';
         }
 
         result += '\n';

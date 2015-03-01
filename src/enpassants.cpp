@@ -6,7 +6,7 @@
 
 using namespace Enpassant;
 
-Type Enpassant::fromString(const std::string str) {
+Type Enpassant::fromString(const std::string &str) {
     if (str.size() == 1) {
         ASSERT(str == "-");
         return null;

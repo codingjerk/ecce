@@ -77,7 +77,7 @@ namespace EPD {
         }
     }
 
-    inline bool checkRecord(Record& record, TM::DepthLimit DEPTH) {
+    inline bool checkRecord(Record& record, const TM::DepthLimit &DEPTH) {
         auto bestmove = Search::incremental(record.board, DEPTH);
 
         bool result = false;
@@ -98,7 +98,7 @@ namespace EPD {
         return result;
     }
 
-    inline bool checkRecord(Record& record, TM::TimeLimit TIME) {
+    inline bool checkRecord(Record& record, const TM::TimeLimit &TIME) {
         auto bestmove = Search::incremental(record.board, TIME);
 
         bool result = false;
@@ -120,7 +120,7 @@ namespace EPD {
     }
 
     // Returns epd with fail positions
-    inline std::string checkFile(std::string epdContent, TM::DepthLimit DEPTH) {
+    inline std::string checkFile(const std::string &epdContent, const TM::DepthLimit &DEPTH) {
         std::stringstream failedContent;
         EPD::Record record;
         auto cursor = epdContent.begin();
@@ -159,7 +159,7 @@ namespace EPD {
         return failedContent.str();
     }
 
-    inline std::string checkFile(std::string epdContent, TM::TimeLimit TIME) {
+    inline std::string checkFile(const std::string &epdContent, const TM::TimeLimit &TIME) {
         std::stringstream failedContent;
         EPD::Record record;
         auto cursor = epdContent.begin();

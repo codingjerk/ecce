@@ -15,7 +15,7 @@ Type Color::fromChar(const char c) {
     return charToColorTable[(unsigned char)(c)];
 }
 
-Type Color::fromString(const std::string str) {
+Type Color::fromString(const std::string &str) {
     ASSERT(str.size() == 1);
 
     return fromChar(str[0]);

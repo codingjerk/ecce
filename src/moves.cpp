@@ -4,7 +4,7 @@
 
 using namespace Move;
 
-Type Move::fromString(const std::string str) {
+Type Move::fromString(const std::string &str) {
     ASSERT(str.size() == 4);
 
     return create(Coord::fromString(str.substr(0,2)), Coord::fromString(str.substr(2,2)));

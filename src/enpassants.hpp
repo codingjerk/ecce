@@ -13,7 +13,7 @@ namespace Enpassant {
         return coord;
     }
 
-    Type fromString(const std::string);
+    Type fromString(const std::string&);
 
     std::string show(const Type);
 
