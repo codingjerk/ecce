@@ -8,7 +8,7 @@
 
 namespace Options {
     void show() {
-        std::cout << "option name Hash type spin default 50 min 1 max 4096\n";
+        std::cout << "option name Hash type spin default 50 min 1 max 8192\n";
     }
 
     void set(const std::string &name, const std::string &value) {
