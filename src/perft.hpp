@@ -43,7 +43,7 @@ namespace Perft {
 			UNumspeed total = Board::buffer(board)[0];
 			for (UNumspeed i = 1; i <= total; ++i) {
 				const Move::Type move = Board::buffer(board)[i];
-				if (Move::makeFast<COLOR>(move, board))
+				if (Move::make<COLOR>(move, board))
 					result += perft_quiet_phases<OPP>(board, depth - 1);
 
 				Move::unmakeFast<COLOR>(move, board);
@@ -99,7 +99,7 @@ namespace Perft {
         #else
             for (Numspeed i = 1; i <= total; ++i) {
                 const Move::Type move = Board::buffer(board)[i];
-                if (Move::makeFast<COLOR>(move, board)) {
+                if (Move::make<COLOR>(move, board)) {
                     const auto nodes = perft_quiet<OPP>(board, depth - 1);
                     std::cout << "Move: " << Move::show(move) << " = " << nodes << "\n";
                     result += nodes;
