@@ -46,7 +46,7 @@ namespace Perft {
 				if (Move::make<COLOR>(move, board))
 					result += perft_quiet_phases<OPP>(board, depth - 1);
 
-				Move::unmakeFast<COLOR>(move, board);
+				Move::unmake<COLOR>(move, board);
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace Perft {
         #else
             for (Numspeed i = 1; i <= total; ++i) {
                 const Move::Type move = Board::buffer(board)[i];
-                if (Move::make<COLOR>(move, board)) {
+                if (Move::makeFast<COLOR>(move, board)) {
                     const auto nodes = perft_quiet<OPP>(board, depth - 1);
                     std::cout << "Move: " << Move::show(move) << " = " << nodes << "\n";
                     result += nodes;
@@ -139,7 +139,7 @@ namespace Perft {
 					const Move::Type move = Board::buffer(board)[i];
 					Board::Type newBoard;
 					Board::copy(newBoard, board);
-					if (Move::makeFast<COLOR>(move, newBoard)) {
+					if (Move::make<COLOR>(move, newBoard)) {
 						const auto nodes = perft_quiet_phases<OPP>(newBoard, depth - 1);
 						static std::mutex outLocker;
 						outLocker.lock();
@@ -151,13 +151,13 @@ namespace Perft {
 			#else
 				for (Numspeed i = 1; i <= total; ++i) {
 					const Move::Type move = Board::buffer(board)[i];
-					if (Move::makeFast<COLOR>(move, board)) {
+					if (Move::make<COLOR>(move, board)) {
 						const auto nodes = perft_quiet_phases<OPP>(board, depth - 1);
 						std::cout << "Move: " << Move::show(move) << " = " << nodes << "\n";
 						result += nodes;
 					}
 
-					Move::unmakeFast<COLOR>(move, board);
+					Move::unmake<COLOR>(move, board);
 				}
 			#endif
 		}
