@@ -23,8 +23,9 @@ namespace Search {
         ++totalNodes;
         Statistic::increaseNodes();
         MAKEOPP(COLOR);
-        
-        if (!ROOT) {
+
+		PV::master[pvIndex] = 0;
+		if (!ROOT) {
             if (Board::isRepeat(board) || Board::isFifty(board)) {
                 Statistic::repeatPruned();
                 return Score::Draw;
@@ -84,7 +85,6 @@ namespace Search {
             }
         }
 
-        PV::master[pvIndex] = 0;
         Move::Type move;
         Score::Type score;
         bool noLegalMoves = true;
