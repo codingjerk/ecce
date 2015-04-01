@@ -54,6 +54,12 @@ namespace Generator {
         auto PHASE = PHASES[G_M_I]; \
 		for (; G_M_I < Generator::phaseCount; ++G_M_I, PHASE = PHASES[G_M_I])
 
+	// All phases, without hash
+    #define forPerftPhases(PHASE, PHASES) \
+        UNumspeed G_M_I = 1; \
+        auto PHASE = PHASES[G_M_I]; \
+		for (; G_M_I < Generator::phaseCount; ++G_M_I, PHASE = PHASES[G_M_I])
+
     #define forQuiescePhases(PHASE, PHASES) \
         UNumspeed G_M_I = 0; \
         auto PHASE = PHASES[G_M_I]; \

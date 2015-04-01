@@ -130,17 +130,31 @@ bool test(const std::list<std::string> &arguments) {
 }
 
 bool perft(const std::list<std::string> &arguments) {
-    auto cursor = arguments.begin();
+	auto cursor = arguments.begin();
 
-    UNumspeed depth = toNum(*cursor);
+	UNumspeed depth = toNum(*cursor);
 
-    UNumspeed start = GetTickCount();
-    UNummax nodes = Perft::perft(Board::master, depth);
-    UNumspeed total = GetTickCount() - start;
-    std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
-    std::cout << "NPS: " << (total? (nodes / total): nodes) << "K nodes per second.\n";
+	UNumspeed start = GetTickCount();
+	UNummax nodes = Perft::perft(Board::master, depth);
+	UNumspeed total = GetTickCount() - start;
+	std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
+	std::cout << "NPS: " << (total ? (nodes / total) : nodes) << "K nodes per second.\n";
 
-    return true;
+	return true;
+}
+
+bool phases(const std::list<std::string> &arguments) {
+	auto cursor = arguments.begin();
+
+	UNumspeed depth = toNum(*cursor);
+
+	UNumspeed start = GetTickCount();
+	UNummax nodes = Perft::perft_phases(Board::master, depth);
+	UNumspeed total = GetTickCount() - start;
+	std::cout << "Total time: " << total << "ms (" << total / 1000.0 << "s)\n";
+	std::cout << "NPS: " << (total ? (nodes / total) : nodes) << "K nodes per second.\n";
+
+	return true;
 }
 
 bool speed(const std::list<std::string>&) {
@@ -294,6 +308,7 @@ std::map<std::string, ProcessFunction> initUciFunctions() {
     result["stop"]       = &stop;
     result["test"]       = &test;
     result["perft"]      = &perft;
+    result["phases"]     = &phases;
     result["go"]         = &go;
     result["speed"]      = &speed;
     result["epd"]        = &epd;
