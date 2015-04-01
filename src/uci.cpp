@@ -192,9 +192,15 @@ bool epd(const std::list<std::string> &arguments) {
 }
 
 bool board(const std::list<std::string>&) {
-    std::cout << Board::show(Board::master);
+	std::cout << Board::show(Board::master);
 
-    return true;
+	return true;
+}
+
+bool bitboards(const std::list<std::string>&) {
+	std::cout << "White Pawns:\n" << Bitboard::show(Board::master.bitboards[Piece::create(White, Pawn)]);
+
+	return true;
 }
 
 bool fen(const std::list<std::string>&) {
@@ -302,6 +308,7 @@ std::map<std::string, ProcessFunction> initUciFunctions() {
     result["ucinewgame"] = &ucinewgame;
     result["position"]   = &position;
     result["board"]      = &board;
+	result["bitboards"]  = &bitboards;
     result["fen"]        = &fen;
     result["exit"]       = &exit;
     result["quit"]       = &exit;
