@@ -19,13 +19,14 @@
 
 namespace Search {
     template <Color::Type COLOR, Interupter isInterupt, bool ROOT = true, bool NULLMOVE_ALLOWED = true>
-    Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex) {
+    Score::Type alphaBeta(Board::Type &board, Score::Type alpha, Score::Type beta, UNumspeed depth, Numspeed pvIndex, bool sendInfo) {
         ++totalNodes;
         Statistic::increaseNodes();
         MAKEOPP(COLOR);
 
-		PV::master[pvIndex] = 0;
 		if (!ROOT) {
+			PV::master[pvIndex] = 0;
+
             if (Board::isRepeat(board) || Board::isFifty(board)) {
                 Statistic::repeatPruned();
                 return Score::Draw;
@@ -72,7 +73,7 @@ namespace Search {
                     Statistic::nullMoveUsed();
                     Move::makeNull<COLOR>(board);
                     auto newDepth = (depth <= 4) ? 0 : depth - 4;
-                    auto nullScore = -alphaBeta<OPP, isInterupt, false, false>(board, -beta, -beta + 1, newDepth, pvIndex + MAX_DEPTH - Board::ply(board));
+                    auto nullScore = -alphaBeta<OPP, isInterupt, false, false>(board, -beta, -beta + 1, newDepth, pvIndex + MAX_DEPTH - Board::ply(board), false);
                     Move::unmakeNull(board);
 
                     if (nullScore >= beta) {
@@ -96,14 +97,14 @@ namespace Search {
 
                 if (phase.make(move, board)) {
                     if (noLegalMoves) {
-                        score = -alphaBeta<OPP, isInterupt, false, true>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+                        score = -alphaBeta<OPP, isInterupt, false, true>(board, -beta, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), false);
                         noLegalMoves = false;
                     } else {
-                        score = -alphaBeta<OPP, isInterupt, false, true>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+						score = -alphaBeta<OPP, isInterupt, false, true>(board, -alpha - 1, -alpha, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), false);
                         
                         if (score > alpha && score < beta) {
                             Statistic::negaScoutFailed();
-                            score = -alphaBeta<OPP, isInterupt, false, true>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board));
+							score = -alphaBeta<OPP, isInterupt, false, true>(board, -beta, -score, depth - 1, pvIndex + MAX_DEPTH - Board::ply(board), false);
                         }
                     }
 
@@ -116,8 +117,18 @@ namespace Search {
                         Statistic::alphaUpped();
                         alpha = score;
 
-                        PV::master[pvIndex] = move;
-                        PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
+						if (ROOT) {
+							if (!stopSearch) {
+								PV::master[0] = move;
+
+								if (sendInfo && phase.type != Generator::PhaseType::Hash) {
+									std::cout << "info depth " << depth << " score " << Score::show(score) << " nodes " << totalNodes << " pv " << Move::show(move) << "\n" << std::flush;
+								}
+							}
+						} else {
+							PV::master[pvIndex] = move;
+							PV::copy(PV::master + pvIndex + 1, PV::master + pvIndex + MAX_DEPTH - Board::ply(board), MAX_DEPTH - Board::ply(board) - 1);
+						}
                     } else {
                         Statistic::alphaPruned();
                     }
@@ -166,7 +177,6 @@ namespace Search {
 
     #define INIT() \
         stopSearch = false; \
-        Move::Type bestMove = 0; \
         totalNodes = 0; \
         auto startTime = GetTickCount();
 
@@ -174,23 +184,20 @@ namespace Search {
     Move::Type incremental(Board::Type &board, TM::DepthLimit depthLimit) {
         INIT();
 
-        for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
-            auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
-            
-            auto totalTime = GetTickCount() - startTime;
-            auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
-        
-            if (stopSearch) {
-                if (depth == 1) bestMove = PV::master[0];
-                break;
-            }
+		for (Numspeed depth = 1; depth <= depthLimit.maxDepth; ++depth) {
+			auto totalTime = GetTickCount() - startTime;
+			auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
+
+			auto score = alphaBeta<COLOR, stopInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0, totalTime >= 300);
+
+			if (stopSearch) {
+				break;
+			}
             
             if (totalTime >= 100) std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
-
-            bestMove = PV::master[0];
         }
 
-        return bestMove;
+		return PV::master[0];
     }
 
     inline Move::Type incremental(Board::Type &board, const TM::DepthLimit &depth) {
@@ -206,23 +213,20 @@ namespace Search {
         INIT();
         endTime = GetTickCount() + timeLimit.real;
 
-        for (UNumspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
-            auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0);
-            
-            auto totalTime = GetTickCount() - startTime;
-            auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
+		for (UNumspeed depth = 1; depth <= MAX_DEPTH; ++depth) {
+			auto totalTime = GetTickCount() - startTime;
+			auto totalNPS = (totalTime != 0)? (totalNodes * 1000 / totalTime): totalNodes;
 
-            if (stopSearch) {
-                if (depth == 1) bestMove = PV::master[0];
-                break;
-            }
+			auto score = alphaBeta<COLOR, timeInterupter>(board, -Score::Infinity, Score::Infinity, depth, 0, totalTime >= 300);
 
-            if (totalTime >= 100) std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
+			if (stopSearch) {
+				break;
+			}
 
-            bestMove = PV::master[0];
+			if (totalTime >= 100) std::cout << "info depth " << depth << " time " << totalTime << " hashfull " << Hash::fillFactor() << " nps " << totalNPS << " nodes " << totalNodes << " score " << Score::show(score) << " pv " << PV::show() << "\n" << std::flush;
         }
 
-        return bestMove;
+		return PV::master[0];
     }
 
     inline Move::Type incremental(Board::Type &board, const TM::TimeLimit &timeLimit) {

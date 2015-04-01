@@ -12,12 +12,21 @@ namespace Generator {
 	typedef Boolspeed(*Maker)(Move::Type, Board::Type&);
 	typedef void(*Unmaker)(Move::Type, Board::Type&);
 
+	enum class PhaseType {
+		Hash,
+		Recapture,
+		Capture,
+		Silent,
+		Useless
+	};
+
     struct Phase {
         Generate generate;
-        Maker make;
-        Unmaker unmake;
+		Maker make;
+		Unmaker unmake;
+		PhaseType type;
 
-        Phase(Generate generate, Maker make, Unmaker unmake): generate(generate), make(make), unmake(unmake) {}
+		Phase(Generate generate, Maker make, Unmaker unmake, PhaseType type) : generate(generate), make(make), unmake(unmake), type(type) {}
     };
 
     const UNumspeed phaseCount = 5;
@@ -26,11 +35,11 @@ namespace Generator {
     template <Color::Type COLOR>
     inline Phase* phases() {
         static const Phases result = {
-            Phase(Hash::phase,              Move::make<COLOR>,        Move::unmake<COLOR>),
-            Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            Phase(Captures::phase<COLOR>,   Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            Phase(Silents::phase<COLOR>,    Move::makeSilent<COLOR>,  Move::unmakeSilent<COLOR>),
-            Phase(Uselesses::phase<COLOR>,  Move::make<COLOR>,        Move::unmake<COLOR>)
+            Phase(Hash::phase,              Move::make<COLOR>,        Move::unmake<COLOR>, PhaseType::Hash),
+			Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>, PhaseType::Recapture),
+            Phase(Captures::phase<COLOR>,   Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>, PhaseType::Capture),
+            Phase(Silents::phase<COLOR>,    Move::makeSilent<COLOR>,  Move::unmakeSilent<COLOR>, PhaseType::Silent),
+            Phase(Uselesses::phase<COLOR>,  Move::make<COLOR>,        Move::unmake<COLOR>, PhaseType::Useless)
         };
 
         return (Phase*)result;
@@ -42,8 +51,8 @@ namespace Generator {
     template <Color::Type COLOR>
     inline Phase* quiescePhases() {
         static const QuiescePhases result = {
-            Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>),
-            Phase(Captures::phase<COLOR>,   Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>)
+			Phase(Recaptures::phase<COLOR>, Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>, PhaseType::Recapture),
+            Phase(Captures::phase<COLOR>,   Move::makeCapture<COLOR>, Move::unmakeCapture<COLOR>, PhaseType::Capture)
         };
 
         return (Phase*)result;
@@ -54,7 +63,6 @@ namespace Generator {
         auto PHASE = PHASES[G_M_I]; \
 		for (; G_M_I < Generator::phaseCount; ++G_M_I, PHASE = PHASES[G_M_I])
 
-	// All phases, without hash
     #define forPerftPhases(PHASE, PHASES) \
         UNumspeed G_M_I = 1; \
         auto PHASE = PHASES[G_M_I]; \
