@@ -24,7 +24,7 @@ make build
 ```
  in src directory.
 
-## Custom commands ##
+## Nonstandard UCI commands ##
 
 * board - shows a psevdo-graphical board for current position.
 * fen - shows a feh for current position.
